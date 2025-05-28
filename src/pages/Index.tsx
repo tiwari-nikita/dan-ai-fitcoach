@@ -1,6 +1,9 @@
 
-import { useState } from 'react';
-import { Dumbbell } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Dumbbell, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import Dashboard from '@/components/Dashboard';
@@ -11,7 +14,34 @@ import WeightTracking from '@/components/WeightTracking';
 import AICoach from '@/components/AICoach';
 
 const Index = () => {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-fitness-light via-white to-fitness-light flex items-center justify-center">
+        <div className="fitness-gradient p-4 rounded-full animate-pulse">
+          <Dumbbell className="h-8 w-8 text-white" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   const renderActiveComponent = () => {
     switch (activeTab) {
@@ -35,14 +65,26 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-fitness-light via-white to-fitness-light">
       <div className="container mx-auto px-4 py-6">
-        <Header />
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <Header />
+          </div>
+          <Button 
+            onClick={handleSignOut}
+            variant="outline" 
+            className="flex items-center"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Sign Out
+          </Button>
+        </div>
+        
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className="mt-6">
           {renderActiveComponent()}
         </div>
 
-        {/* Floating AI Coach Button */}
         {activeTab !== 'coach' && (
           <div className="fixed bottom-6 right-6 z-50">
             <button

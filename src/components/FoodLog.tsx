@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,51 +7,19 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Calendar, Plus, UtensilsCrossed, Activity, Dumbbell } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-interface FoodEntry {
-  id: string;
-  name: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  meal: string;
-  time: string;
-}
+import { useFoodEntries } from '@/hooks/useFoodEntries';
 
 const FoodLog = () => {
   const { toast } = useToast();
+  const { foodEntries, loading, addFoodEntry } = useFoodEntries();
   const [newFood, setNewFood] = useState({
-    name: '',
+    food_description: '',
     calories: '',
-    protein: '',
-    carbs: '',
-    fat: '',
-    meal: 'breakfast'
+    protein_g: '',
+    carbs_g: '',
+    fats_g: '',
+    meal_type: 'breakfast'
   });
-
-  const [todaysFoods, setTodaysFoods] = useState<FoodEntry[]>([
-    {
-      id: '1',
-      name: 'Greek Yogurt with Berries',
-      calories: 200,
-      protein: 20,
-      carbs: 25,
-      fat: 5,
-      meal: 'breakfast',
-      time: '8:00 AM'
-    },
-    {
-      id: '2',
-      name: 'Grilled Chicken Salad',
-      calories: 350,
-      protein: 35,
-      carbs: 15,
-      fat: 12,
-      meal: 'lunch',
-      time: '12:30 PM'
-    }
-  ]);
 
   const dailyTargets = {
     calories: 2200,
@@ -61,15 +28,21 @@ const FoodLog = () => {
     fat: 80
   };
 
-  const currentTotals = todaysFoods.reduce((totals, food) => ({
-    calories: totals.calories + food.calories,
-    protein: totals.protein + food.protein,
-    carbs: totals.carbs + food.carbs,
-    fat: totals.fat + food.fat
+  const todaysEntries = foodEntries.filter(entry => {
+    const entryDate = new Date(entry.date).toDateString();
+    const today = new Date().toDateString();
+    return entryDate === today;
+  });
+
+  const currentTotals = todaysEntries.reduce((totals, food) => ({
+    calories: totals.calories + (food.calories || 0),
+    protein: totals.protein + (food.protein_g || 0),
+    carbs: totals.carbs + (food.carbs_g || 0),
+    fat: totals.fat + (food.fats_g || 0)
   }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
-  const addFood = () => {
-    if (!newFood.name || !newFood.calories) {
+  const handleAddFood = async () => {
+    if (!newFood.food_description || !newFood.calories) {
       toast({
         title: "Missing Information",
         description: "Please enter at least food name and calories.",
@@ -78,31 +51,28 @@ const FoodLog = () => {
       return;
     }
 
-    const foodEntry: FoodEntry = {
-      id: Date.now().toString(),
-      name: newFood.name,
-      calories: parseInt(newFood.calories),
-      protein: parseInt(newFood.protein) || 0,
-      carbs: parseInt(newFood.carbs) || 0,
-      fat: parseInt(newFood.fat) || 0,
-      meal: newFood.meal,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+    try {
+      await addFoodEntry({
+        food_description: newFood.food_description,
+        calories: parseInt(newFood.calories),
+        protein_g: parseFloat(newFood.protein_g) || null,
+        carbs_g: parseFloat(newFood.carbs_g) || null,
+        fats_g: parseFloat(newFood.fats_g) || null,
+        meal_type: newFood.meal_type,
+        date: new Date().toISOString().split('T')[0]
+      });
 
-    setTodaysFoods([...todaysFoods, foodEntry]);
-    setNewFood({
-      name: '',
-      calories: '',
-      protein: '',
-      carbs: '',
-      fat: '',
-      meal: 'breakfast'
-    });
-
-    toast({
-      title: "Food Added",
-      description: `${foodEntry.name} has been logged successfully!`,
-    });
+      setNewFood({
+        food_description: '',
+        calories: '',
+        protein_g: '',
+        carbs_g: '',
+        fats_g: '',
+        meal_type: 'breakfast'
+      });
+    } catch (error) {
+      // Error handled in hook
+    }
   };
 
   const getMealIcon = (meal: string) => {
@@ -114,6 +84,14 @@ const FoodLog = () => {
       default: return '🍽️';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div className="text-center">Loading your food log...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -142,8 +120,8 @@ const FoodLog = () => {
                   <Label htmlFor="foodName">Food Name</Label>
                   <Input
                     id="foodName"
-                    value={newFood.name}
-                    onChange={(e) => setNewFood({...newFood, name: e.target.value})}
+                    value={newFood.food_description}
+                    onChange={(e) => setNewFood({...newFood, food_description: e.target.value})}
                     placeholder="e.g., Grilled Chicken Breast"
                     className="bg-white/70"
                   />
@@ -152,8 +130,8 @@ const FoodLog = () => {
                   <Label htmlFor="meal">Meal</Label>
                   <select
                     id="meal"
-                    value={newFood.meal}
-                    onChange={(e) => setNewFood({...newFood, meal: e.target.value})}
+                    value={newFood.meal_type}
+                    onChange={(e) => setNewFood({...newFood, meal_type: e.target.value})}
                     className="w-full px-3 py-2 bg-white/70 border border-gray-300 rounded-md"
                   >
                     <option value="breakfast">Breakfast</option>
@@ -180,8 +158,8 @@ const FoodLog = () => {
                   <Input
                     id="protein"
                     type="number"
-                    value={newFood.protein}
-                    onChange={(e) => setNewFood({...newFood, protein: e.target.value})}
+                    value={newFood.protein_g}
+                    onChange={(e) => setNewFood({...newFood, protein_g: e.target.value})}
                     placeholder="25"
                     className="bg-white/70"
                   />
@@ -191,8 +169,8 @@ const FoodLog = () => {
                   <Input
                     id="carbs"
                     type="number"
-                    value={newFood.carbs}
-                    onChange={(e) => setNewFood({...newFood, carbs: e.target.value})}
+                    value={newFood.carbs_g}
+                    onChange={(e) => setNewFood({...newFood, carbs_g: e.target.value})}
                     placeholder="30"
                     className="bg-white/70"
                   />
@@ -202,15 +180,15 @@ const FoodLog = () => {
                   <Input
                     id="fat"
                     type="number"
-                    value={newFood.fat}
-                    onChange={(e) => setNewFood({...newFood, fat: e.target.value})}
+                    value={newFood.fats_g}
+                    onChange={(e) => setNewFood({...newFood, fats_g: e.target.value})}
                     placeholder="10"
                     className="bg-white/70"
                   />
                 </div>
               </div>
               <Button 
-                onClick={addFood}
+                onClick={handleAddFood}
                 className="w-full fitness-gradient text-white"
               >
                 Add Food Entry
@@ -226,27 +204,35 @@ const FoodLog = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {todaysFoods.map((food) => (
-                <div key={food.id} className="p-4 bg-white/50 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-2">{getMealIcon(food.meal)}</span>
-                      <div>
-                        <h4 className="font-semibold">{food.name}</h4>
-                        <p className="text-sm text-muted-foreground">{food.meal} • {food.time}</p>
+              {todaysEntries.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">
+                  No food entries for today. Start by adding your first meal!
+                </p>
+              ) : (
+                todaysEntries.map((food) => (
+                  <div key={food.id} className="p-4 bg-white/50 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <span className="text-2xl mr-2">{getMealIcon(food.meal_type)}</span>
+                        <div>
+                          <h4 className="font-semibold">{food.food_description}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {food.meal_type} • {new Date(food.logged_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
                       </div>
+                      <Badge className="bg-fitness-primary/20 text-fitness-primary">
+                        {food.calories || 0} cal
+                      </Badge>
                     </div>
-                    <Badge className="bg-fitness-primary/20 text-fitness-primary">
-                      {food.calories} cal
-                    </Badge>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div>Protein: {food.protein_g || 0}g</div>
+                      <div>Carbs: {food.carbs_g || 0}g</div>
+                      <div>Fat: {food.fats_g || 0}g</div>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>Protein: {food.protein}g</div>
-                    <div>Carbs: {food.carbs}g</div>
-                    <div>Fat: {food.fat}g</div>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </CardContent>
           </Card>
         </div>
