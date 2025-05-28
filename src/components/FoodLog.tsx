@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Calendar, Plus, Food, Activity, Dumbbell } from 'lucide-react';
+import { Calendar, Plus, UtensilsCrossed, Activity, Dumbbell } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface FoodEntry {
@@ -120,7 +120,7 @@ const FoodLog = () => {
       <Card className="fitness-gradient text-white border-0 shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-2xl">
-            <Food className="h-6 w-6 mr-2" />
+            <UtensilsCrossed className="h-6 w-6 mr-2" />
             Daily Food Log
           </CardTitle>
           <p className="text-white/90">Track your nutrition to fuel your fitness goals</p>
