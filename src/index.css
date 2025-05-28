@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,20 +36,20 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom fitness theme colors */
+    --fitness-primary: 14 100% 57%;
+    --fitness-secondary: 189 100% 42%;
+    --fitness-accent: 284 100% 84%;
+    --fitness-dark: 217 19% 27%;
+    --fitness-light: 210 20% 98%;
   }
 
   .dark {
@@ -97,5 +98,34 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+/* Custom fitness gradients */
+.fitness-gradient {
+  background: linear-gradient(135deg, hsl(var(--fitness-primary)) 0%, hsl(var(--fitness-secondary)) 100%);
+}
+
+.fitness-card-gradient {
+  background: linear-gradient(145deg, rgba(255,87,34,0.05) 0%, rgba(0,172,193,0.05) 100%);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,87,34,0.3); }
+  50% { box-shadow: 0 0 30px rgba(255,87,34,0.6); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }

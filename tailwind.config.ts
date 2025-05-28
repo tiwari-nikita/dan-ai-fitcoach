@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom fitness colors
+				fitness: {
+					primary: 'hsl(var(--fitness-primary))',
+					secondary: 'hsl(var(--fitness-secondary))',
+					accent: 'hsl(var(--fitness-accent))',
+					dark: 'hsl(var(--fitness-dark))',
+					light: 'hsl(var(--fitness-light))'
 				}
 			},
 			borderRadius: {
