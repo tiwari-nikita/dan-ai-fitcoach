@@ -4,6 +4,7 @@ import { Dumbbell, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import Dashboard from '@/components/Dashboard';
@@ -81,21 +82,35 @@ const Index = () => {
         
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
         
+        <Card className="mt-6">
+          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+            <Button
+              onClick={() => setActiveTab('coach')}
+              className="fitness-gradient text-white py-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center h-full"
+            >
+              <Dumbbell className="h-5 w-5 mr-2" />
+              Chat with Coach
+            </Button>
+            <Button
+              onClick={() => setActiveTab('food')}
+              className="fitness-gradient text-white py-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center h-full"
+            >
+              <Dumbbell className="h-5 w-5 mr-2" />
+              Log Food
+            </Button>
+            <Button
+              onClick={() => setActiveTab('weight')}
+              className="fitness-gradient text-white py-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center h-full"
+            >
+              <Dumbbell className="h-5 w-5 mr-2" />
+              Track Weight
+            </Button>
+          </CardContent>
+        </Card>
+
         <div className="mt-6">
           {renderActiveComponent()}
         </div>
-
-        {activeTab !== 'coach' && (
-          <div className="fixed bottom-6 right-6 z-50">
-            <button
-              onClick={() => setActiveTab('coach')}
-              className="fitness-gradient text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all pulse-glow float-animation"
-              title="Chat with Dan Go AI"
-            >
-              <Dumbbell className="h-6 w-6" />
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
