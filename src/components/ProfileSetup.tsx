@@ -102,12 +102,12 @@ const ProfileSetup = () => {
               </div>
             </div>
             <div>
-              <Label htmlFor="height">Height (ft'in" or cm)</Label>
+              <Label htmlFor="height">Height (ft&apos;in&quot; or cm)</Label>
               <Input
                 id="height"
                 value={profile.height}
                 onChange={(e) => setProfile({...profile, height: e.target.value})}
-                placeholder="e.g., 5'10\" or 178cm"
+                placeholder="e.g., 5'10&quot; or 178cm"
                 className="bg-white/70"
               />
             </div>
@@ -175,7 +175,7 @@ const ProfileSetup = () => {
             />
           </div>
           <div>
-            <Label htmlFor="preferences">Exercise Preferences & Goals</Label>
+            <Label htmlFor="preferences">Exercise Preferences &amp; Goals</Label>
             <Textarea
               id="preferences"
               value={profile.preferences}
@@ -193,7 +193,7 @@ const ProfileSetup = () => {
           className="fitness-gradient text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-shadow"
           size="lg"
         >
-          Save Profile & Continue
+          Save Profile &amp; Continue
         </Button>
       </div>
     </div>
