@@ -1,15 +1,29 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Activity, Calendar, Dumbbell, Heart } from 'lucide-react';
 
+import { useState } from 'react';
+
 const Dashboard = () => {
+  const [workouts, setWorkouts] = useState<number>(0);
+  const [healthScore, setHealthScore] = useState<number>(0);
+
+  const addWorkout = () => {
+    setWorkouts(workouts + 1);
+  };
+
+  const calculateHealthScore = (weight: number, height: number, age: number) => {
+    // Basic health score calculation (replace with a more sophisticated formula)
+    const score = weight / (height * height) * (100 - age);
+    setHealthScore(Math.round(score));
+  };
+
   const stats = [
-    { label: 'Days Active', value: '12', icon: Calendar, color: 'text-fitness-primary' },
-    { label: 'Workouts', value: '8', icon: Dumbbell, color: 'text-fitness-secondary' },
-    { label: 'Calories Burned', value: '2,400', icon: Activity, color: 'text-red-500' },
-    { label: 'Health Score', value: '85%', icon: Heart, color: 'text-green-500' },
+    { label: 'Days Active', value: '0', icon: Calendar, color: 'text-fitness-primary' },
+    { label: 'Workouts', value: workouts.toString(), icon: Dumbbell, color: 'text-fitness-secondary' },
+    { label: 'Calories Burned', value: '0', icon: Activity, color: 'text-red-500' },
+    { label: 'Health Score', value: healthScore.toString(), icon: Heart, color: 'text-green-500' },
   ];
 
   return (
@@ -18,7 +32,19 @@ const Dashboard = () => {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} className="fitness-card-gradient border-0 shadow-lg hover:shadow-xl transition-shadow">
+            <Card
+              key={stat.label}
+              className="fitness-card-gradient border-0 shadow-lg hover:shadow-xl transition-shadow"
+              onClick={() => {
+                if (stat.label === 'Workouts') {
+                  window.location.href = '/workouts';
+                } else if (stat.label === 'Health Score') {
+                  calculateHealthScore(70, 1.75, 30); // Example values: weight (kg), height (m), age (years)
+                } else {
+                  console.log(`Clicked ${stat.label}`);
+                }
+              }}
+            >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
