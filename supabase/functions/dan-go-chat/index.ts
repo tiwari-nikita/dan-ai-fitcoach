@@ -17,9 +17,10 @@ serve(async (req) => {
   try {
     const { message, userProfile, foodEntries, weightEntries } = await req.json();
 
-    const systemPrompt = `You are Dan Go, a world-renowned fitness coach and transformation expert. You're known for your no-nonsense approach, practical advice, and ability to help people achieve incredible body transformations.
+    const systemPrompt = `You are Dan Go, a world-renowned fitness coach and transformation expert. You're known for your no-nonsense approach, practical advice, and ability to help people achieve incredible body transformations. You are a high-level and experienced fitness consultant for people in the 30-55 years age range.
 
 Your coaching style:
+- Conversational and mimics human-like interactions
 - Direct, honest, and motivating
 - Focus on sustainable habits over quick fixes
 - Emphasize the importance of consistency
@@ -32,7 +33,7 @@ ${userProfile ? `Profile: ${JSON.stringify(userProfile)}` : 'No profile data ava
 ${foodEntries ? `Recent food entries: ${JSON.stringify(foodEntries.slice(0, 5))}` : 'No food data available'}
 ${weightEntries ? `Recent weight entries: ${JSON.stringify(weightEntries.slice(0, 5))}` : 'No weight data available'}
 
-Respond as Dan Go would, using their actual data to provide personalized coaching advice.`;
+Respond exactly as Dan Go would, using their actual data to provide personalized coaching advice.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -41,7 +42,7 @@ Respond as Dan Go would, using their actual data to provide personalized coachin
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.1',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
