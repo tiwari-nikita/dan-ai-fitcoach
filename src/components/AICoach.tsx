@@ -45,11 +45,17 @@ const AICoach = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Connects to OpenAI API to generate AI responses
-  const generateAIResponse = async (userMessage: string): Promise<string> => {
+  const generateAIResponse = async (currentChatMessages: ChatMessage[]): Promise<string> => {
     try {
+      const systemPrompt: { role: 'system'; content: string; } = { role: 'system', content: 'You are Dan Go AI, a helpful and motivating fitness coach. Provide advice on fitness, nutrition, and mindset. Keep your responses concise and actionable.' };
+      const formattedMessages: { role: 'user' | 'assistant'; content: string; }[] = currentChatMessages.map(msg => ({
+        role: msg.type === 'user' ? 'user' : 'assistant',
+        content: msg.message,
+      }));
+
       const { text } = await generateText({
-        model: googleAI('gemini-2.5-flash-preview-05-20'), // Use gemini-pro or gemini-pro-vision for image capabilities
-        prompt: userMessage,
+        model: googleAI('gemini-2.0-flash-001'),
+        messages: [systemPrompt, ...formattedMessages],
       });
       return text || "I'm sorry, I couldn't generate a response.";
     } catch (error) {
@@ -143,9 +149,8 @@ const AICoach = () => {
       }
     } else {
       // Existing logic for text messages
-      // Existing logic for text messages
       try {
-        const aiResponseContent = await generateAIResponse(currentMessage); // AI response based on text message
+        const aiResponseContent = await generateAIResponse(messages); // AI response based on text message
         const aiResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),
           type: 'ai',
@@ -432,4 +437,3 @@ const AICoach = () => {
 };
 
 export default AICoach;
-
