@@ -33,7 +33,7 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
                 className={`rounded-full px-3 py-1 sm:px-4 sm:py-2 transition-all duration-300 ease-in-out ${
                   activeTab === item.id
                     ? 'bg-primary text-primary-foreground shadow-lg hover:bg-primary/90'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    : 'text-foreground hover:bg-accent hover:text-accent-foreground'
                 }`}
               >
                 <Icon className="h-4 w-4 mr-1 sm:mr-2" />
