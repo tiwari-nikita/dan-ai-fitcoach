@@ -44,6 +44,12 @@ const AICoach = () => {
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null); // New state for selected image
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   // Connects to OpenAI API to generate AI responses
   const generateAIResponse = async (currentChatMessages: ChatMessage[]): Promise<string> => {
     try {
