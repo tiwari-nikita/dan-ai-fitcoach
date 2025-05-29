@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
+import ReactMarkdown from 'react-markdown';
 
 const googleAI = createGoogleGenerativeAI({
   apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
@@ -265,7 +266,29 @@ const AICoach = () => {
                             : 'bg-muted text-muted-foreground'
                         }`}
                       >
-                        <p className="text-sm leading-relaxed break-words">{msg.message}</p>
+                        {msg.type === 'ai' ? (
+                          <ReactMarkdown components={{
+                            p: ({ node, ...props }) => <p className="text-sm leading-relaxed break-words" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc list-inside text-sm leading-relaxed break-words" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal list-inside text-sm leading-relaxed break-words" {...props} />,
+                            li: ({ node, ...props }) => <li className="text-sm leading-relaxed break-words" {...props} />,
+                            a: ({ node, ...props }) => <a className="text-blue-500 hover:underline" {...props} />,
+                            strong: ({ node, ...props }) => <strong className="font-bold" {...props} />,
+                            em: ({ node, ...props }) => <em className="italic" {...props} />,
+                            code: ({ node, ...props }) => <code className="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-xs" {...props} />,
+                            pre: ({ node, ...props }) => <pre className="bg-gray-100 dark:bg-gray-800 rounded p-2 overflow-x-auto text-xs" {...props} />,
+                            h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
+                            h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-3 mb-1.5" {...props} />,
+                            h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-2.5 mb-1" {...props} />,
+                            h4: ({ node, ...props }) => <h4 className="text-base font-bold mt-2 mb-0.5" {...props} />,
+                            h5: ({ node, ...props }) => <h5 className="text-sm font-bold mt-1.5 mb-0.5" {...props} />,
+                            h6: ({ node, ...props }) => <h6 className="text-xs font-bold mt-1 mb-0.5" {...props} />,
+                          }}>
+                            {msg.message}
+                          </ReactMarkdown>
+                        ) : (
+                          <p className="text-sm leading-relaxed break-words">{msg.message}</p>
+                        )}
                         {msg.imageUrl && (
                           <img src={msg.imageUrl} alt="User uploaded" className="mt-2 max-w-full h-auto rounded-md" />
                         )}
