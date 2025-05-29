@@ -4,14 +4,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dumbbell, Activity, Heart, Weight } from 'lucide-react';
+import { Dumbbell, Activity, Heart, Weight, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChatMessage {
   id: string;
   type: 'user' | 'ai';
   message: string;
   timestamp: Date;
+  imageUrl?: string; // Optional: for displaying images in chat
+}
+
+interface SelectedImage {
+  file: File;
+  previewUrl: string; // Data URL for immediate preview
 }
 
 const AICoach = () => {
@@ -27,6 +34,7 @@ const AICoach = () => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasUserSentMessage, setHasUserSentMessage] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null); // New state for selected image
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Simulated AI responses based on Dan Go's coaching style
@@ -65,13 +73,14 @@ const AICoach = () => {
   };
 
   const sendMessage = async () => {
-    if (!currentMessage.trim()) return;
+    if (!currentMessage.trim() && !selectedImage) return; // Allow sending only image or text
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       type: 'user',
       message: currentMessage,
-      timestamp: new Date()
+      timestamp: new Date(),
+      imageUrl: selectedImage?.previewUrl, // Include image URL if available
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -79,25 +88,135 @@ const AICoach = () => {
     setIsLoading(true);
     setHasUserSentMessage(true);
 
-    // Simulate AI processing time
-    setTimeout(() => {
-      const aiResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        message: generateAIResponse(currentMessage),
-        timestamp: new Date()
-      };
+    let aiResponseContent = '';
 
-      setMessages(prev => [...prev, aiResponse]);
-      setIsLoading(false);
-    }, 1500);
+    if (selectedImage) {
+      try {
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedImage.file);
+        reader.onloadend = async () => {
+          const base64Image = (reader.result as string).split(',')[1]; // Get base64 string without data URL prefix
+
+          const { data, error } = await supabase.functions.invoke('process-image', {
+            body: JSON.stringify({ image: base64Image }),
+            headers: { 'Content-Type': 'application/json' },
+          });
+
+          if (error) {
+            console.error('Supabase function error:', error);
+            toast({
+              title: "Image Processing Failed",
+              description: error.message,
+              variant: "destructive",
+            });
+            aiResponseContent = "I couldn't process that image. Please try again or send a text message.";
+          } else {
+            console.log('Supabase function response:', data);
+            // Assuming 'data' contains the nutritional info directly or in a 'nutritionalData' field
+            aiResponseContent = `Image processed! Here's the nutritional data: ${JSON.stringify(data, null, 2)}`;
+            toast({
+              title: "Image Processed",
+              description: "Nutritional data received!",
+            });
+          }
+
+          const aiResponse: ChatMessage = {
+            id: (Date.now() + 1).toString(),
+            type: 'ai',
+            message: aiResponseContent,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, aiResponse]);
+          setIsLoading(false);
+          setSelectedImage(null); // Clear selected image after processing
+        };
+        reader.onerror = (error) => {
+          console.error("FileReader error:", error);
+          toast({
+            title: "Image Read Error",
+            description: "Could not read the selected image file.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          setSelectedImage(null);
+        };
+      } catch (error) {
+        console.error('Error sending image to Supabase:', error);
+        toast({
+          title: "Error Sending Image",
+          description: "There was an issue sending your image for processing.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        setSelectedImage(null);
+      }
+    } else {
+      // Existing logic for text messages
+      setTimeout(() => {
+        const aiResponse: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          type: 'ai',
+          message: generateAIResponse(currentMessage), // AI response based on text message
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, aiResponse]);
+        setIsLoading(false);
+      }, 1500);
+    }
   };
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  const processImageFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please select an image file (JPEG, PNG, GIF).",
+        variant: "destructive",
+      });
+      return;
     }
-  }, [messages]);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSelectedImage({
+        file: file,
+        previewUrl: reader.result as string,
+      });
+      toast({
+        title: "Image Selected",
+        description: `File: ${file.name}`,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processImageFile(file);
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith('image/')) {
+        const file = items[i].getAsFile();
+        if (file) {
+          processImageFile(file);
+          e.preventDefault(); // Prevent pasting the image data as text
+          break;
+        }
+      }
+    }
+  };
+
+  const removeSelectedImage = () => {
+    setSelectedImage(null);
+    toast({
+      title: "Image Removed",
+      description: "The selected image has been cleared.",
+    });
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -151,6 +270,9 @@ const AICoach = () => {
                         }`}
                       >
                         <p className="text-sm leading-relaxed break-words">{msg.message}</p>
+                        {msg.imageUrl && (
+                          <img src={msg.imageUrl} alt="User uploaded" className="mt-2 max-w-full h-auto rounded-md" />
+                        )}
                         <p className="text-xs mt-2 text-muted-foreground">
                           {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
@@ -208,18 +330,50 @@ const AICoach = () => {
                   </Button>
                 </div>
               )}
+              {selectedImage && (
+                <div className="relative mb-2 p-2 border rounded-md flex items-center justify-between bg-muted">
+                  <img src={selectedImage.previewUrl} alt="Preview" className="max-h-24 rounded-md" />
+                  <span className="ml-2 text-sm text-muted-foreground">{selectedImage.file.name}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={removeSelectedImage}
+                    className="absolute top-1 right-1 p-1 h-auto text-muted-foreground hover:bg-muted-foreground/20"
+                  >
+                    X
+                  </Button>
+                </div>
+              )}
               <div className="flex space-x-2">
                 <Input
                   value={currentMessage}
                   onChange={(e) => setCurrentMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
+                  onPaste={handlePaste} // Add paste event listener
                   placeholder="Ask Dan Go AI anything about fitness, nutrition, or motivation..."
                   className="bg-input placeholder:text-muted-foreground text-foreground"
                   disabled={isLoading}
                 />
                 <Button
+                  asChild
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
+                >
+                  <label htmlFor="image-upload" className="cursor-pointer">
+                    <Image className="h-5 w-5" />
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/jpeg, image/png, image/gif"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                </Button>
+                <Button
                   onClick={sendMessage}
-                  disabled={isLoading || !currentMessage.trim()}
+                  disabled={isLoading || (!currentMessage.trim() && !selectedImage)}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   Send
@@ -259,3 +413,4 @@ const AICoach = () => {
 };
 
 export default AICoach;
+
