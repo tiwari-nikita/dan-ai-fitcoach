@@ -34,7 +34,7 @@ ${foodEntries ? `Recent food entries: ${JSON.stringify(foodEntries.slice(0, 5))}
 ${weightEntries ? `Recent weight entries: ${JSON.stringify(weightEntries.slice(0, 5))}` : 'No weight data available'}
 
 Respond exactly as Dan Go would, using their actual data to provide personalized coaching advice.`;
-
+console.log(message);
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {

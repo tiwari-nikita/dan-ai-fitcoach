@@ -7,6 +7,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dumbbell, Activity, Heart, Weight, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true, // This is generally not recommended for production as it exposes the API key. For this exercise, it's used as per instructions.
+});
 
 interface ChatMessage {
   id: string;
@@ -37,39 +43,23 @@ const AICoach = () => {
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null); // New state for selected image
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Simulated AI responses based on Dan Go's coaching style
-  const generateAIResponse = (userMessage: string): string => {
-    const message = userMessage.toLowerCase();
-    
-    if (message.includes('motivation') || message.includes('give up')) {
-      return "Listen, I get it. The path isn't always easy, but that's exactly why most people quit and you WON'T. Every champion was once a beginner who refused to give up. Your future self is counting on the decisions you make TODAY. What's one small action you can take right now?";
+  // Connects to OpenAI API to generate AI responses
+  const generateAIResponse = async (userMessage: string): Promise<string> => {
+    try {
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: 'user', content: userMessage }],
+        model: 'gpt-3.5-turbo', // Or 'gpt-4o' for more advanced capabilities
+      });
+      return completion.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
+    } catch (error) {
+      console.error('Error communicating with OpenAI:', error);
+      toast({
+        title: "AI Response Failed",
+        description: "Could not connect to the AI. Please check your API key and network connection.",
+        variant: "destructive",
+      });
+      return "I'm currently unable to generate a response. Please try again later.";
     }
-    
-    if (message.includes('diet') || message.includes('nutrition') || message.includes('eat')) {
-      return "Nutrition is 70% of your results. Here's the truth: you can't out-train a bad diet. Focus on whole foods, lean proteins, and proper portion control. Stop making it complicated - eat like an adult, not a child. What's your biggest nutrition challenge right now?";
-    }
-    
-    if (message.includes('workout') || message.includes('exercise') || message.includes('training')) {
-      return "Training should be challenging but smart. Progressive overload is king - you need to consistently push your body beyond its comfort zone. But remember, recovery is where the magic happens. Are you training with intensity AND allowing proper recovery?";
-    }
-    
-    if (message.includes('weight loss') || message.includes('lose weight')) {
-      return "Weight loss is simple: create a caloric deficit consistently over time. But here's what most people miss - it's not just about the scale. Focus on losing FAT, not just weight. Strength training + proper nutrition + consistency = body transformation. How's your consistency been lately?";
-    }
-    
-    if (message.includes('muscle') || message.includes('gain')) {
-      return "Building muscle requires three things: progressive resistance training, adequate protein (0.8-1g per lb of body weight), and patience. Your muscles grow during rest, not during workouts. Are you giving your body the building blocks it needs?";
-    }
-    
-    // Default responses in Dan Go's style
-    const defaultResponses = [
-      "That's a great question! Remember, transformation isn't just physical - it's mental. Every small step you take is building the person you're becoming. What specific area would you like to focus on?",
-      "I love that you're thinking about this! Success in fitness, like in life, comes down to consistency and making better choices daily. What's your biggest challenge right now?",
-      "Here's the thing - there's no magic pill or shortcut. But there IS a proven path. Focus on the fundamentals: proper nutrition, consistent training, adequate sleep, and the right mindset. Which of these needs your attention most?",
-      "You're asking the right questions! Remember, the goal isn't perfection - it's progress. Every day you show up, you're already winning. What's one thing you can improve today?"
-    ];
-    
-    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
   };
 
   const sendMessage = async () => {
@@ -152,16 +142,22 @@ const AICoach = () => {
       }
     } else {
       // Existing logic for text messages
-      setTimeout(() => {
+      // Existing logic for text messages
+      try {
+        const aiResponseContent = await generateAIResponse(currentMessage); // AI response based on text message
         const aiResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),
           type: 'ai',
-          message: generateAIResponse(currentMessage), // AI response based on text message
+          message: aiResponseContent,
           timestamp: new Date()
         };
         setMessages(prev => [...prev, aiResponse]);
+      } catch (error) {
+        console.error("Failed to get AI response:", error);
+        // Error handling is already inside generateAIResponse, but this catch ensures isLoading is set to false
+      } finally {
         setIsLoading(false);
-      }, 1500);
+      }
     }
   };
 
