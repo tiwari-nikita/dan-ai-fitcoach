@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +27,7 @@ const AICoach = () => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasUserSentMessage, setHasUserSentMessage] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Simulated AI responses based on Dan Go's coaching style
   const generateAIResponse = (userMessage: string): string => {
@@ -93,6 +93,12 @@ const AICoach = () => {
     }, 1500);
   };
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -135,7 +141,7 @@ const AICoach = () => {
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
-                      className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                      className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
                     >
                       <div
                         className={`max-w-[80%] p-4 rounded-lg ${
@@ -152,7 +158,7 @@ const AICoach = () => {
                     </div>
                   ))}
                   {isLoading && (
-                    <div className="flex justify-start">
+                    <div className="flex justify-start mb-4">
                       <div className="bg-muted text-muted-foreground p-4 rounded-lg">
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
@@ -162,6 +168,7 @@ const AICoach = () => {
                       </div>
                     </div>
                   )}
+                  <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
               {!hasUserSentMessage && (
