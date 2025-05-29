@@ -27,6 +27,7 @@ const AICoach = () => {
   ]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [hasUserSentMessage, setHasUserSentMessage] = useState(false);
 
   // Simulated AI responses based on Dan Go's coaching style
   const generateAIResponse = (userMessage: string): string => {
@@ -76,6 +77,7 @@ const AICoach = () => {
     setMessages(prev => [...prev, userMessage]);
     setCurrentMessage('');
     setIsLoading(true);
+    setHasUserSentMessage(true);
 
     // Simulate AI processing time
     setTimeout(() => {
@@ -162,32 +164,43 @@ const AICoach = () => {
                   )}
                 </div>
               </ScrollArea>
-              <div className="mb-4 flex flex-wrap gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
-                  onClick={() => setCurrentMessage("What's the best way to track my progress?")}
-                >
-                  What's the best way to track my progress?
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
-                  onClick={() => setCurrentMessage("Can you suggest a healthy meal plan for weight loss?")}
-                >
-                  Can you suggest a healthy meal plan for weight loss?
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
-                  onClick={() => setCurrentMessage("How do I overcome a plateau in my fitness journey?")}
-                >
-                  How do I overcome a plateau in my fitness journey?
-                </Button>
-              </div>
+              {!hasUserSentMessage && (
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                    onClick={() => {
+                      setCurrentMessage("What's the best way to track my progress?");
+                      sendMessage();
+                    }}
+                  >
+                    What's the best way to track my progress?
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                    onClick={() => {
+                      setCurrentMessage("Can you suggest a healthy meal plan for weight loss?");
+                      sendMessage();
+                    }}
+                  >
+                    Can you suggest a healthy meal plan for weight loss?
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                    onClick={() => {
+                      setCurrentMessage("How do I overcome a plateau in my fitness journey?");
+                      sendMessage();
+                    }}
+                  >
+                    How do I overcome a plateau in my fitness journey?
+                  </Button>
+                </div>
+              )}
               <div className="flex space-x-2">
                 <Input
                   value={currentMessage}
