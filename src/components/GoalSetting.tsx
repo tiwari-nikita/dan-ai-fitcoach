@@ -68,7 +68,7 @@ const GoalSetting = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <Card className="fitness-gradient text-white border-0 shadow-xl">
+      <Card className="fitness-gradient text-white border-0 shadow-xl transition-all duration-300 ease-in-out">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-2xl">
             <Dumbbell className="h-6 w-6 mr-2" />
@@ -82,7 +82,7 @@ const GoalSetting = () => {
         {goalCategories.map((category) => {
           const Icon = category.icon;
           return (
-            <Card key={category.title} className="fitness-card-gradient border-0 shadow-lg">
+            <Card key={category.title} className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Icon className="h-5 w-5 mr-2 text-fitness-primary" />
@@ -94,7 +94,7 @@ const GoalSetting = () => {
                   <div
                     key={goal.id}
                     onClick={() => toggleGoal(goal.id)}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`p-3 sm:p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ease-in-out ${
                       selectedGoals.includes(goal.id)
                         ? 'border-fitness-primary bg-fitness-primary/10 shadow-md'
                         : 'border-gray-200 bg-white/50 hover:border-fitness-primary/50'
@@ -102,11 +102,11 @@ const GoalSetting = () => {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-lg">{goal.title}</h4>
-                        <p className="text-sm text-muted-foreground mt-1">{goal.description}</p>
+                        <h4 className="font-semibold text-base sm:text-lg">{goal.title}</h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-1">{goal.description}</p>
                       </div>
                       {selectedGoals.includes(goal.id) && (
-                        <Badge className="bg-fitness-primary text-white">Selected</Badge>
+                        <Badge className="bg-fitness-primary text-white transition-all duration-200">Selected</Badge>
                       )}
                     </div>
                   </div>
@@ -118,7 +118,7 @@ const GoalSetting = () => {
       </div>
 
       {selectedGoals.length > 0 && (
-        <Card className="fitness-card-gradient border-0 shadow-lg">
+        <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Calendar className="h-5 w-5 mr-2 text-fitness-secondary" />
@@ -132,7 +132,7 @@ const GoalSetting = () => {
                   .flatMap(cat => cat.goals)
                   .find(g => g.id === goalId);
                 return (
-                  <Badge key={goalId} variant="secondary" className="bg-fitness-primary/20 text-fitness-primary">
+                  <Badge key={goalId} variant="secondary" className="bg-fitness-primary/20 text-fitness-primary transition-all duration-200">
                     {goal?.title}
                   </Badge>
                 );
@@ -141,7 +141,7 @@ const GoalSetting = () => {
             <div className="flex justify-center">
               <Button 
                 onClick={saveGoals}
-                className="fitness-gradient text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-shadow"
+                className="fitness-gradient text-white px-6 py-2 sm:px-8 sm:py-3 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-200"
                 size="lg"
               >
                 Create My Personalized Plan

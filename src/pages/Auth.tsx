@@ -126,7 +126,7 @@ const Auth = () => {
  
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-zinc-900 text-white border-zinc-700 shadow-lg rounded-xl">
+        <Card className="w-full max-w-md bg-zinc-900 text-white border-zinc-700 shadow-lg rounded-xl transition-all duration-300 ease-in-out">
           <CardHeader className="text-center pt-8 pb-4">
             <div className="flex justify-center mb-4">
               <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-3 rounded-full shadow-md">
@@ -157,7 +157,7 @@ const Auth = () => {
                       onChange={(e) => setSignInData({...signInData, email: e.target.value})}
                       placeholder="your@email.com"
                       required
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -172,7 +172,7 @@ const Auth = () => {
                       onChange={(e) => setSignInData({...signInData, password: e.target.value})}
                       placeholder="Enter your password"
                       required
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500 transition-all duration-200"
                     />
                   </div>
                   <Button
@@ -216,7 +216,7 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, name: e.target.value})}
                       placeholder="Your full name"
                       required
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -231,7 +231,7 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, email: e.target.value})}
                       placeholder="your@email.com"
                       required
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -246,7 +246,7 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, password: e.target.value})}
                       placeholder="Create a password"
                       required
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -258,7 +258,7 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, confirmPassword: e.target.value})}
                       placeholder="Confirm your password"
                       required
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500 transition-all duration-200"
                     />
                   </div>
                   <Button

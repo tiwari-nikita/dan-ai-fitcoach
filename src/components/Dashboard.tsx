@@ -34,7 +34,7 @@ const Dashboard = () => {
           return (
             <Card
               key={stat.label}
-              className="bg-card border-border shadow-lg hover:shadow-xl transition-shadow rounded-lg"
+              className="bg-card border-border shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg"
               onClick={() => {
                 if (stat.label === 'Workouts') {
                   window.location.href = '/workouts';
@@ -48,8 +48,8 @@ const Dashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground font-semibold">{stat.label}</p>
-                    <p className="text-4xl font-extrabold text-foreground mt-1">{stat.value}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground font-semibold">{stat.label}</p>
+                    <p className="text-3xl sm:text-4xl font-extrabold text-foreground mt-1">{stat.value}</p>
                   </div>
                   <Icon className={`h-8 w-8 ${stat.color}`} />
                 </div>
@@ -60,7 +60,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card border-border shadow-lg rounded-lg">
+        <Card className="bg-card border-border shadow-lg rounded-lg transition-all duration-300 ease-in-out">
           <CardHeader>
             <CardTitle className="flex items-center text-foreground">
               <Dumbbell className="h-5 w-5 mr-2 text-foreground" />
@@ -92,7 +92,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border shadow-lg rounded-lg">
+        <Card className="bg-card border-border shadow-lg rounded-lg transition-all duration-300 ease-in-out">
           <CardHeader>
             <CardTitle className="flex items-center text-foreground">
               <Heart className="h-5 w-5 mr-2 text-foreground" />
@@ -100,13 +100,13 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="p-3 bg-secondary rounded-lg border border-border">
-              <Badge variant="default" className="mb-2 bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground hover:opacity-90">Today's Focus</Badge>
-              <p className="text-muted-foreground text-sm">Great job on yesterday's workout! Focus on upper body strength today and increase your protein intake.</p>
+            <div className="p-3 bg-secondary rounded-lg border border-border transition-all duration-300 ease-in-out hover:bg-secondary/70">
+              <Badge variant="default" className="mb-2 bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground hover:opacity-90 transition-all duration-200">Today's Focus</Badge>
+              <p className="text-muted-foreground text-xs sm:text-sm">Great job on yesterday's workout! Focus on upper body strength today and increase your protein intake.</p>
             </div>
-            <div className="p-3 bg-secondary rounded-lg border border-border">
-              <Badge variant="outline" className="mb-2 border-foreground text-foreground hover:bg-secondary">Weekly Tip</Badge>
-              <p className="text-muted-foreground text-sm">Your consistency is improving! Consider adding 10 minutes of mobility work to enhance recovery.</p>
+            <div className="p-3 bg-secondary rounded-lg border border-border transition-all duration-300 ease-in-out hover:bg-secondary/70">
+              <Badge variant="outline" className="mb-2 border-foreground text-foreground hover:bg-secondary transition-all duration-200">Weekly Tip</Badge>
+              <p className="text-muted-foreground text-xs sm:text-sm">Your consistency is improving! Consider adding 10 minutes of mobility work to enhance recovery.</p>
             </div>
           </CardContent>
         </Card>

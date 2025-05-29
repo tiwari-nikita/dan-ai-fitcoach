@@ -76,14 +76,14 @@ const Index = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-zinc-800 border-zinc-700 text-white rounded-lg shadow-lg">
-              <DropdownMenuItem onClick={handleSignOut} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center">
+              <DropdownMenuItem onClick={handleSignOut} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center transition-colors duration-200">
                 <LogOut className="h-4 w-4 mr-2 text-zinc-400" />
                 Sign Out
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/profile')} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center">
+              <DropdownMenuItem onClick={() => navigate('/profile')} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center transition-colors duration-200">
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/notifications')} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center">
+              <DropdownMenuItem onClick={() => navigate('/notifications')} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center transition-colors duration-200">
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuContent>

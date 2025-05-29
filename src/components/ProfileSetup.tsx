@@ -48,7 +48,7 @@ const ProfileSetup = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <Card className="fitness-gradient text-white border-0 shadow-xl">
+      <Card className="fitness-gradient text-white border-0 shadow-xl transition-all duration-300 ease-in-out">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-2xl">
             <User className="h-6 w-6 mr-2" />
@@ -59,7 +59,7 @@ const ProfileSetup = () => {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="fitness-card-gradient border-0 shadow-lg">
+        <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Heart className="h-5 w-5 mr-2 text-red-500" />
@@ -74,7 +74,7 @@ const ProfileSetup = () => {
                 value={profile.name}
                 onChange={(e) => setProfile({...profile, name: e.target.value})}
                 placeholder="Enter your full name"
-                className="bg-white/70"
+                className="bg-white/70 transition-all duration-200"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -86,7 +86,7 @@ const ProfileSetup = () => {
                   value={profile.age}
                   onChange={(e) => setProfile({...profile, age: e.target.value})}
                   placeholder="Age"
-                  className="bg-white/70"
+                  className="bg-white/70 transition-all duration-200"
                 />
               </div>
               <div>
@@ -97,7 +97,7 @@ const ProfileSetup = () => {
                   value={profile.weight}
                   onChange={(e) => setProfile({...profile, weight: e.target.value})}
                   placeholder="Weight"
-                  className="bg-white/70"
+                  className="bg-white/70 transition-all duration-200"
                 />
               </div>
             </div>
@@ -108,13 +108,13 @@ const ProfileSetup = () => {
                 value={profile.height}
                 onChange={(e) => setProfile({...profile, height: e.target.value})}
                 placeholder="e.g., 5'10&quot; or 178cm"
-                className="bg-white/70"
+                className="bg-white/70 transition-all duration-200"
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="fitness-card-gradient border-0 shadow-lg">
+        <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Activity className="h-5 w-5 mr-2 text-fitness-secondary" />
@@ -125,12 +125,12 @@ const ProfileSetup = () => {
             <div>
               <Label>Current Activity Level</Label>
               <Select value={profile.activityLevel} onValueChange={(value) => setProfile({...profile, activityLevel: value})}>
-                <SelectTrigger className="bg-white/70">
+                <SelectTrigger className="bg-white/70 transition-all duration-200">
                   <SelectValue placeholder="Select your activity level" />
                 </SelectTrigger>
                 <SelectContent>
                   {activityLevels.map((level) => (
-                    <SelectItem key={level.value} value={level.value}>
+                    <SelectItem key={level.value} value={level.value} className="transition-colors duration-200">
                       {level.label}
                     </SelectItem>
                   ))}
@@ -140,12 +140,12 @@ const ProfileSetup = () => {
             <div>
               <Label>Exercise Experience</Label>
               <Select value={profile.experience} onValueChange={(value) => setProfile({...profile, experience: value})}>
-                <SelectTrigger className="bg-white/70">
+                <SelectTrigger className="bg-white/70 transition-all duration-200">
                   <SelectValue placeholder="Select your experience level" />
                 </SelectTrigger>
                 <SelectContent>
                   {experienceLevels.map((level) => (
-                    <SelectItem key={level.value} value={level.value}>
+                    <SelectItem key={level.value} value={level.value} className="transition-colors duration-200">
                       {level.label}
                     </SelectItem>
                   ))}
@@ -156,7 +156,7 @@ const ProfileSetup = () => {
         </Card>
       </div>
 
-      <Card className="fitness-card-gradient border-0 shadow-lg">
+      <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
         <CardHeader>
           <CardTitle className="flex items-center">
             <Dumbbell className="h-5 w-5 mr-2 text-fitness-primary" />
@@ -171,7 +171,7 @@ const ProfileSetup = () => {
               value={profile.injuries}
               onChange={(e) => setProfile({...profile, injuries: e.target.value})}
               placeholder="Describe any injuries, surgeries, or physical limitations we should know about..."
-              className="bg-white/70 min-h-[100px]"
+              className="bg-white/70 min-h-[100px] transition-all duration-200"
             />
           </div>
           <div>
@@ -181,7 +181,7 @@ const ProfileSetup = () => {
               value={profile.preferences}
               onChange={(e) => setProfile({...profile, preferences: e.target.value})}
               placeholder="What types of workouts do you enjoy? What are your main fitness goals? Any equipment preferences?"
-              className="bg-white/70 min-h-[100px]"
+              className="bg-white/70 min-h-[100px] transition-all duration-200"
             />
           </div>
         </CardContent>
@@ -190,7 +190,7 @@ const ProfileSetup = () => {
       <div className="flex justify-center">
         <Button 
           onClick={handleSave}
-          className="fitness-gradient text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-shadow"
+          className="fitness-gradient text-white px-6 py-2 sm:px-8 sm:py-3 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-200"
           size="lg"
         >
           Save Profile &amp; Continue

@@ -63,7 +63,7 @@ const WeightTracking = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       
-      <Card className="fitness-gradient text-white border-0 shadow-xl">
+      <Card className="fitness-gradient text-white border-0 shadow-xl transition-all duration-300 ease-in-out">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-2xl">
             <Weight className="h-6 w-6 mr-2" />
@@ -75,7 +75,7 @@ const WeightTracking = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Activity className="h-5 w-5 mr-2 text-fitness-primary" />
@@ -116,7 +116,7 @@ const WeightTracking = () => {
             </CardContent>
           </Card>
 
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-fitness-secondary" />
@@ -130,22 +130,22 @@ const WeightTracking = () => {
                 </p>
               ) : (
                 weightEntries.slice(0, 5).map((entry) => (
-                  <div key={entry.id} className="p-4 bg-white/50 rounded-lg">
+                  <div key={entry.id} className="p-3 sm:p-4 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
                     <div className="flex items-center justify-between mb-2">
                       <div>
-                        <h4 className="font-semibold">{entry.weight} lbs</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(entry.date).toLocaleDateString('en-US', { 
-                            weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
+                        <h4 className="font-semibold text-base sm:text-lg">{entry.weight} lbs</h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground">
+                          {new Date(entry.date).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
                           })}
                         </p>
                       </div>
                     </div>
                     {entry.notes && (
-                      <p className="text-sm text-muted-foreground italic">"{entry.notes}"</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground italic">"{entry.notes}"</p>
                     )}
                   </div>
                 ))
@@ -155,7 +155,7 @@ const WeightTracking = () => {
         </div>
 
         <div className="space-y-6">
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Plus className="h-5 w-5 mr-2 text-fitness-primary" />
@@ -172,7 +172,7 @@ const WeightTracking = () => {
                   value={newEntry.weight}
                   onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})}
                   placeholder="175.0"
-                  className="bg-white/70"
+                  className="bg-white/70 transition-all duration-200"
                 />
               </div>
               <div>
@@ -182,19 +182,19 @@ const WeightTracking = () => {
                   value={newEntry.notes}
                   onChange={(e) => setNewEntry({...newEntry, notes: e.target.value})}
                   placeholder="How are you feeling today?"
-                  className="bg-white/70"
+                  className="bg-white/70 transition-all duration-200"
                 />
               </div>
               <Button 
                 onClick={handleAddWeightEntry}
-                className="w-full fitness-gradient text-white"
+                className="w-full fitness-gradient text-white transition-colors duration-200 hover:opacity-90"
               >
                 Log Weight
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Dumbbell className="h-5 w-5 mr-2 text-fitness-secondary" />
@@ -204,26 +204,26 @@ const WeightTracking = () => {
             <CardContent className="space-y-3">
               {weightEntries.length > 0 ? (
                 <>
-                  <div className="text-center p-4 bg-white/50 rounded-lg">
-                    <div className="text-3xl font-bold text-fitness-primary">
+                  <div className="text-center p-3 sm:p-4 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
+                    <div className="text-2xl sm:text-3xl font-bold text-fitness-primary">
                       {weightChange > 0 ? '+' : ''}{weightChange.toFixed(1)} lbs
                     </div>
-                    <p className="text-sm text-muted-foreground">Total Change</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">Total Change</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="text-center p-3 bg-white/50 rounded-lg">
-                      <div className="text-xl font-bold">{startWeight}</div>
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                    <div className="text-center p-3 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
+                      <div className="text-lg sm:text-xl font-bold">{startWeight}</div>
                       <p className="text-xs text-muted-foreground">Starting</p>
                     </div>
-                    <div className="text-center p-3 bg-white/50 rounded-lg">
-                      <div className="text-xl font-bold">{currentWeight}</div>
+                    <div className="text-center p-3 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
+                      <div className="text-lg sm:text-xl font-bold">{currentWeight}</div>
                       <p className="text-xs text-muted-foreground">Current</p>
                     </div>
                   </div>
-                  <div className="p-3 bg-fitness-primary/10 rounded-lg">
-                    <Badge variant="secondary" className="mb-2">AI Insight</Badge>
-                    <p className="text-sm">
-                      {weightChange < 0 
+                  <div className="p-3 bg-fitness-primary/10 rounded-lg transition-all duration-200 hover:bg-fitness-primary/20">
+                    <Badge variant="secondary" className="mb-2 transition-all duration-200">AI Insight</Badge>
+                    <p className="text-xs sm:text-sm">
+                      {weightChange < 0
                         ? "Excellent progress! Your consistent effort is paying off."
                         : weightChange > 0
                         ? "You're building muscle mass! Consider tracking body fat % for better insights."
@@ -232,8 +232,8 @@ const WeightTracking = () => {
                   </div>
                 </>
               ) : (
-                <div className="text-center p-4 bg-white/50 rounded-lg">
-                  <p className="text-muted-foreground">Start logging your weight to see progress insights!</p>
+                <div className="text-center p-3 sm:p-4 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
+                  <p className="text-muted-foreground text-sm sm:text-base">Start logging your weight to see progress insights!</p>
                 </div>
               )}
             </CardContent>

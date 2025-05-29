@@ -95,7 +95,7 @@ const FoodLog = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <Card className="fitness-gradient text-white border-0 shadow-xl">
+      <Card className="fitness-gradient text-white border-0 shadow-xl transition-all duration-300 ease-in-out">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-2xl">
             <UtensilsCrossed className="h-6 w-6 mr-2" />
@@ -107,7 +107,7 @@ const FoodLog = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Plus className="h-5 w-5 mr-2 text-fitness-primary" />
@@ -123,7 +123,7 @@ const FoodLog = () => {
                     value={newFood.food_description}
                     onChange={(e) => setNewFood({...newFood, food_description: e.target.value})}
                     placeholder="e.g., Grilled Chicken Breast"
-                    className="bg-white/70"
+                    className="bg-white/70 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -132,7 +132,7 @@ const FoodLog = () => {
                     id="meal"
                     value={newFood.meal_type}
                     onChange={(e) => setNewFood({...newFood, meal_type: e.target.value})}
-                    className="w-full px-3 py-2 bg-white/70 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 bg-white/70 border border-gray-300 rounded-md transition-all duration-200"
                   >
                     <option value="breakfast">Breakfast</option>
                     <option value="lunch">Lunch</option>
@@ -150,7 +150,7 @@ const FoodLog = () => {
                     value={newFood.calories}
                     onChange={(e) => setNewFood({...newFood, calories: e.target.value})}
                     placeholder="300"
-                    className="bg-white/70"
+                    className="bg-white/70 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -161,7 +161,7 @@ const FoodLog = () => {
                     value={newFood.protein_g}
                     onChange={(e) => setNewFood({...newFood, protein_g: e.target.value})}
                     placeholder="25"
-                    className="bg-white/70"
+                    className="bg-white/70 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -172,7 +172,7 @@ const FoodLog = () => {
                     value={newFood.carbs_g}
                     onChange={(e) => setNewFood({...newFood, carbs_g: e.target.value})}
                     placeholder="30"
-                    className="bg-white/70"
+                    className="bg-white/70 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -183,20 +183,20 @@ const FoodLog = () => {
                     value={newFood.fats_g}
                     onChange={(e) => setNewFood({...newFood, fats_g: e.target.value})}
                     placeholder="10"
-                    className="bg-white/70"
+                    className="bg-white/70 transition-all duration-200"
                   />
                 </div>
               </div>
               <Button 
                 onClick={handleAddFood}
-                className="w-full fitness-gradient text-white"
+                className="w-full fitness-gradient text-white transition-colors duration-200 hover:opacity-90"
               >
                 Add Food Entry
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-fitness-secondary" />
@@ -210,22 +210,22 @@ const FoodLog = () => {
                 </p>
               ) : (
                 todaysEntries.map((food) => (
-                  <div key={food.id} className="p-4 bg-white/50 rounded-lg">
+                  <div key={food.id} className="p-4 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
-                        <span className="text-2xl mr-2">{getMealIcon(food.meal_type)}</span>
+                        <span className="text-xl sm:text-2xl mr-2">{getMealIcon(food.meal_type)}</span>
                         <div>
-                          <h4 className="font-semibold">{food.food_description}</h4>
-                          <p className="text-sm text-muted-foreground">
+                          <h4 className="font-semibold text-sm sm:text-base">{food.food_description}</h4>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             {food.meal_type} • {new Date(food.logged_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
                       </div>
-                      <Badge className="bg-fitness-primary/20 text-fitness-primary">
+                      <Badge className="bg-fitness-primary/20 text-fitness-primary text-xs sm:text-sm">
                         {food.calories || 0} cal
                       </Badge>
                     </div>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
                       <div>Protein: {food.protein_g || 0}g</div>
                       <div>Carbs: {food.carbs_g || 0}g</div>
                       <div>Fat: {food.fats_g || 0}g</div>
@@ -238,7 +238,7 @@ const FoodLog = () => {
         </div>
 
         <div className="space-y-6">
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Activity className="h-5 w-5 mr-2 text-fitness-primary" />
@@ -277,7 +277,7 @@ const FoodLog = () => {
             </CardContent>
           </Card>
 
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Dumbbell className="h-5 w-5 mr-2 text-fitness-secondary" />
@@ -285,13 +285,13 @@ const FoodLog = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="p-3 bg-white/50 rounded-lg">
-                <Badge variant="secondary" className="mb-2">Protein Focus</Badge>
-                <p className="text-sm">Great protein intake! You're on track to support muscle recovery and growth.</p>
+              <div className="p-3 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
+                <Badge variant="secondary" className="mb-2 transition-all duration-200">Protein Focus</Badge>
+                <p className="text-xs sm:text-sm">Great protein intake! You're on track to support muscle recovery and growth.</p>
               </div>
-              <div className="p-3 bg-white/50 rounded-lg">
-                <Badge variant="outline" className="mb-2">Suggestion</Badge>
-                <p className="text-sm">Consider adding more complex carbs for sustained energy during workouts.</p>
+              <div className="p-3 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
+                <Badge variant="outline" className="mb-2 transition-all duration-200">Suggestion</Badge>
+                <p className="text-xs sm:text-sm">Consider adding more complex carbs for sustained energy during workouts.</p>
               </div>
             </CardContent>
           </Card>
