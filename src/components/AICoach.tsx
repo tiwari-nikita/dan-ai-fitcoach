@@ -108,22 +108,22 @@ const AICoach = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <Card className="fitness-gradient text-white border-0 shadow-xl">
+      <Card className="bg-card text-card-foreground border-border shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-2xl">
-            <Dumbbell className="h-6 w-6 mr-2" />
+          <CardTitle className="flex items-center justify-center text-2xl text-foreground">
+            <Dumbbell className="h-6 w-6 mr-2 text-primary" />
             Chat with Dan Go AI Coach
           </CardTitle>
-          <p className="text-white/90">Get personalized fitness advice and motivation 24/7</p>
+          <p className="text-muted-foreground">Get personalized fitness advice and motivation 24/7</p>
         </CardHeader>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3">
-          <Card className="fitness-card-gradient border-0 shadow-lg h-[600px] flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <Card className="bg-card text-card-foreground border-border shadow-lg h-[600px] flex flex-col">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Activity className="h-5 w-5 mr-2 text-fitness-primary" />
+              <CardTitle className="flex items-center text-foreground">
+                <Activity className="h-5 w-5 mr-2 text-primary" />
                 Conversation
               </CardTitle>
             </CardHeader>
@@ -138,12 +138,12 @@ const AICoach = () => {
                       <div
                         className={`max-w-[80%] p-4 rounded-lg ${
                           msg.type === 'user'
-                            ? 'bg-fitness-primary text-white'
-                            : 'bg-white/70 text-gray-800'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground'
                         }`}
                       >
-                        <p className="text-sm leading-relaxed">{msg.message}</p>
-                        <p className="text-xs mt-2 opacity-70">
+                        <p className="text-sm leading-relaxed break-words">{msg.message}</p>
+                        <p className="text-xs mt-2 text-muted-foreground">
                           {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
@@ -151,30 +151,56 @@ const AICoach = () => {
                   ))}
                   {isLoading && (
                     <div className="flex justify-start">
-                      <div className="bg-white/70 text-gray-800 p-4 rounded-lg">
+                      <div className="bg-muted text-muted-foreground p-4 rounded-lg">
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-fitness-primary rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-fitness-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-fitness-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
               </ScrollArea>
+              <div className="mb-4 flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                  onClick={() => setCurrentMessage("What's the best way to track my progress?")}
+                >
+                  What's the best way to track my progress?
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                  onClick={() => setCurrentMessage("Can you suggest a healthy meal plan for weight loss?")}
+                >
+                  Can you suggest a healthy meal plan for weight loss?
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                  onClick={() => setCurrentMessage("How do I overcome a plateau in my fitness journey?")}
+                >
+                  How do I overcome a plateau in my fitness journey?
+                </Button>
+              </div>
               <div className="flex space-x-2">
                 <Input
                   value={currentMessage}
                   onChange={(e) => setCurrentMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Ask Dan Go AI anything about fitness, nutrition, or motivation..."
-                  className="bg-white/70"
+                  className="bg-input placeholder:text-muted-foreground text-foreground"
                   disabled={isLoading}
                 />
-                <Button 
+                <Button
                   onClick={sendMessage}
                   disabled={isLoading || !currentMessage.trim()}
-                  className="fitness-gradient text-white"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   Send
                 </Button>
@@ -183,48 +209,26 @@ const AICoach = () => {
           </Card>
         </div>
 
-        <div className="space-y-6">
-          <Card className="fitness-card-gradient border-0 shadow-lg">
+        <div>
+          <Card className="bg-card text-card-foreground border-border shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center text-sm">
-                <Heart className="h-4 w-4 mr-2 text-red-500" />
-                Quick Questions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {quickQuestions.map((question, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  className="w-full text-left justify-start h-auto p-3 text-xs"
-                  onClick={() => setCurrentMessage(question)}
-                >
-                  {question}
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="fitness-card-gradient border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center text-sm">
-                <Weight className="h-4 w-4 mr-2 text-fitness-secondary" />
+              <CardTitle className="flex items-center text-sm text-foreground">
+                <Weight className="h-4 w-4 mr-2 text-secondary" />
                 Dan Go's Philosophy
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              <div className="p-3 bg-white/50 rounded-lg">
+            <CardContent className="space-y-3 text-xs text-muted-foreground">
+              <div className="p-3 bg-muted rounded-lg">
                 <Badge variant="secondary" className="mb-2 text-xs">Mindset</Badge>
-                <p>Success is 80% mindset, 20% strategy. Master your thoughts.</p>
+                <p className="break-words">Success is 80% mindset, 20% strategy. Master your thoughts.</p>
               </div>
-              <div className="p-3 bg-white/50 rounded-lg">
-                <Badge variant="outline" className="mb-2 text-xs">Consistency</Badge>
-                <p>Small actions done consistently beat perfect plans done occasionally.</p>
+              <div className="p-3 bg-muted rounded-lg">
+                <Badge variant="secondary" className="mb-2 text-xs text-secondary-foreground">Consistency</Badge>
+                <p className="break-words">Small actions done consistently beat perfect plans done occasionally.</p>
               </div>
-              <div className="p-3 bg-white/50 rounded-lg">
+              <div className="p-3 bg-muted rounded-lg">
                 <Badge variant="secondary" className="mb-2 text-xs">Transformation</Badge>
-                <p>You're not just changing your body, you're becoming a new person.</p>
+                <p className="break-words">You're not just changing your body, you're becoming a new person.</p>
               </div>
             </CardContent>
           </Card>

@@ -21,7 +21,7 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
   return (
     <Card className="bg-card border-border shadow-xl rounded-xl transition-all duration-300 ease-in-out">
       <div className="flex justify-center p-2 sm:p-4">
-        <div className="flex space-x-1 sm:space-x-2 bg-secondary/50 backdrop-blur-sm rounded-full p-1 sm:p-2">
+        <div className="flex space-x-1 sm:space-x-2 bg-muted rounded-full p-1 sm:p-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -32,7 +32,7 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
                 onClick={() => onTabChange(item.id)}
                 className={`rounded-full px-3 py-1 sm:px-4 sm:py-2 transition-all duration-300 ease-in-out ${
                   activeTab === item.id
-                    ? 'bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground shadow-lg hover:opacity-90'
+                    ? 'bg-primary text-primary-foreground shadow-lg hover:bg-primary/90'
                     : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                 }`}
               >
