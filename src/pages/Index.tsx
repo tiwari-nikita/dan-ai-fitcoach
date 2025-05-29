@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Dumbbell, LogOut } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -66,18 +67,28 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-fitness-light via-white to-fitness-light">
       <div className="container mx-auto px-4 py-6">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <Header />
-          </div>
-          <Button 
-            onClick={handleSignOut}
-            variant="outline" 
-            className="flex items-center"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
+        <div className="flex justify-between items-start mb-6">
+          <Header />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center">
+                Settings
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </DropdownMenuItem>
+              {/* Add other placeholder options here if needed */}
+              <DropdownMenuItem onClick={() => window.open('/profile', '_blank', 'noopener,noreferrer')}>
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.open('/notifications', '_blank', 'noopener,noreferrer')}>
+                Notifications
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
