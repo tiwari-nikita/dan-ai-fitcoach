@@ -7,11 +7,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dumbbell, Activity, Heart, Weight, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import OpenAI from 'openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { generateText } from 'ai';
 
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true, // This is generally not recommended for production as it exposes the API key. For this exercise, it's used as per instructions.
+const googleAI = createGoogleGenerativeAI({
+  apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
 });
 
 interface ChatMessage {
@@ -46,13 +46,13 @@ const AICoach = () => {
   // Connects to OpenAI API to generate AI responses
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      const completion = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: userMessage }],
-        model: 'gpt-3.5-turbo', // Or 'gpt-4o' for more advanced capabilities
+      const { text } = await generateText({
+        model: googleAI('gemini-2.5-flash-preview-05-20'), // Use gemini-pro or gemini-pro-vision for image capabilities
+        prompt: userMessage,
       });
-      return completion.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
+      return text || "I'm sorry, I couldn't generate a response.";
     } catch (error) {
-      console.error('Error communicating with OpenAI:', error);
+      console.error('Error communicating with Google AI:', error);
       toast({
         title: "AI Response Failed",
         description: "Could not connect to the AI. Please check your API key and network connection.",
