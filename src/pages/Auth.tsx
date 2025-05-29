@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -126,29 +125,29 @@ const Auth = () => {
     };
  
     return (
-      <div className="min-h-screen bg-gradient-to-br from-fitness-light via-white to-fitness-light flex items-center justify-center p-4">
-        <Card className="w-full max-w-md fitness-card-gradient border-0 shadow-xl">
-          <CardHeader className="text-center">
+      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-zinc-900 text-white border-zinc-700 shadow-lg rounded-xl">
+          <CardHeader className="text-center pt-8 pb-4">
             <div className="flex justify-center mb-4">
-              <div className="fitness-gradient p-3 rounded-full">
+              <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-3 rounded-full shadow-md">
                 <Dumbbell className="h-8 w-8 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl">Dan Go AI Coach</CardTitle>
-            <p className="text-muted-foreground">Your personal fitness transformation starts here</p>
+            <CardTitle className="text-3xl font-bold text-white">Dan Go AI Coach</CardTitle>
+            <p className="text-zinc-400 text-sm mt-1">Your personal fitness transformation starts here</p>
           </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          <CardContent className="px-6 pb-6">
+            <Tabs defaultValue="signin" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2 bg-zinc-800 rounded-lg p-1">
+                <TabsTrigger value="signin" className="data-[state=active]:bg-zinc-700 data-[state=active]:text-white rounded-md text-zinc-400 transition-colors duration-200">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-zinc-700 data-[state=active]:text-white rounded-md text-zinc-400 transition-colors duration-200">Sign Up</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
+              <TabsContent value="signin" className="mt-4">
+                <form onSubmit={handleSignIn} className="space-y-5">
                   <div>
-                    <Label htmlFor="signin-email" className="flex items-center">
-                      <Mail className="h-4 w-4 mr-2" />
+                    <Label htmlFor="signin-email" className="flex items-center text-zinc-300 text-sm mb-2">
+                      <Mail className="h-4 w-4 mr-2 text-zinc-500" />
                       Email
                     </Label>
                     <Input
@@ -158,12 +157,12 @@ const Auth = () => {
                       onChange={(e) => setSignInData({...signInData, email: e.target.value})}
                       placeholder="your@email.com"
                       required
-                      className="bg-white/70"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="signin-password" className="flex items-center">
-                      <Lock className="h-4 w-4 mr-2" />
+                    <Label htmlFor="signin-password" className="flex items-center text-zinc-300 text-sm mb-2">
+                      <Lock className="h-4 w-4 mr-2 text-zinc-500" />
                       Password
                     </Label>
                     <Input
@@ -173,41 +172,41 @@ const Auth = () => {
                       onChange={(e) => setSignInData({...signInData, password: e.target.value})}
                       placeholder="Enter your password"
                       required
-                      className="bg-white/70"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full fitness-gradient text-white"
+                    className="w-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-semibold py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-200"
                     disabled={loading}
                   >
                     {loading ? 'Signing In...' : 'Sign In'}
                   </Button>
                 </form>
-                <div className="relative my-6">
+                <div className="relative my-8">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
+                    <span className="w-full border-t border-zinc-700" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
+                    <span className="bg-zinc-900 px-2 text-zinc-500">
                       Or continue as
                     </span>
                   </div>
                 </div>
                 <Button
                   onClick={handleGuestSignIn}
-                  className="w-full bg-gray-200 text-gray-800 hover:bg-gray-300"
+                  className="w-full bg-zinc-700 text-zinc-200 hover:bg-zinc-600 transition-colors duration-200 font-semibold py-2 rounded-lg"
                   disabled={guestSignInLoading}
                 >
                   {guestSignInLoading ? 'Continuing as Guest...' : 'Continue as Guest'}
                 </Button>
               </TabsContent>
               
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
+              <TabsContent value="signup" className="mt-4">
+                <form onSubmit={handleSignUp} className="space-y-5">
                   <div>
-                    <Label htmlFor="signup-name" className="flex items-center">
-                      <User className="h-4 w-4 mr-2" />
+                    <Label htmlFor="signup-name" className="flex items-center text-zinc-300 text-sm mb-2">
+                      <User className="h-4 w-4 mr-2 text-zinc-500" />
                       Full Name
                     </Label>
                     <Input
@@ -217,12 +216,12 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, name: e.target.value})}
                       placeholder="Your full name"
                       required
-                      className="bg-white/70"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="signup-email" className="flex items-center">
-                      <Mail className="h-4 w-4 mr-2" />
+                    <Label htmlFor="signup-email" className="flex items-center text-zinc-300 text-sm mb-2">
+                      <Mail className="h-4 w-4 mr-2 text-zinc-500" />
                       Email
                     </Label>
                     <Input
@@ -232,12 +231,12 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, email: e.target.value})}
                       placeholder="your@email.com"
                       required
-                      className="bg-white/70"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="signup-password" className="flex items-center">
-                      <Lock className="h-4 w-4 mr-2" />
+                    <Label htmlFor="signup-password" className="flex items-center text-zinc-300 text-sm mb-2">
+                      <Lock className="h-4 w-4 mr-2 text-zinc-500" />
                       Password
                     </Label>
                     <Input
@@ -247,11 +246,11 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, password: e.target.value})}
                       placeholder="Create a password"
                       required
-                      className="bg-white/70"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+                    <Label htmlFor="signup-confirm-password" className="text-zinc-300 text-sm mb-2">Confirm Password</Label>
                     <Input
                       id="signup-confirm-password"
                       type="password"
@@ -259,12 +258,12 @@ const Auth = () => {
                       onChange={(e) => setSignUpData({...signUpData, confirmPassword: e.target.value})}
                       placeholder="Confirm your password"
                       required
-                      className="bg-white/70"
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 focus-visible:ring-purple-500"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full fitness-gradient text-white"
+                    className="w-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-semibold py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-200"
                     disabled={loading}
                   >
                     {loading ? 'Creating Account...' : 'Create Account'}

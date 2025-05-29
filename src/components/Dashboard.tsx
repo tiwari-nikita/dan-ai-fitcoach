@@ -20,10 +20,10 @@ const Dashboard = () => {
   };
 
   const stats = [
-    { label: 'Days Active', value: '0', icon: Calendar, color: 'text-fitness-primary' },
-    { label: 'Workouts', value: workouts.toString(), icon: Dumbbell, color: 'text-fitness-secondary' },
-    { label: 'Calories Burned', value: '0', icon: Activity, color: 'text-red-500' },
-    { label: 'Health Score', value: healthScore.toString(), icon: Heart, color: 'text-green-500' },
+    { label: 'Days Active', value: '0', icon: Calendar, color: 'text-foreground' },
+    { label: 'Workouts', value: workouts.toString(), icon: Dumbbell, color: 'text-foreground' },
+    { label: 'Calories Burned', value: '0', icon: Activity, color: 'text-foreground' },
+    { label: 'Health Score', value: healthScore.toString(), icon: Heart, color: 'text-foreground' },
   ];
 
   return (
@@ -34,7 +34,7 @@ const Dashboard = () => {
           return (
             <Card
               key={stat.label}
-              className="fitness-card-gradient border-0 shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-card border-border shadow-lg hover:shadow-xl transition-shadow rounded-lg"
               onClick={() => {
                 if (stat.label === 'Workouts') {
                   window.location.href = '/workouts';
@@ -48,8 +48,8 @@ const Dashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    <p className="text-3xl font-bold">{stat.value}</p>
+                    <p className="text-sm text-muted-foreground font-semibold">{stat.label}</p>
+                    <p className="text-4xl font-extrabold text-foreground mt-1">{stat.value}</p>
                   </div>
                   <Icon className={`h-8 w-8 ${stat.color}`} />
                 </div>
@@ -60,53 +60,53 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="fitness-card-gradient border-0 shadow-lg">
+        <Card className="bg-card border-border shadow-lg rounded-lg">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Dumbbell className="h-5 w-5 mr-2 text-fitness-primary" />
+            <CardTitle className="flex items-center text-foreground">
+              <Dumbbell className="h-5 w-5 mr-2 text-foreground" />
               Weekly Progress
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between mb-2 text-muted-foreground">
                 <span className="text-sm">Strength Training</span>
                 <span className="text-sm font-semibold">3/4 sessions</span>
               </div>
-              <Progress value={75} className="h-2" />
+              <Progress value={75} className="h-2 bg-secondary" indicatorClassName="bg-gradient-to-r from-gradient-start to-gradient-end" />
             </div>
             <div>
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between mb-2 text-muted-foreground">
                 <span className="text-sm">Cardio</span>
                 <span className="text-sm font-semibold">2/3 sessions</span>
               </div>
-              <Progress value={66} className="h-2" />
+              <Progress value={66} className="h-2 bg-secondary" indicatorClassName="bg-gradient-to-r from-gradient-start to-gradient-end" />
             </div>
             <div>
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between mb-2 text-muted-foreground">
                 <span className="text-sm">Nutrition Goals</span>
                 <span className="text-sm font-semibold">5/7 days</span>
               </div>
-              <Progress value={71} className="h-2" />
+              <Progress value={71} className="h-2 bg-secondary" indicatorClassName="bg-gradient-to-r from-gradient-start to-gradient-end" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="fitness-card-gradient border-0 shadow-lg">
+        <Card className="bg-card border-border shadow-lg rounded-lg">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Heart className="h-5 w-5 mr-2 text-red-500" />
+            <CardTitle className="flex items-center text-foreground">
+              <Heart className="h-5 w-5 mr-2 text-foreground" />
               AI Coach Insights
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="p-3 bg-white/50 rounded-lg">
-              <Badge variant="secondary" className="mb-2">Today's Focus</Badge>
-              <p className="text-sm">Great job on yesterday's workout! Focus on upper body strength today and increase your protein intake.</p>
+            <div className="p-3 bg-secondary rounded-lg border border-border">
+              <Badge variant="default" className="mb-2 bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground hover:opacity-90">Today's Focus</Badge>
+              <p className="text-muted-foreground text-sm">Great job on yesterday's workout! Focus on upper body strength today and increase your protein intake.</p>
             </div>
-            <div className="p-3 bg-white/50 rounded-lg">
-              <Badge variant="outline" className="mb-2">Weekly Tip</Badge>
-              <p className="text-sm">Your consistency is improving! Consider adding 10 minutes of mobility work to enhance recovery.</p>
+            <div className="p-3 bg-secondary rounded-lg border border-border">
+              <Badge variant="outline" className="mb-2 border-foreground text-foreground hover:bg-secondary">Weekly Tip</Badge>
+              <p className="text-muted-foreground text-sm">Your consistency is improving! Consider adding 10 minutes of mobility work to enhance recovery.</p>
             </div>
           </CardContent>
         </Card>

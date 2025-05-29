@@ -1,93 +1,97 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 220 10% 20%;
+    --background: 0 0% 5%; /* Deep black */
+    --foreground: 210 40% 98%; /* Light gray text for contrast */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 10% 20%;
+    --card: 0 0% 10%; /* Slightly lighter black for cards */
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 10% 20%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 145 60% 40%; /* Muted green */
+    --primary-foreground: 0 0% 100%; /* White text on primary */
 
-    --secondary: 210 20% 90%;
-    --secondary-foreground: 220 10% 20%;
+    --secondary: 0 0% 15%; /* Darker secondary for subtle elements */
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 20% 90%;
-    --muted-foreground: 210 10% 40%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 215 14.5% 64.5%;
 
-    --accent: 210 20% 90%;
-    --accent-foreground: 220 10% 20%;
+    --accent: 145 60% 40%; /* Muted green for accent */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 15% 85%;
-    --input: 210 15% 85%;
-    --ring: 210 40% 50%;
+    --border: 0 0% 20%; /* Dark border */
+    --input: 0 0% 15%; /* Dark input background */
+    --ring: 145 60% 40%; /* Muted green ring */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 210 20% 95%;
-    --sidebar-foreground: 220 10% 25%;
-    --sidebar-primary: 210 40% 45%;
+    --sidebar-background: 0 0% 8%; /* Even deeper black for sidebar */
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 145 60% 35%; /* Slightly darker muted green for sidebar primary */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 20% 88%;
-    --sidebar-accent-foreground: 220 10% 25%;
-    --sidebar-border: 210 15% 80%;
-    --sidebar-ring: 210 40% 50%;
+    --sidebar-accent: 0 0% 12%; /* Subtle accent for sidebar */
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 145 60% 35%;
 
     /* Custom fitness theme colors */
-    --fitness-primary: 15 80% 60%;
-    --fitness-secondary: 190 70% 50%;
-    --fitness-accent: 280 70% 70%;
-    --fitness-dark: 220 15% 30%;
-    --fitness-light: 210 20% 98%;
+    --fitness-primary: 145 60% 40%; /* Muted green */
+    --fitness-secondary: 145 40% 30%; /* Darker muted green */
+    --fitness-accent: 145 60% 50%; /* Lighter muted green accent */
+    --fitness-dark: 0 0% 5%;
+    --fitness-light: 145 100% 90%;
+    --fitness-black: 0 0% 5%; /* Deep black */
+    --fitness-highlight: 145 60% 40%; /* Muted green */
+
+    --gradient-start: 210 10% 15%; /* Dark blue-gray for gradient start */
+    --gradient-end: 240 10% 10%; /* Darker blue-gray for gradient end */
   }
 
   .dark {
-    --background: 220 15% 15%;
-    --foreground: 210 20% 90%;
+    --background: 0 0% 5%; /* Deep black */
+    --foreground: 210 40% 98%; /* Light gray text for contrast */
 
-    --card: 220 15% 15%;
-    --card-foreground: 210 20% 90%;
+    --card: 0 0% 10%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 15% 15%;
-    --popover-foreground: 210 20% 90%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 60%;
-    --primary-foreground: 220 15% 15%;
+    --primary: 145 60% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 10% 25%;
-    --secondary-foreground: 210 20% 90%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 10% 25%;
-    --muted-foreground: 210 10% 60%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 215 14.5% 64.5%;
 
-    --accent: 220 10% 25%;
-    --accent-foreground: 210 20% 90%;
+    --accent: 145 60% 40%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 60% 40%;
-    --destructive-foreground: 210 20% 90%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 10% 30%;
-    --input: 220 10% 30%;
-    --ring: 210 40% 60%;
-    --sidebar-background: 220 15% 20%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 210 40% 55%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 145 60% 40%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 145 60% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 10% 28%;
-    --sidebar-accent-foreground: 210 20% 85%;
-    --sidebar-border: 220 10% 28%;
-    --sidebar-ring: 210 40% 55%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 145 60% 35%;
   }
 }
 
@@ -97,18 +101,19 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 /* Custom fitness gradients */
 .fitness-gradient {
-  background: linear-gradient(135deg, hsl(var(--fitness-primary)) 0%, hsl(var(--fitness-secondary)) 100%);
+  background: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
 }
 
 .fitness-card-gradient {
-  background: linear-gradient(145deg, rgba(255,87,34,0.05) 0%, rgba(0,172,193,0.05) 100%);
+  background: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--card)) 100%); /* Solid card background for now, can be adjusted */
 }
 
 /* Animations */

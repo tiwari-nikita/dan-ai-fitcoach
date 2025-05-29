@@ -4,16 +4,16 @@ import { Dumbbell } from 'lucide-react';
 
 const Header = () => {
   return (
-    <Card className="fitness-gradient text-white border-0 shadow-xl mb-6">
-      <div className="p-6 flex flex-col items-center justify-center text-center min-h-[200px]">
-        <div className="flex items-center justify-center mb-4">
-          <Dumbbell className="h-12 w-12 mr-3 float-animation" />
+    <Card className="bg-card text-card-foreground border-border shadow-lg mb-6 rounded-lg">
+      <div className="p-8 flex flex-col items-center justify-center text-center min-h-[220px]">
+        <div className="flex items-center justify-center mb-5">
+          <Dumbbell className="h-14 w-14 mr-4 text-foreground float-animation" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold">Dan Go AI Coach</h1>
-            <p className="text-white/90 text-lg">Your Personal AI Fitness Transformation Partner</p>
+            <h1 className="text-5xl font-extrabold tracking-tight text-foreground">Dan Go AI Coach</h1>
+            <p className="text-muted-foreground text-xl mt-2">Your Personal AI Fitness Transformation Partner</p>
           </div>
         </div>
-        <p className="text-white/80 max-w-2xl mx-auto">
+        <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed">
           Transform your body and mind with personalized coaching, nutrition tracking, and AI-powered insights.
           Let's build the best version of yourself together.
         </p>

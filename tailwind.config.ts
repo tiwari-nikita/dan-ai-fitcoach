@@ -69,7 +69,13 @@ export default {
 					secondary: 'hsl(var(--fitness-secondary))',
 					accent: 'hsl(var(--fitness-accent))',
 					dark: 'hsl(var(--fitness-dark))',
-					light: 'hsl(var(--fitness-light))'
+					light: 'hsl(var(--fitness-light))',
+					black: 'hsl(var(--fitness-black))',
+					highlight: 'hsl(var(--fitness-highlight))'
+				},
+				gradient: {
+					start: 'hsl(var(--gradient-start))',
+					end: 'hsl(var(--gradient-end))',
 				}
 			},
 			borderRadius: {

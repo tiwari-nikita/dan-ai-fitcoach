@@ -33,8 +33,8 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-fitness-light via-white to-fitness-light flex items-center justify-center">
-        <div className="fitness-gradient p-4 rounded-full animate-pulse">
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-4 rounded-full">
           <Dumbbell className="h-8 w-8 text-white" />
         </div>
       </div>
@@ -65,26 +65,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-fitness-light via-white to-fitness-light">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex justify-between items-start mb-6">
+    <div className="min-h-screen bg-black text-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
           <Header />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center">
+              <Button variant="ghost" className="text-zinc-300 hover:bg-zinc-800 hover:text-white rounded-lg px-4 py-2 transition-colors duration-200">
                 Settings
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
+            <DropdownMenuContent align="end" className="bg-zinc-800 border-zinc-700 text-white rounded-lg shadow-lg">
+              <DropdownMenuItem onClick={handleSignOut} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center">
+                <LogOut className="h-4 w-4 mr-2 text-zinc-400" />
                 Sign Out
               </DropdownMenuItem>
-              {/* Add other placeholder options here if needed */}
-              <DropdownMenuItem onClick={() => window.open('/profile', '_blank', 'noopener,noreferrer')}>
+              <DropdownMenuItem onClick={() => navigate('/profile')} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center">
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => window.open('/notifications', '_blank', 'noopener,noreferrer')}>
+              <DropdownMenuItem onClick={() => navigate('/notifications')} className="hover:bg-zinc-700 cursor-pointer px-4 py-2 flex items-center">
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -93,27 +92,27 @@ const Index = () => {
         
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
         
-        <Card className="mt-6">
-          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+        <Card className="mt-8 bg-zinc-900 border-zinc-700 rounded-xl shadow-lg">
+          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
             <Button
               onClick={() => setActiveTab('coach')}
-              className="fitness-gradient text-white py-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center h-full"
+              className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-semibold py-6 rounded-lg shadow-md hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center h-full text-lg"
             >
-              <Dumbbell className="h-5 w-5 mr-2" />
+              <Dumbbell className="h-6 w-6 mr-3" />
               Chat with Coach
             </Button>
             <Button
               onClick={() => setActiveTab('food')}
-              className="fitness-gradient text-white py-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center h-full"
+              className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-semibold py-6 rounded-lg shadow-md hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center h-full text-lg"
             >
-              <Dumbbell className="h-5 w-5 mr-2" />
+              <Dumbbell className="h-6 w-6 mr-3" />
               Log Food
             </Button>
             <Button
               onClick={() => setActiveTab('weight')}
-              className="fitness-gradient text-white py-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center h-full"
+              className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-semibold py-6 rounded-lg shadow-md hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center h-full text-lg"
             >
-              <Dumbbell className="h-5 w-5 mr-2" />
+              <Dumbbell className="h-6 w-6 mr-3" />
               Track Weight
             </Button>
           </CardContent>

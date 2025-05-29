@@ -19,9 +19,9 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
   ];
 
   return (
-    <Card className="fitness-card-gradient border-0 shadow-lg">
+    <Card className="bg-card border-border shadow-xl rounded-xl">
       <div className="flex justify-center p-4">
-        <div className="flex space-x-2 bg-white/50 backdrop-blur-sm rounded-full p-2">
+        <div className="flex space-x-2 bg-secondary/50 backdrop-blur-sm rounded-full p-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -31,9 +31,9 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
                 size="sm"
                 onClick={() => onTabChange(item.id)}
                 className={`rounded-full px-4 py-2 transition-all ${
-                  activeTab === item.id 
-                    ? 'fitness-gradient text-white shadow-lg pulse-glow' 
-                    : 'hover:bg-white/70'
+                  activeTab === item.id
+                    ? 'bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground shadow-lg hover:opacity-90'
+                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                 }`}
               >
                 <Icon className="h-4 w-4 mr-2" />
