@@ -369,7 +369,7 @@ const AICoach = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-auto p-3 text-xs break-words text-gray-700 border-gray-300 hover:bg-gray-50"
+                    className="h-auto p-3 text-xs break-words dark:text-gray-200 border-gray-300 hover:bg-green-600"
                     onClick={() => {
                       setCurrentMessage("What's the best way to track my progress?");
                       sendMessage();
@@ -380,18 +380,18 @@ const AICoach = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-auto p-3 text-xs break-words text-gray-700 border-gray-300 hover:bg-gray-50"
+                    className="h-auto p-3 text-xs break-words dark:text-gray-200 border-gray-300 hover:bg-green-600"
                     onClick={() => {
-                      setCurrentMessage("Can you suggest a healthy meal plan for weight loss?");
+                      setCurrentMessage("Log my food.");
                       sendMessage();
                     }}
                   >
-                    Can you suggest a healthy meal plan for weight loss?
+                    Log my food.
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-auto p-3 text-xs break-words text-gray-700 border-gray-300 hover:bg-gray-50"
+                    className="h-auto p-3 text-xs break-words dark:text-gray-200 border-gray-300 hover:bg-green-600"
                     onClick={() => {
                       setCurrentMessage("How do I overcome a plateau in my fitness journey?");
                       sendMessage();
@@ -436,7 +436,7 @@ const AICoach = () => {
                   className="shrink-0"
                 >
                   <label htmlFor="image-upload" className="cursor-pointer">
-                    <Image className="h-5 w-5 text-green-500" />
+                    <Image className="h-5 w-5 dark:text-gray-50" />
                     <input
                       id="image-upload"
                       type="file"
@@ -481,7 +481,7 @@ const AICoach = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-2 text-green-700 border-green-300 hover:bg-green-50"
+                      className="mt-2 text-green-700 border-green-300 hover:bg-green-600"
                       onClick={() => {
                         setCurrentMessage("Let's discuss 'Mindset Shifts'. How can I cultivate a growth mindset?");
                         sendMessage();
@@ -504,7 +504,7 @@ const AICoach = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-2 text-green-700 border-green-300 hover:bg-green-50"
+                      className="mt-2 text-green-700 border-green-300 hover:bg-green-600"
                       onClick={() => {
                         setCurrentMessage("Let's discuss 'Sustainable Habits'. What small, consistent actions can I start with?");
                         sendMessage();
@@ -527,7 +527,7 @@ const AICoach = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-2 text-green-700 border-green-300 hover:bg-green-50"
+                      className="mt-2 text-green-700 border-green-300 hover:bg-green-600"
                       onClick={() => {
                         setCurrentMessage("Let's discuss 'The 5-Minute Rule'. How can I apply this to my fitness routine?");
                         sendMessage();
@@ -541,7 +541,7 @@ const AICoach = () => {
             </CardContent>
           </Card>
           <div className="mt-8">
-            <MoodLogger />
+            {/* <MoodLogger /> */}
           </div>
         </div>
       </div>

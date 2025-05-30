@@ -328,11 +328,11 @@ const WeightTracking = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                       <div className="text-xl font-bold text-black">{startWeight}</div>
-                      <p className="text-xs text-gray-600">Starting</p>
+                      <p className="text-xs text-gray-600">Current</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                       <div className="text-xl font-bold text-black">{currentWeight}</div>
-                      <p className="text-xs text-gray-600">Current</p>
+                      <p className="text-xs text-gray-600">Starting</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">

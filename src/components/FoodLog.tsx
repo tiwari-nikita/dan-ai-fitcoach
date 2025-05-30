@@ -371,7 +371,7 @@ const FoodLog = () => {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-xs px-2 py-1 h-auto"
+                                className="text-xs px-2 py-1 h-auto dark:text-gray-50"
                                 onClick={() => handleModifyFoodClick(food)}
                               >
                                 Modify
