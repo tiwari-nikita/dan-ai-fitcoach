@@ -1,10 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Weight, Calendar, Activity, Plus, Dumbbell } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useWeightEntries } from '@/hooks/useWeightEntries';
@@ -12,11 +13,13 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const WeightTracking = () => {
   const { toast } = useToast();
-  const { weightEntries, loading, addWeightEntry } = useWeightEntries();
+  const { weightEntries, loading, addWeightEntry, updateWeightEntry } = useWeightEntries();
   const [newEntry, setNewEntry] = useState({
     weight: '',
     notes: ''
   });
+  const [muscleMass, setMuscleMass] = useState<string>('');
+  const [bodyFat, setBodyFat] = useState<string>('');
 
   const handleAddWeightEntry = async () => {
     if (!newEntry.weight) {
@@ -32,17 +35,48 @@ const WeightTracking = () => {
       await addWeightEntry({
         weight: parseFloat(newEntry.weight),
         date: new Date().toISOString().split('T')[0],
-        notes: newEntry.notes || null
+        notes: newEntry.notes || null,
+        muscle_mass: muscleMass ? parseFloat(muscleMass) : 0,
+        body_fat: bodyFat ? parseFloat(bodyFat) : 0
       });
 
       setNewEntry({
         weight: '',
         notes: ''
       });
+      setMuscleMass('');
+      setBodyFat('');
     } catch (error) {
       // Error handled in hook
     }
   };
+
+  const handleSaveProgress = async () => {
+    if (weightEntries.length === 0) {
+      toast({
+        title: "No Weight Entry",
+        description: "Please log a weight entry before saving progress.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await updateWeightEntry(weightEntries[0].id, {
+        muscle_mass: muscleMass ? parseFloat(muscleMass) : 0,
+        body_fat: bodyFat ? parseFloat(bodyFat) : 0
+      });
+    } catch (error) {
+      // Error handled in hook
+    }
+  };
+
+  useEffect(() => {
+    if (weightEntries.length > 0) {
+      setMuscleMass(weightEntries[0].muscle_mass?.toString() || '');
+      setBodyFat(weightEntries[0].body_fat?.toString() || '');
+    }
+  }, [weightEntries]);
 
   const chartData = [...weightEntries].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(entry => ({
     date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -51,7 +85,7 @@ const WeightTracking = () => {
 
   const currentWeight = weightEntries[0]?.weight || 0;
   const startWeight = weightEntries[weightEntries.length - 1]?.weight || 0;
-  const weightChange = currentWeight - startWeight;
+  const weightChange = startWeight - currentWeight;
 
   if (loading) {
     return (
@@ -73,8 +107,8 @@ const WeightTracking = () => {
         </CardHeader>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="lg:col-span-2 space-y-6 flex flex-col h-full">
           <Card className="bg-white border-gray-300 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center text-black">
@@ -117,45 +151,47 @@ const WeightTracking = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-300 shadow-lg">
+          <Card className="bg-white border-gray-300 shadow-lg flex-grow">
             <CardHeader>
               <CardTitle className="flex items-center text-black">
                 <Calendar className="h-6 w-6 mr-2 text-green-500" />
                 Weight History
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-3 flex flex-col flex-grow">
               {weightEntries.length === 0 ? (
                 <p className="text-center text-gray-600 py-8">
                   No weight entries yet. Start tracking your progress!
                 </p>
               ) : (
-                weightEntries.slice(0, 5).map((entry) => (
-                  <div key={entry.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <h4 className="font-semibold text-lg text-black">{entry.weight} lbs</h4>
-                        <p className="text-sm text-gray-600">
-                          {new Date(entry.date).toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </p>
+                <ScrollArea className="h-[400px]">
+                  {weightEntries.map((entry) => (
+                    <div key={entry.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <h4 className="font-semibold text-lg text-black">{entry.weight} lbs</h4>
+                          <p className="text-sm text-gray-600">
+                            {new Date(entry.date).toLocaleDateString('en-US', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </p>
+                        </div>
                       </div>
+                      {entry.notes && (
+                        <p className="text-sm text-gray-600 italic">"{entry.notes}"</p>
+                      )}
                     </div>
-                    {entry.notes && (
-                      <p className="text-sm text-gray-600 italic">"{entry.notes}"</p>
-                    )}
-                  </div>
-                ))
+                  ))}
+                </ScrollArea>
               )}
             </CardContent>
           </Card>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col h-full">
           <Card className="bg-white border-gray-300 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center text-black">
@@ -195,7 +231,7 @@ const WeightTracking = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-300 shadow-lg">
+          <Card className="bg-white border-gray-300 shadow-lg flex-grow">
             <CardHeader>
               <CardTitle className="flex items-center text-black">
                 <Dumbbell className="h-6 w-6 mr-2 text-green-500" />
@@ -221,6 +257,38 @@ const WeightTracking = () => {
                       <p className="text-xs text-gray-600">Current</p>
                     </div>
                   </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <Label htmlFor="muscle-mass" className="text-black font-semibold text-sm">Muscle Mass %</Label>
+                      <Input
+                        id="muscle-mass"
+                        type="number"
+                        step="0.1"
+                        value={muscleMass}
+                        onChange={(e) => setMuscleMass(e.target.value)}
+                        placeholder="30.0"
+                        className="bg-white border-gray-300 text-black text-center mt-1"
+                      />
+                    </div>
+                    <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <Label htmlFor="body-fat" className="text-black font-semibold text-sm">Body Fat %</Label>
+                      <Input
+                        id="body-fat"
+                        type="number"
+                        step="0.1"
+                        value={bodyFat}
+                        onChange={(e) => setBodyFat(e.target.value)}
+                        placeholder="15.0"
+                        className="bg-white border-gray-300 text-black text-center mt-1"
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleSaveProgress}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold mt-4"
+                  >
+                    Save Progress
+                  </Button>
                   <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                     <Badge className="mb-2 bg-green-500 text-white">AI Insight</Badge>
                     <p className="text-sm text-black">
