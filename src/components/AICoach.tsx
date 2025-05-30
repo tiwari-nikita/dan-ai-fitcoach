@@ -86,7 +86,11 @@ const AICoach = () => {
       imageUrl: selectedImage?.previewUrl, // Include image URL if available
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    console.log('Before adding user message:', messages);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    console.log('After adding user message (should be updated soon):', updatedMessages);
+
     setCurrentMessage('');
     setIsLoading(true);
     setHasUserSentMessage(true);
@@ -156,7 +160,7 @@ const AICoach = () => {
     } else {
       // Existing logic for text messages
       try {
-        const aiResponseContent = await generateAIResponse(messages); // AI response based on text message
+        const aiResponseContent = await generateAIResponse(updatedMessages); // AI response based on text message
         const aiResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),
           type: 'ai',
