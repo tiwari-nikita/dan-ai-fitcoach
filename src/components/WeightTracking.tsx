@@ -44,7 +44,7 @@ const WeightTracking = () => {
     }
   };
 
-  const chartData = weightEntries.map(entry => ({
+  const chartData = [...weightEntries].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(entry => ({
     date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     weight: entry.weight
   }));
