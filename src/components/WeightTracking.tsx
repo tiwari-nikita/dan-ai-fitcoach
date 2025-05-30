@@ -251,7 +251,7 @@ const WeightTracking = () => {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel className="text-black border-gray-300">Cancel</AlertDialogCancel>
+                                <AlertDialogCancel className="text-black dark:text-gray-50 border-gray-300">Cancel</AlertDialogCancel>
                                 <AlertDialogAction className="bg-red-500 hover:bg-red-600 text-white" onClick={() => handleDeleteClick(entry.id)}>Delete</AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -424,7 +424,7 @@ const WeightTracking = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} className="text-black border-gray-300">Cancel</Button>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} className="text-black dark:text-gray-50 border-gray-300">Cancel</Button>
             <Button type="submit" onClick={handleSaveEdit} className="bg-green-500 hover:bg-green-600 text-white">Save changes</Button>
           </DialogFooter>
         </DialogContent>

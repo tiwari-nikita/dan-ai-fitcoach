@@ -499,7 +499,7 @@ const FoodLog = () => {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel className="text-black">Cancel</AlertDialogCancel>
+                                <AlertDialogCancel className="text-black dark:text-gray-50">Cancel</AlertDialogCancel>
                                 <AlertDialogAction onClick={confirmDeleteFood} className="bg-red-500 hover:bg-red-600 text-white">Delete</AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
