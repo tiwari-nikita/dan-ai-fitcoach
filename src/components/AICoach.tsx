@@ -115,13 +115,14 @@ const AICoach = () => {
             parameters: {
               type: 'object',
               properties: {
-                food_item: { type: 'string', description: 'The name of the food item.' },
+                food_description: { type: 'string', description: 'The name of the food item.' },
                 calories: { type: 'number', description: 'The calorie count for the food item.' },
-                protein: { type: 'number', description: 'The protein amount in grams.' },
-                carbs: { type: 'number', description: 'The carbohydrate amount in grams.' },
-                fat: { type: 'number', description: 'The fat amount in grams.' },
+                protein_g: { type: 'number', description: 'The protein amount in grams.' },
+                carbs_g: { type: 'number', description: 'The carbohydrate amount in grams.' },
+                fats_g: { type: 'number', description: 'The fat amount in grams.' },
+                meal_type: { type: 'string', description: 'The meal type (breakfast, lunch, dinner, snack).' },
               },
-              required: ['food_item', 'calories', 'protein', 'carbs', 'fat'],
+              required: ['food_description', 'calories', 'protein_g', 'carbs_g', 'fats_g', 'meal_type'],
             },
           },
         },
@@ -135,15 +136,26 @@ const AICoach = () => {
               if (!user?.id) {
                 throw new Error("User not authenticated. Cannot add food entry.");
               }
-              const { food_item, calories, protein, carbs, fat } = toolCall.args;
-              await addFoodEntry({ userId: user.id, food_item, calories, protein, carbs, fat });
+              const { food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
+              const today = new Date().toISOString().split('T')[0];
+              
+              await addFoodEntry({ 
+                food_description, 
+                calories, 
+                protein_g, 
+                carbs_g, 
+                fats_g, 
+                meal_type: meal_type || 'AI Logged',
+                date: today
+              });
+              
               toast({
                 title: "Food Entry Added",
-                description: `Successfully added ${food_item} to your log.`,
+                description: `Successfully added ${food_description} to your log.`,
               });
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
-                result: { success: true, message: `Food entry for ${food_item} added.` },
+                result: { success: true, message: `Food entry for ${food_description} added.` },
               });
             } catch (toolError: any) {
               console.error('Error adding food entry:', toolError);

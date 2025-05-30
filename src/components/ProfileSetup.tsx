@@ -43,6 +43,20 @@ const ProfileSetup = () => {
       if (error && error.code !== 'PGRST116') throw error;
       
       if (data) {
+        // Handle fitness_goals which can be Json type from database
+        let fitnessGoalsArray: string[] = [];
+        if (data.fitness_goals) {
+          if (Array.isArray(data.fitness_goals)) {
+            fitnessGoalsArray = data.fitness_goals as string[];
+          } else if (typeof data.fitness_goals === 'string') {
+            try {
+              fitnessGoalsArray = JSON.parse(data.fitness_goals);
+            } catch {
+              fitnessGoalsArray = [];
+            }
+          }
+        }
+        
         setProfile({
           name: data.name || '',
           age: data.age?.toString() || '',
@@ -55,7 +69,7 @@ const ProfileSetup = () => {
           injuries: data.injuries || '',
           preferences: data.preferences || '',
           targetWeight: data.target_weight?.toString() || '',
-          fitnessGoals: data.fitness_goals || []
+          fitnessGoals: fitnessGoalsArray
         });
       }
     } catch (error) {
