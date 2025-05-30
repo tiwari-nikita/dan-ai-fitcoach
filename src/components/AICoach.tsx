@@ -539,7 +539,9 @@ const AICoach = () => {
               </Accordion>
             </CardContent>
           </Card>
-          <MoodLogger />
+          <div className="mt-8">
+            <MoodLogger />
+          </div>
         </div>
       </div>
     </div>
