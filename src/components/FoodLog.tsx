@@ -355,14 +355,15 @@ const FoodLog = () => {
                           </div>
                         </div>
                         <Badge className="bg-green-500 text-white text-xs sm:text-sm">
-                          {food.calories || 0} cal
+                          {food.calories || 0} kcal
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between mt-2">
-                        <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
-                          <div>Protein: {food.protein_g || 0}g</div>
-                          <div>Carbs: {food.carbs_g || 0}g</div>
-                          <div>Fat: {food.fats_g || 0}g</div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                          <div>Calories: {food.calories || 0} kcal</div>
+                          <div>Protein: {food.protein_g || 0} g</div>
+                          <div>Carbs: {food.carbs_g || 0} g</div>
+                          <div>Fats: {food.fats_g || 0} g</div>
                         </div>
                         <div className="flex space-x-2">
                           <Dialog open={showModifyDialog && foodToModify?.id === food.id} onOpenChange={setShowModifyDialog}>
