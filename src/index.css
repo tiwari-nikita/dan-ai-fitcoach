@@ -7,8 +7,8 @@
     --background: 0 0% 100%; /* White */
     --foreground: 222.2 84% 4.9%; /* Black */
 
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 222.2 84% 4.9%; /* Black */
+    --card: 210 10% 20%; /* Dark grey */
+    --card-foreground: 0 0% 0%; /* Black */
 
     --popover: 0 0% 100%; /* White */
     --popover-foreground: 222.2 84% 4.9%; /* Black */
@@ -19,8 +19,8 @@
     --secondary: 210 40% 96.1%; /* Light gray */
     --secondary-foreground: 222.2 47.4% 11.2%; /* Darker gray */
 
-    --muted: 210 40% 96.1%; /* Light gray */
-    --muted-foreground: 215.4 16.3% 46.9%; /* Gray */
+    --muted: 210 10% 20%; /* Dark grey */
+    --muted-foreground: 222.2 84% 4.9%; /* Black */
 
     --accent: 145 60% 40%; /* Muted green */
     --accent-foreground: 0 0% 100%; /* White */
@@ -28,8 +28,8 @@
     --destructive: 0 100% 50%; /* Red */
     --destructive-foreground: 210 40% 98%; /* White */
 
-    --border: 214.3 31.8% 91.4%; /* Light gray */
-    --input: 214.3 31.8% 91.4%; /* Light gray */
+    --border: 210 10% 20%; /* Dark grey */
+    --input: 210 10% 20%; /* Dark grey */
     --ring: 145 60% 40%; /* Muted green */
 
     --radius: 0.5rem;
@@ -58,10 +58,10 @@
 
   .dark {
     --background: 0 0% 5%; /* Deep black */
-    --foreground: 210 40% 98%; /* Light gray text for contrast */
+    --foreground: 222.2 84% 4.9%; /* Black */
 
-    --card: 0 0% 10%; /* Slightly lighter black for cards */
-    --card-foreground: 210 40% 98%;
+    --card: 210 10% 20%; /* Dark grey */
+    --card-foreground: 0 0% 0%; /* Black */
 
     --popover: 0 0% 10%; /* Slightly lighter black for popovers */
     --popover-foreground: 210 40% 98%;
@@ -70,10 +70,10 @@
     --primary-foreground: 0 0% 100%; /* White */
 
     --secondary: 0 0% 15%; /* Darker secondary for subtle elements */
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 222.2 84% 4.9%;
 
-    --muted: 0 0% 15%; /* Dark muted background */
-    --muted-foreground: 215 20.2% 75.1%; /* Lighter gray muted text for improved contrast */
+    --muted: 210 10% 20%; /* Dark grey */
+    --muted-foreground: 222.2 84% 4.9%; /* Black */
 
     --accent: 145 60% 40%; /* Muted green for accent */
     --accent-foreground: 0 0% 100%; /* White */
@@ -86,11 +86,11 @@
     --ring: 145 60% 40%; /* Muted green ring */
 
     --sidebar-background: 0 0% 8%; /* Even deeper black for sidebar */
-    --sidebar-foreground: 210 40% 98%; /* Light gray */
+    --sidebar-foreground: 222.2 84% 4.9%; /* Black */
     --sidebar-primary: 145 60% 35%; /* Slightly darker muted green for sidebar primary */
     --sidebar-primary-foreground: 0 0% 100%; /* White */
     --sidebar-accent: 0 0% 12%; /* Subtle accent for sidebar */
-    --sidebar-accent-foreground: 210 40% 98%; /* Light gray */
+    --sidebar-accent-foreground: 222.2 84% 4.9%; /* Black */
     --sidebar-border: 0 0% 18%; /* Dark border */
     --sidebar-ring: 145 60% 35%; /* Muted green */
 
