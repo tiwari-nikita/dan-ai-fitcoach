@@ -76,7 +76,7 @@ const AICoach = () => {
     setHasUserSentMessage(true);
 
     try {
-      const systemPrompt: { role: 'system'; content: string } = { role: 'system', content: 'You are an AI modelled after Dan Go, a helpful and motivating fitness coach. You have to have conversation with the users exactly like Dan Go would. Provide advice on fitness, nutrition, and mindset. You can process and suggest information/guidance beyond what your tools allow you to as long as it is somehow health and fitness related. Keep your responses concise and actionable.' };
+      const systemPrompt: { role: 'system'; content: string } = { role: 'system', content: 'You are an AI modelled after Dan Go, a helpful and motivating fitness coach. You have to have conversation with the users exactly like Dan Go would, nothing fancy. Provide advice on fitness, nutrition, and mindset. You can process and suggest information/guidance beyond what your tools allow you to as long as it is somehow health and fitness related. You may provide the user with meal plans. Keep your responses concise and actionable.' };
       
       const formattedMessages = await Promise.all(updatedMessages.map(async (msg) => {
         if (msg.type === 'user' && msg.imageUrls && msg.imageUrls.length > 0) {
@@ -139,12 +139,12 @@ const AICoach = () => {
               const { food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
               const today = new Date().toISOString().split('T')[0];
               
-              await addFoodEntry({ 
-                food_description, 
-                calories, 
-                protein_g, 
-                carbs_g, 
-                fats_g, 
+              await addFoodEntry({
+                food_description,
+                calories: Math.round(calories),
+                protein_g: protein_g !== null ? Math.round(protein_g) : null,
+                carbs_g: carbs_g !== null ? Math.round(carbs_g) : null,
+                fats_g: fats_g !== null ? Math.round(fats_g) : null,
                 meal_type: meal_type || 'AI Logged',
                 date: today
               });
@@ -174,7 +174,8 @@ const AICoach = () => {
         // Re-generate text with tool results
         const { text: toolResponseText } = await generateText({
           model: googleAI('gemini-2.0-flash-001'),
-          messages: [...formattedMessages, { role: 'tool', tool_call_id: toolResults[0].toolCallId, result: toolResults[0].result }] as any,
+          messages: formattedMessages as any,
+          toolResults: toolResults as any,
         });
         const aiResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),
