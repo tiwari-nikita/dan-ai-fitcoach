@@ -152,6 +152,8 @@ export type Database = {
           date: string | null
           id: string
           notes: string | null
+          muscle_mass: number | null
+          body_fat: number | null
           user_id: string
           weight: number
         }
@@ -160,6 +162,8 @@ export type Database = {
           date?: string | null
           id?: string
           notes?: string | null
+          muscle_mass?: number | null
+          body_fat?: number | null
           user_id: string
           weight: number
         }
@@ -168,6 +172,8 @@ export type Database = {
           date?: string | null
           id?: string
           notes?: string | null
+          muscle_mass?: number | null
+          body_fat?: number | null
           user_id?: string
           weight?: number
         }
