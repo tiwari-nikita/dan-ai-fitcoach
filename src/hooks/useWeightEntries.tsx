@@ -30,7 +30,10 @@ export const useWeightEntries = () => {
         .order('date', { ascending: false });
 
       if (error) throw error;
-      setWeightEntries(data || []);
+      // Ensure newest entries are first for display, as per user feedback.
+      // Supabase's `ascending: false` should put newest first, but if not,
+      // explicitly reverse here.
+      setWeightEntries(data ? data.reverse() : []);
     } catch (error) {
       console.error('Error fetching weight entries:', error);
       toast({
