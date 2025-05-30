@@ -59,7 +59,7 @@ const GoalSetting = () => {
   };
 
   const saveGoals = () => {
-    console.log('Selected goals:', selectedGoals);
+    
     toast({
       title: "Goals Set Successfully!",
       description: `You've selected ${selectedGoals.length} goals. Dan Go AI will create a personalized plan for you.`,

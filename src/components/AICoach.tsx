@@ -114,7 +114,7 @@ const AICoach = () => {
             });
             aiResponseContent = "I couldn't process that image. Please try again or send a text message.";
           } else {
-            console.log('Supabase function response:', data);
+            
             // Assuming 'data' contains the nutritional info directly or in a 'nutritionalData' field
             aiResponseContent = `Image processed! Here's the nutritional data: ${JSON.stringify(data, null, 2)}`;
             toast({

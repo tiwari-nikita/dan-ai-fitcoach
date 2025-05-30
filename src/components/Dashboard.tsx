@@ -41,7 +41,7 @@ const Dashboard = () => {
                 } else if (stat.label === 'Health Score') {
                   calculateHealthScore(70, 1.75, 30); // Example values: weight (kg), height (m), age (years)
                 } else {
-                  console.log(`Clicked ${stat.label}`);
+                  
                 }
               }}
             >

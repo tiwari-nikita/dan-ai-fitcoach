@@ -24,7 +24,7 @@ const ProfileSetup = () => {
   });
 
   const handleSave = () => {
-    console.log('Saving profile:', profile);
+    
     toast({
       title: "Profile Updated",
       description: "Your profile has been saved successfully!",
