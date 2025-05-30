@@ -111,7 +111,7 @@ const AICoach = () => {
       console.log({systemPrompt,formattedMessages})
       
       const { text, toolCalls } = await generateText({
-        model: googleAI('gemini-2.5-pro-preview-05-06'),
+        model: googleAI('gemini-2.5-flash-preview-04-17'),
         messages: formattedMessages as any,
         tools: {
           add_food_entry: {
@@ -286,7 +286,7 @@ const AICoach = () => {
       <Card className="bg-card text-card-foreground border-border shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-2xl text-white">
-            <Dumbbell className="h-6 w-6 mr-2 text-primary" />
+            <Dumbbell className="h-6 w-6 mr-2 text-white" />
             Chat with Dan Go AI Coach
           </CardTitle>
           <p className="text-white">Get personalized fitness advice and motivation 24/7</p>
@@ -298,7 +298,7 @@ const AICoach = () => {
           <Card className="bg-card text-card-foreground border-border shadow-lg h-[600px] flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center text-white">
-                <Activity className="h-5 w-5 mr-2 text-primary" />
+                <Activity className="h-5 w-5 mr-2 text-white" />
                 Conversation
               </CardTitle>
             </CardHeader>
@@ -314,7 +314,7 @@ const AICoach = () => {
                         className={`max-w-[80%] p-4 rounded-lg ${
                           msg.type === 'user'
                             ? 'bg-primary text-white'
-                            : 'bg-muted text-white'
+                            : 'bg-gray-700 text-white'
                         }`}
                       >
                         {msg.type === 'ai' ? (
@@ -435,7 +435,7 @@ const AICoach = () => {
                   className="shrink-0"
                 >
                   <label htmlFor="image-upload" className="cursor-pointer">
-                    <Image className="h-5 w-5" />
+                    <Image className="h-5 w-5 text-white" />
                     <input
                       id="image-upload"
                       type="file"
@@ -462,7 +462,7 @@ const AICoach = () => {
           <Card className="bg-card text-white border-border shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center text-sm text-white">
-                <Weight className="h-4 w-4 mr-2 text-secondary" />
+                <Weight className="h-4 w-4 mr-2 text-white" />
                 Dan Go's Philosophy
               </CardTitle>
             </CardHeader>
@@ -475,12 +475,12 @@ const AICoach = () => {
                       <span className="text-sm font-semibold text-white">Mindset</span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
-                    <p className="break-words mb-2"><strong>Mindset Shifts:</strong> Your thoughts dictate your reality. Cultivate a growth mindset, embrace challenges, and reframe setbacks as opportunities.</p>
+                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg text-white">
+                    <p className="break-words mb-2 text-white"><strong>Mindset Shifts:</strong> Your thoughts dictate your reality. Cultivate a growth mindset, embrace challenges, and reframe setbacks as opportunities.</p>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-2"
+                      className="mt-2 text-white border-white"
                       onClick={() => {
                         setCurrentMessage("Let's discuss 'Mindset Shifts'. How can I cultivate a growth mindset?");
                         sendMessage();
@@ -498,12 +498,12 @@ const AICoach = () => {
                       <span className="text-sm font-semibold text-white">Consistency</span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
-                    <p className="break-words mb-2"><strong>Sustainable Habits:</strong> Focus on small, consistent actions rather than drastic, unsustainable changes. Progress over perfection.</p>
+                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg text-white">
+                    <p className="break-words mb-2 text-white"><strong>Sustainable Habits:</strong> Focus on small, consistent actions rather than drastic, unsustainable changes. Progress over perfection.</p>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-2"
+                      className="mt-2 text-white border-white"
                       onClick={() => {
                         setCurrentMessage("Let's discuss 'Sustainable Habits'. What small, consistent actions can I start with?");
                         sendMessage();
@@ -521,12 +521,12 @@ const AICoach = () => {
                       <span className="text-sm font-semibold text-white">Transformation</span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
-                    <p className="break-words mb-2"><strong>The 5-Minute Rule:</strong> If a task takes less than 5 minutes, do it immediately. This prevents procrastination and builds momentum.</p>
+                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg text-white">
+                    <p className="break-words mb-2 text-white"><strong>The 5-Minute Rule:</strong> If a task takes less than 5 minutes, do it immediately. This prevents procrastination and builds momentum.</p>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-2"
+                      className="mt-2 text-white border-white"
                       onClick={() => {
                         setCurrentMessage("Let's discuss 'The 5-Minute Rule'. How can I apply this to my fitness routine?");
                         sendMessage();
