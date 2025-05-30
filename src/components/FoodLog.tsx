@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,10 +9,41 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Calendar, Plus, UtensilsCrossed, Activity, Dumbbell } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useFoodEntries } from '@/hooks/useFoodEntries';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { FoodEntry } from '@/hooks/useFoodEntries';
 
 const FoodLog = () => {
   const { toast } = useToast();
-  const { foodEntries, loading, addFoodEntry } = useFoodEntries();
+  const { foodEntries, loading, addFoodEntry, deleteFoodEntry, updateFoodEntry } = useFoodEntries();
   const [newFood, setNewFood] = useState({
     food_description: '',
     calories: '',
@@ -21,6 +52,58 @@ const FoodLog = () => {
     fats_g: '',
     meal_type: 'breakfast'
   });
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [foodToDeleteId, setFoodToDeleteId] = useState<string | null>(null);
+
+  const [showModifyDialog, setShowModifyDialog] = useState(false);
+  const [foodToModify, setFoodToModify] = useState<FoodEntry | null>(null);
+
+  const modifyFormSchema = z.object({
+    food_description: z.string().min(1, { message: "Food name is required." }),
+    calories: z.preprocess(
+      (val) => Number(val),
+      z.number().min(0, { message: "Calories must be a positive number." })
+    ),
+    protein_g: z.preprocess(
+      (val) => val === "" ? null : Number(val),
+      z.number().min(0, { message: "Protein must be a positive number." }).nullable()
+    ),
+    carbs_g: z.preprocess(
+      (val) => val === "" ? null : Number(val),
+      z.number().min(0, { message: "Carbs must be a positive number." }).nullable()
+    ),
+    fats_g: z.preprocess(
+      (val) => val === "" ? null : Number(val),
+      z.number().min(0, { message: "Fat must be a positive number." }).nullable()
+    ),
+    meal_type: z.string().min(1, { message: "Meal type is required." }),
+  });
+
+  const modifyForm = useForm<z.infer<typeof modifyFormSchema>>({
+    resolver: zodResolver(modifyFormSchema),
+    defaultValues: {
+      food_description: '',
+      calories: 0,
+      protein_g: null,
+      carbs_g: null,
+      fats_g: null,
+      meal_type: 'breakfast',
+    },
+  });
+
+  useEffect(() => {
+    if (foodToModify) {
+      modifyForm.reset({
+        food_description: foodToModify.food_description,
+        calories: foodToModify.calories || 0,
+        protein_g: foodToModify.protein_g,
+        carbs_g: foodToModify.carbs_g,
+        fats_g: foodToModify.fats_g,
+        meal_type: foodToModify.meal_type,
+      });
+    }
+  }, [foodToModify, modifyForm]);
 
   const dailyTargets = {
     calories: 2200,
@@ -71,6 +154,56 @@ const FoodLog = () => {
         fats_g: '',
         meal_type: 'breakfast'
       });
+    } catch (error) {
+      // Error handled in hook
+    }
+  };
+
+  const handleDeleteFoodClick = (id: string) => {
+    setFoodToDeleteId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteFood = async () => {
+    if (foodToDeleteId) {
+      try {
+        await deleteFoodEntry(foodToDeleteId);
+        toast({
+          title: "Food Entry Deleted",
+          description: "The food entry has been removed successfully.",
+        });
+      } catch (error) {
+        // Error handled in hook
+      } finally {
+        setFoodToDeleteId(null);
+        setShowDeleteConfirm(false);
+      }
+    }
+  };
+
+  const handleModifyFoodClick = (food: FoodEntry) => {
+    setFoodToModify(food);
+    setShowModifyDialog(true);
+  };
+
+  const onModifySubmit = async (values: z.infer<typeof modifyFormSchema>) => {
+    if (!foodToModify) return;
+
+    try {
+      await updateFoodEntry(foodToModify.id, {
+        food_description: values.food_description,
+        calories: values.calories,
+        protein_g: values.protein_g,
+        carbs_g: values.carbs_g,
+        fats_g: values.fats_g,
+        meal_type: values.meal_type,
+      });
+      toast({
+        title: "Food Entry Updated",
+        description: `${values.food_description} has been updated successfully!`,
+      });
+      setShowModifyDialog(false);
+      setFoodToModify(null);
     } catch (error) {
       // Error handled in hook
     }
@@ -225,10 +358,152 @@ const FoodLog = () => {
                           {food.calories || 0} cal
                         </Badge>
                       </div>
-                      <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
-                        <div>Protein: {food.protein_g || 0}g</div>
-                        <div>Carbs: {food.carbs_g || 0}g</div>
-                        <div>Fat: {food.fats_g || 0}g</div>
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                          <div>Protein: {food.protein_g || 0}g</div>
+                          <div>Carbs: {food.carbs_g || 0}g</div>
+                          <div>Fat: {food.fats_g || 0}g</div>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Dialog open={showModifyDialog && foodToModify?.id === food.id} onOpenChange={setShowModifyDialog}>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs px-2 py-1 h-auto"
+                                onClick={() => handleModifyFoodClick(food)}
+                              >
+                                Modify
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px] bg-white text-black">
+                              <DialogHeader>
+                                <DialogTitle>Modify Food Entry</DialogTitle>
+                                <DialogDescription>
+                                  Make changes to your food entry here. Click save when you're done.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <Form {...modifyForm}>
+                                <form onSubmit={modifyForm.handleSubmit(onModifySubmit)} className="grid gap-4 py-4">
+                                  <FormField
+                                    control={modifyForm.control}
+                                    name="food_description"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-black">Food Name</FormLabel>
+                                        <FormControl>
+                                          <Input placeholder="e.g., Apple" {...field} className="bg-white border-gray-300 text-black" />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={modifyForm.control}
+                                    name="meal_type"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-black">Meal</FormLabel>
+                                        <FormControl>
+                                          <select
+                                            {...field}
+                                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black"
+                                          >
+                                            <option value="breakfast">Breakfast</option>
+                                            <option value="lunch">Lunch</option>
+                                            <option value="dinner">Dinner</option>
+                                            <option value="snack">Snack</option>
+                                          </select>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                      control={modifyForm.control}
+                                      name="calories"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-black">Calories</FormLabel>
+                                          <FormControl>
+                                            <Input type="number" placeholder="300" {...field} onChange={e => field.onChange(e.target.value)} className="bg-white border-gray-300 text-black" />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={modifyForm.control}
+                                      name="protein_g"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-black">Protein (g)</FormLabel>
+                                          <FormControl>
+                                            <Input type="number" placeholder="25" {...field} onChange={e => field.onChange(e.target.value)} className="bg-white border-gray-300 text-black" />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={modifyForm.control}
+                                      name="carbs_g"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-black">Carbs (g)</FormLabel>
+                                          <FormControl>
+                                            <Input type="number" placeholder="30" {...field} onChange={e => field.onChange(e.target.value)} className="bg-white border-gray-300 text-black" />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={modifyForm.control}
+                                      name="fats_g"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-black">Fat (g)</FormLabel>
+                                          <FormControl>
+                                            <Input type="number" placeholder="10" {...field} onChange={e => field.onChange(e.target.value)} className="bg-white border-gray-300 text-black" />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold">Save Changes</Button>
+                                </form>
+                              </Form>
+                            </DialogContent>
+                          </Dialog>
+
+                          <AlertDialog open={showDeleteConfirm && foodToDeleteId === food.id} onOpenChange={setShowDeleteConfirm}>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                className="text-xs px-2 py-1 h-auto"
+                                onClick={() => handleDeleteFoodClick(food.id)}
+                              >
+                                Delete
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-white text-black">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete your food entry.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="text-black">Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={confirmDeleteFood} className="bg-red-500 hover:bg-red-600 text-white">Delete</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </div>
                     </div>
                   ))}

@@ -97,6 +97,67 @@ export const useFoodEntries = () => {
     }
   };
 
+  const deleteFoodEntry = async (id: string) => {
+    if (!user) {
+      throw new Error("User not authenticated. Cannot delete food entry.");
+    }
+
+    try {
+      const { error } = await supabase
+        .from('food_entries')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setFoodEntries(prev => prev.filter(entry => entry.id !== id));
+      toast({
+        title: "Food Entry Deleted",
+        description: "The food entry has been removed successfully.",
+      });
+    } catch (error) {
+      console.error('Error deleting food entry:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete food entry.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
+  const updateFoodEntry = async (id: string, updates: Partial<AddFoodEntryParams>) => {
+    if (!user) {
+      throw new Error("User not authenticated. Cannot update food entry.");
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('food_entries')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setFoodEntries(prev => prev.map(entry => entry.id === id ? data : entry));
+      toast({
+        title: "Food Entry Updated",
+        description: "The food entry has been updated successfully.",
+      });
+      return data;
+    } catch (error) {
+      console.error('Error updating food entry:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update food entry.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchFoodEntries();
   }, [user]);
@@ -105,6 +166,8 @@ export const useFoodEntries = () => {
     foodEntries,
     loading,
     addFoodEntry,
+    deleteFoodEntry,
+    updateFoodEntry,
     refetch: fetchFoodEntries
   };
 };
