@@ -10,6 +10,8 @@ import { useToast } from '@/hooks/use-toast';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import ReactMarkdown from 'react-markdown';
+import { useFoodEntries } from '@/hooks/useFoodEntries';
+import { useAuth } from '@/contexts/AuthContext';
 
 const googleAI = createGoogleGenerativeAI({
   apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
@@ -30,6 +32,8 @@ interface SelectedImage {
 
 const AICoach = () => {
   const { toast } = useToast();
+  const { addFoodEntry } = useFoodEntries();
+  const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -69,7 +73,7 @@ const AICoach = () => {
     setHasUserSentMessage(true);
 
     try {
-      const systemPrompt = { role: 'system', content: 'You are Dan Go AI, a helpful and motivating fitness coach. Provide advice on fitness, nutrition, and mindset. Keep your responses concise and actionable.' };
+      const systemPrompt: { role: 'system'; content: string } = { role: 'system', content: 'You are Dan Go AI, a helpful and motivating fitness coach. Provide advice on fitness, nutrition, and mindset. Keep your responses concise and actionable.' };
       
       const formattedMessages = await Promise.all(updatedMessages.map(async (msg) => {
         if (msg.type === 'user' && msg.imageUrls && msg.imageUrls.length > 0) {
@@ -102,18 +106,80 @@ const AICoach = () => {
         };
       }));
 
-      const { text } = await generateText({
+      const { text, toolCalls } = await generateText({
         model: googleAI('gemini-2.0-flash-001'),
-        messages: [systemPrompt, ...formattedMessages],
+        messages: formattedMessages as any,
+        tools: {
+          add_food_entry: {
+            description: "Adds a new food entry to the daily food log.",
+            parameters: {
+              type: 'object',
+              properties: {
+                food_item: { type: 'string', description: 'The name of the food item.' },
+                calories: { type: 'number', description: 'The calorie count for the food item.' },
+                protein: { type: 'number', description: 'The protein amount in grams.' },
+                carbs: { type: 'number', description: 'The carbohydrate amount in grams.' },
+                fat: { type: 'number', description: 'The fat amount in grams.' },
+              },
+              required: ['food_item', 'calories', 'protein', 'carbs', 'fat'],
+            },
+          },
+        },
       });
 
-      const aiResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        message: text || "I'm sorry, I couldn't generate a response.",
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiResponse]);
+      let toolResults: any[] = [];
+      if (toolCalls && toolCalls.length > 0) {
+        for (const toolCall of toolCalls) {
+          if (toolCall.toolName === 'add_food_entry') {
+            try {
+              if (!user?.id) {
+                throw new Error("User not authenticated. Cannot add food entry.");
+              }
+              const { food_item, calories, protein, carbs, fat } = toolCall.args;
+              await addFoodEntry({ userId: user.id, food_item, calories, protein, carbs, fat });
+              toast({
+                title: "Food Entry Added",
+                description: `Successfully added ${food_item} to your log.`,
+              });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: true, message: `Food entry for ${food_item} added.` },
+              });
+            } catch (toolError: any) {
+              console.error('Error adding food entry:', toolError);
+              toast({
+                title: "Failed to Add Food Entry",
+                description: toolError.message || "An unexpected error occurred while adding the food entry.",
+                variant: "destructive",
+              });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: false, error: toolError.message || "Failed to add food entry." },
+              });
+            }
+          }
+        }
+        // Re-generate text with tool results
+        const { text: toolResponseText } = await generateText({
+          model: googleAI('gemini-2.0-flash-001'),
+          messages: [...formattedMessages, { role: 'tool', tool_call_id: toolResults[0].toolCallId, result: toolResults[0].result }] as any,
+        });
+        const aiResponse: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          type: 'ai',
+          message: toolResponseText || "I'm sorry, I couldn't generate a response after the tool execution.",
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, aiResponse]);
+      } else {
+        const aiResponse: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          type: 'ai',
+          message: text || "I'm sorry, I couldn't generate a response.",
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, aiResponse]);
+      }
       setSelectedImages([]); // Clear selected images after processing
     } catch (error) {
       console.error('Error communicating with Google AI:', error);

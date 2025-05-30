@@ -46,15 +46,24 @@ export const useFoodEntries = () => {
     setLoading(false);
   };
 
-  const addFoodEntry = async (entry: Omit<FoodEntry, 'id' | 'logged_at'>) => {
-    if (!user) return;
+  const addFoodEntry = async ({ userId, food_item, calories, protein, carbs, fat }: { userId: string; food_item: string; calories: number; protein: number; carbs: number; fat: number; }) => {
+    if (!userId) {
+      throw new Error("User not authenticated. Cannot add food entry.");
+    }
 
     try {
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
       const { data, error } = await supabase
         .from('food_entries')
         .insert([{
-          ...entry,
-          user_id: user.id
+          user_id: userId,
+          food_description: food_item,
+          calories: calories,
+          protein_g: protein,
+          carbs_g: carbs,
+          fats_g: fat,
+          meal_type: 'AI Logged', // Default meal type for AI added entries
+          date: today,
         }])
         .select()
         .single();
@@ -64,7 +73,7 @@ export const useFoodEntries = () => {
       setFoodEntries(prev => [data, ...prev]);
       toast({
         title: "Food Added",
-        description: `${entry.food_description} has been logged successfully!`,
+        description: `${food_item} has been logged successfully!`,
       });
       
       return data;
