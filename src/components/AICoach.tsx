@@ -423,9 +423,8 @@ const AICoach = () => {
                   onKeyPress={handleKeyPress}
                   onPaste={handlePaste}
                   placeholder="Ask Dan Go AI anything about fitness, nutrition, or motivation..."
-                  className="bg-input placeholder:text-muted-foreground text-foreground min-h-[40px] pr-10 resize-none"
+                  className="bg-input placeholder:text-muted-foreground text-foreground min-h-[40px] pr-4"
                   disabled={isLoading}
-                  rows={1}
                 />
                 <Button
                   asChild
