@@ -9,6 +9,7 @@ import { Dumbbell, Activity, Heart, Weight, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
+import { z } from 'zod';
 import ReactMarkdown from 'react-markdown';
 import { useFoodEntries } from '@/hooks/useFoodEntries';
 import { useAuth } from '@/contexts/AuthContext';
@@ -73,7 +74,7 @@ const AICoach = () => {
     setHasUserSentMessage(true);
 
     try {
-      const systemPrompt: { role: 'system'; content: string } = { role: 'system', content: 'You are Dan Go AI, a helpful and motivating fitness coach. Provide advice on fitness, nutrition, and mindset. Keep your responses concise and actionable.' };
+      const systemPrompt: { role: 'system'; content: string } = { role: 'system', content: 'You are Dan Go AI, a helpful and motivating fitness coach. Provide advice on fitness, nutrition, and mindset. You can process and suggest information/guidance beyond what your tools allow you to as long as it is somehow health and fitness related. Keep your responses concise and actionable.' };
       
       const formattedMessages = await Promise.all(updatedMessages.map(async (msg) => {
         if (msg.type === 'user' && msg.imageUrls && msg.imageUrls.length > 0) {
@@ -105,27 +106,24 @@ const AICoach = () => {
           content: msg.message,
         };
       }));
-
+      console.log({systemPrompt,formattedMessages})
+      
       const { text, toolCalls } = await generateText({
         model: googleAI('gemini-2.0-flash-001'),
         messages: formattedMessages as any,
-        tools: {
-          add_food_entry: {
-            description: "Adds a new food entry to the daily food log.",
-            parameters: {
-              type: 'object',
-              properties: {
-                food_description: { type: 'string', description: 'The name of the food item.' },
-                calories: { type: 'number', description: 'The calorie count for the food item.' },
-                protein_g: { type: 'number', description: 'The protein amount in grams.' },
-                carbs_g: { type: 'number', description: 'The carbohydrate amount in grams.' },
-                fats_g: { type: 'number', description: 'The fat amount in grams.' },
-                meal_type: { type: 'string', description: 'The meal type (breakfast, lunch, dinner, snack).' },
-              },
-              required: ['food_description', 'calories', 'protein_g', 'carbs_g', 'fats_g', 'meal_type'],
-            },
-          },
-        },
+        // tools: {
+        //   add_food_entry: {
+        //     description: "Adds a new food entry to the daily food log.",
+        //     parameters: z.object({
+        //       food_description: z.string().describe('The name of the food item.'),
+        //       calories: z.number().describe('The calorie count for the food item.'),
+        //       protein_g: z.number().describe('The protein amount in grams.'),
+        //       carbs_g: z.number().describe('The carbohydrate amount in grams.'),
+        //       fats_g: z.number().describe('The fat amount in grams.'),
+        //       meal_type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']).describe('The meal type (breakfast, lunch, dinner, snack).'),
+        //     }),
+        //   },
+        // },
       });
 
       let toolResults: any[] = [];
