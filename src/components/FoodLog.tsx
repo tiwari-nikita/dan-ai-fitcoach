@@ -30,8 +30,8 @@ const FoodLog = () => {
   };
 
   const todaysEntries = foodEntries.filter(entry => {
-    const entryDate = new Date(entry.date).toDateString();
-    const today = new Date().toDateString();
+    const entryDate = entry.date; // entry.date is already YYYY-MM-DD from addFoodEntry
+    const today = new Date().toISOString().split('T')[0];
     return entryDate === today;
   });
 
