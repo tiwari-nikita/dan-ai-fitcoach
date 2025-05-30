@@ -111,7 +111,7 @@ const AICoach = () => {
       console.log({systemPrompt,formattedMessages})
       
       const { text, toolCalls } = await generateText({
-        model: googleAI('gemini-2.0-flash-001'),
+        model: googleAI('gemini-2.5-flash-preview-04-17'),
         messages: formattedMessages as any,
         // tools: {
         //   add_food_entry: {
@@ -285,11 +285,11 @@ const AICoach = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <Card className="bg-card text-card-foreground border-border shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-2xl text-foreground">
+          <CardTitle className="flex items-center justify-center text-2xl text-white">
             <Dumbbell className="h-6 w-6 mr-2 text-primary" />
             Chat with Dan Go AI Coach
           </CardTitle>
-          <p className="text-muted-foreground">Get personalized fitness advice and motivation 24/7</p>
+          <p className="text-white">Get personalized fitness advice and motivation 24/7</p>
         </CardHeader>
       </Card>
 
@@ -297,7 +297,7 @@ const AICoach = () => {
         <div className="lg:col-span-2">
           <Card className="bg-card text-card-foreground border-border shadow-lg h-[600px] flex flex-col">
             <CardHeader>
-              <CardTitle className="flex items-center text-foreground">
+              <CardTitle className="flex items-center text-white">
                 <Activity className="h-5 w-5 mr-2 text-primary" />
                 Conversation
               </CardTitle>
@@ -313,37 +313,37 @@ const AICoach = () => {
                       <div
                         className={`max-w-[80%] p-4 rounded-lg ${
                           msg.type === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted text-muted-foreground'
+                            ? 'bg-primary text-white'
+                            : 'bg-muted text-white'
                         }`}
                       >
                         {msg.type === 'ai' ? (
                           <ReactMarkdown components={{
-                            p: ({ node, ...props }) => <p className="text-sm leading-relaxed break-words" {...props} />,
-                            ul: ({ node, ...props }) => <ul className="list-disc list-inside text-sm leading-relaxed break-words" {...props} />,
-                            ol: ({ node, ...props }) => <ol className="list-decimal list-inside text-sm leading-relaxed break-words" {...props} />,
-                            li: ({ node, ...props }) => <li className="text-sm leading-relaxed break-words" {...props} />,
-                            a: ({ node, ...props }) => <a className="text-blue-500 hover:underline" {...props} />,
-                            strong: ({ node, ...props }) => <strong className="font-bold" {...props} />,
-                            em: ({ node, ...props }) => <em className="italic" {...props} />,
-                            code: ({ node, ...props }) => <code className="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-xs" {...props} />,
-                            pre: ({ node, ...props }) => <pre className="bg-gray-100 dark:bg-gray-800 rounded p-2 overflow-x-auto text-xs" {...props} />,
-                            h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
-                            h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-3 mb-1.5" {...props} />,
-                            h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-2.5 mb-1" {...props} />,
-                            h4: ({ node, ...props }) => <h4 className="text-base font-bold mt-2 mb-0.5" {...props} />,
-                            h5: ({ node, ...props }) => <h5 className="text-sm font-bold mt-1.5 mb-0.5" {...props} />,
-                            h6: ({ node, ...props }) => <h6 className="text-xs font-bold mt-1 mb-0.5" {...props} />,
+                            p: ({ node, ...props }) => <p className="text-sm leading-relaxed break-words text-white" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc list-inside text-sm leading-relaxed break-words text-white" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal list-inside text-sm leading-relaxed break-words text-white" {...props} />,
+                            li: ({ node, ...props }) => <li className="text-sm leading-relaxed break-words text-white" {...props} />,
+                            a: ({ node, ...props }) => <a className="text-blue-300 hover:underline" {...props} />,
+                            strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
+                            em: ({ node, ...props }) => <em className="italic text-white" {...props} />,
+                            code: ({ node, ...props }) => <code className="bg-gray-700 rounded px-1 py-0.5 text-xs text-white" {...props} />,
+                            pre: ({ node, ...props }) => <pre className="bg-gray-700 rounded p-2 overflow-x-auto text-xs text-white" {...props} />,
+                            h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-4 mb-2 text-white" {...props} />,
+                            h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-3 mb-1.5 text-white" {...props} />,
+                            h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-2.5 mb-1 text-white" {...props} />,
+                            h4: ({ node, ...props }) => <h4 className="text-base font-bold mt-2 mb-0.5 text-white" {...props} />,
+                            h5: ({ node, ...props }) => <h5 className="text-sm font-bold mt-1.5 mb-0.5 text-white" {...props} />,
+                            h6: ({ node, ...props }) => <h6 className="text-xs font-bold mt-1 mb-0.5 text-white" {...props} />,
                           }}>
                             {msg.message}
                           </ReactMarkdown>
                         ) : (
-                          <p className="text-sm leading-relaxed break-words">{msg.message}</p>
+                          <p className="text-sm leading-relaxed break-words text-white">{msg.message}</p>
                         )}
                         {msg.imageUrls && msg.imageUrls.map((url, imgIndex) => (
                           <img key={imgIndex} src={url} alt={`User uploaded ${imgIndex + 1}`} className="mt-2 max-w-full h-auto rounded-md" />
                         ))}
-                        <p className="text-xs mt-2 text-muted-foreground">
+                        <p className="text-xs mt-2 text-white">
                           {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
@@ -351,7 +351,7 @@ const AICoach = () => {
                   ))}
                   {isLoading && (
                     <div className="flex justify-start mb-4">
-                      <div className="bg-muted text-muted-foreground p-4 rounded-lg">
+                      <div className="bg-muted text-white p-4 rounded-lg">
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -368,7 +368,7 @@ const AICoach = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                    className="h-auto p-3 text-xs break-words text-white border-border"
                     onClick={() => {
                       setCurrentMessage("What's the best way to track my progress?");
                       sendMessage();
@@ -379,7 +379,7 @@ const AICoach = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                    className="h-auto p-3 text-xs break-words text-white border-border"
                     onClick={() => {
                       setCurrentMessage("Can you suggest a healthy meal plan for weight loss?");
                       sendMessage();
@@ -390,7 +390,7 @@ const AICoach = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-auto p-3 text-xs break-words text-muted-foreground border-border"
+                    className="h-auto p-3 text-xs break-words text-white border-border"
                     onClick={() => {
                       setCurrentMessage("How do I overcome a plateau in my fitness journey?");
                       sendMessage();
@@ -405,7 +405,7 @@ const AICoach = () => {
                   {selectedImages.map((image, index) => (
                     <div key={index} className="relative flex items-center p-1 border rounded-md bg-background">
                       <img src={image.previewUrl} alt={`Preview ${index}`} className="max-h-16 rounded-md" />
-                      <span className="ml-2 text-xs text-muted-foreground truncate max-w-[100px]">{image.file.name}</span>
+                      <span className="ml-2 text-xs text-white truncate max-w-[100px]">{image.file.name}</span>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -425,7 +425,7 @@ const AICoach = () => {
                   onKeyPress={handleKeyPress}
                   onPaste={handlePaste}
                   placeholder="Ask Dan Go AI anything about fitness, nutrition, or motivation..."
-                  className="bg-input placeholder:text-muted-foreground text-foreground min-h-[40px] pr-4"
+                  className="bg-input placeholder:text-white text-white min-h-[40px] pr-4"
                   disabled={isLoading}
                 />
                 <Button
@@ -449,7 +449,7 @@ const AICoach = () => {
                 <Button
                   onClick={sendMessage}
                   disabled={isLoading || (!currentMessage.trim() && selectedImages.length === 0)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 h-10"
+                  className="bg-primary text-white hover:bg-primary/90 h-10"
                 >
                   Send
                 </Button>
@@ -459,20 +459,20 @@ const AICoach = () => {
         </div>
 
         <div>
-          <Card className="bg-card text-card-foreground border-border shadow-lg">
+          <Card className="bg-card text-white border-border shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center text-sm text-foreground">
+              <CardTitle className="flex items-center text-sm text-white">
                 <Weight className="h-4 w-4 mr-2 text-secondary" />
                 Dan Go's Philosophy
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs text-muted-foreground">
+            <CardContent className="space-y-3 text-xs text-white">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="mindset" className="border-b border-border">
                   <AccordionTrigger className="hover:no-underline">
                     <div className="flex items-center">
                       <Badge variant="secondary" className="mr-2 text-xs">Mindset</Badge>
-                      <span className="text-sm font-semibold text-foreground">Mindset</span>
+                      <span className="text-sm font-semibold text-white">Mindset</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
@@ -495,7 +495,7 @@ const AICoach = () => {
                   <AccordionTrigger className="hover:no-underline">
                     <div className="flex items-center">
                       <Badge variant="secondary" className="mr-2 text-xs">Consistency</Badge>
-                      <span className="text-sm font-semibold text-foreground">Consistency</span>
+                      <span className="text-sm font-semibold text-white">Consistency</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
@@ -518,7 +518,7 @@ const AICoach = () => {
                   <AccordionTrigger className="hover:no-underline">
                     <div className="flex items-center">
                       <Badge variant="secondary" className="mr-2 text-xs">Transformation</Badge>
-                      <span className="text-sm font-semibold text-foreground">Transformation</span>
+                      <span className="text-sm font-semibold text-white">Transformation</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">

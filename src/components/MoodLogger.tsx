@@ -41,7 +41,7 @@ const MoodLogger = () => {
   return (
     <Card className="bg-card text-card-foreground border-border shadow-lg">
       <CardHeader>
-        <CardTitle className="flex items-center text-sm text-foreground">
+        <CardTitle className="flex items-center text-sm text-white">
           <Lightbulb className="h-4 w-4 mr-2 text-yellow-500" />
           Mood Logger & AI Insights
         </CardTitle>
@@ -52,7 +52,7 @@ const MoodLogger = () => {
           value={moodDescription}
           onChange={(e) => setMoodDescription(e.target.value)}
           disabled={isLoading}
-          className="bg-input placeholder:text-muted-foreground text-foreground min-h-[80px]"
+          className="bg-input placeholder:text-muted-foreground text-white min-h-[80px]"
         />
         <Button
           onClick={handleLogMood}
@@ -62,7 +62,7 @@ const MoodLogger = () => {
           {isLoading ? 'Logging Mood...' : 'Log Mood'}
         </Button>
         {aiInsight && (
-          <div className="mt-4 p-4 bg-muted rounded-lg border border-border text-muted-foreground">
+          <div className="mt-4 p-4 bg-muted rounded-lg border border-border text-white">
             <p className="font-semibold mb-2">AI Insight:</p>
             <p>{aiInsight}</p>
           </div>
