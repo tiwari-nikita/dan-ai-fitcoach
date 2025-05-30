@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dumbbell, Activity, Heart, Weight, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import ReactMarkdown from 'react-markdown';
@@ -20,7 +20,7 @@ interface ChatMessage {
   type: 'user' | 'ai';
   message: string;
   timestamp: Date;
-  imageUrl?: string; // Optional: for displaying images in chat
+  imageUrls?: string[]; // Optional: for displaying multiple images in chat
 }
 
 interface SelectedImage {
@@ -41,7 +41,7 @@ const AICoach = () => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasUserSentMessage, setHasUserSentMessage] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null); // New state for selected image
+  const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]); // New state for selected images
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,130 +50,80 @@ const AICoach = () => {
     }
   }, [messages]);
 
-  // Connects to OpenAI API to generate AI responses
-  const generateAIResponse = async (currentChatMessages: ChatMessage[]): Promise<string> => {
-    try {
-      const systemPrompt: { role: 'system'; content: string; } = { role: 'system', content: 'You are Dan Go AI, a helpful and motivating fitness coach. Provide advice on fitness, nutrition, and mindset. Keep your responses concise and actionable.' };
-      const formattedMessages: { role: 'user' | 'assistant'; content: string; }[] = currentChatMessages.map(msg => ({
-        role: msg.type === 'user' ? 'user' : 'assistant',
-        content: msg.message,
-      }));
-
-      const { text } = await generateText({
-        model: googleAI('gemini-2.0-flash-001'),
-        messages: [systemPrompt, ...formattedMessages],
-      });
-      return text || "I'm sorry, I couldn't generate a response.";
-    } catch (error) {
-      console.error('Error communicating with Google AI:', error);
-      toast({
-        title: "AI Response Failed",
-        description: "Could not connect to the AI. Please check your API key and network connection.",
-        variant: "destructive",
-      });
-      return "I'm currently unable to generate a response. Please try again later.";
-    }
-  };
-
   const sendMessage = async () => {
-    if (!currentMessage.trim() && !selectedImage) return; // Allow sending only image or text
+    if (!currentMessage.trim() && selectedImages.length === 0) return;
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       type: 'user',
       message: currentMessage,
       timestamp: new Date(),
-      imageUrl: selectedImage?.previewUrl, // Include image URL if available
+      imageUrls: selectedImages.map(img => img.previewUrl),
     };
 
-    console.log('Before adding user message:', messages);
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
-    console.log('After adding user message (should be updated soon):', updatedMessages);
 
     setCurrentMessage('');
     setIsLoading(true);
     setHasUserSentMessage(true);
 
-    let aiResponseContent = '';
-
-    if (selectedImage) {
-      try {
-        const reader = new FileReader();
-        reader.readAsDataURL(selectedImage.file);
-        reader.onloadend = async () => {
-          const base64Image = (reader.result as string).split(',')[1]; // Get base64 string without data URL prefix
-
-          const { data, error } = await supabase.functions.invoke('process-image', {
-            body: JSON.stringify({ image: base64Image }),
-            headers: { 'Content-Type': 'application/json' },
-          });
-
-          if (error) {
-            console.error('Supabase function error:', error);
-            toast({
-              title: "Image Processing Failed",
-              description: error.message,
-              variant: "destructive",
+    try {
+      const systemPrompt = { role: 'system', content: 'You are Dan Go AI, a helpful and motivating fitness coach. Provide advice on fitness, nutrition, and mindset. Keep your responses concise and actionable.' };
+      
+      const formattedMessages = await Promise.all(updatedMessages.map(async (msg) => {
+        if (msg.type === 'user' && msg.imageUrls && msg.imageUrls.length > 0) {
+          const imageParts = await Promise.all(msg.imageUrls.map(async (url) => {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const base64 = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
             });
-            aiResponseContent = "I couldn't process that image. Please try again or send a text message.";
-          } else {
-            
-            // Assuming 'data' contains the nutritional info directly or in a 'nutritionalData' field
-            aiResponseContent = `Image processed! Here's the nutritional data: ${JSON.stringify(data, null, 2)}`;
-            toast({
-              title: "Image Processed",
-              description: "Nutritional data received!",
-            });
-          }
-
-          const aiResponse: ChatMessage = {
-            id: (Date.now() + 1).toString(),
-            type: 'ai',
-            message: aiResponseContent,
-            timestamp: new Date()
+            return {
+              type: 'image',
+              image: base64,
+              mimeType: blob.type,
+            };
+          }));
+          return {
+            role: 'user',
+            content: [
+              { type: 'text', text: msg.message },
+              ...imageParts,
+            ],
           };
-          setMessages(prev => [...prev, aiResponse]);
-          setIsLoading(false);
-          setSelectedImage(null); // Clear selected image after processing
+        }
+        return {
+          role: msg.type === 'user' ? 'user' : 'assistant',
+          content: msg.message,
         };
-        reader.onerror = (error) => {
-          console.error("FileReader error:", error);
-          toast({
-            title: "Image Read Error",
-            description: "Could not read the selected image file.",
-            variant: "destructive",
-          });
-          setIsLoading(false);
-          setSelectedImage(null);
-        };
-      } catch (error) {
-        console.error('Error sending image to Supabase:', error);
-        toast({
-          title: "Error Sending Image",
-          description: "There was an issue sending your image for processing.",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        setSelectedImage(null);
-      }
-    } else {
-      // Existing logic for text messages
-      try {
-        const aiResponseContent = await generateAIResponse(updatedMessages); // AI response based on text message
-        const aiResponse: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          type: 'ai',
-          message: aiResponseContent,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiResponse]);
-      } catch (error) {
-        console.error("Failed to get AI response:", error);
-        // Error handling is already inside generateAIResponse, but this catch ensures isLoading is set to false
-      } finally {
-        setIsLoading(false);
-      }
+      }));
+
+      const { text } = await generateText({
+        model: googleAI('gemini-2.0-flash-001'),
+        messages: [systemPrompt, ...formattedMessages],
+      });
+
+      const aiResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: 'ai',
+        message: text || "I'm sorry, I couldn't generate a response.",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, aiResponse]);
+      setSelectedImages([]); // Clear selected images after processing
+    } catch (error) {
+      console.error('Error communicating with Google AI:', error);
+      toast({
+        title: "AI Response Failed",
+        description: "Could not connect to the AI or process the request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -189,10 +139,13 @@ const AICoach = () => {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setSelectedImage({
-        file: file,
-        previewUrl: reader.result as string,
-      });
+      setSelectedImages(prev => [
+        ...prev,
+        {
+          file: file,
+          previewUrl: reader.result as string,
+        }
+      ]);
       toast({
         title: "Image Selected",
         description: `File: ${file.name}`,
@@ -202,28 +155,33 @@ const AICoach = () => {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processImageFile(file);
+    const files = e.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        processImageFile(files[i]);
+      }
     }
   };
 
-  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
+    let imagePasted = false;
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.startsWith('image/')) {
         const file = items[i].getAsFile();
         if (file) {
           processImageFile(file);
-          e.preventDefault(); // Prevent pasting the image data as text
-          break;
+          imagePasted = true;
         }
       }
     }
+    if (imagePasted) {
+      e.preventDefault(); // Prevent pasting the image data as text if an image was handled
+    }
   };
 
-  const removeSelectedImage = () => {
-    setSelectedImage(null);
+  const removeSelectedImage = (indexToRemove: number) => {
+    setSelectedImages(prev => prev.filter((_, index) => index !== indexToRemove));
     toast({
       title: "Image Removed",
       description: "The selected image has been cleared.",
@@ -304,9 +262,9 @@ const AICoach = () => {
                         ) : (
                           <p className="text-sm leading-relaxed break-words">{msg.message}</p>
                         )}
-                        {msg.imageUrl && (
-                          <img src={msg.imageUrl} alt="User uploaded" className="mt-2 max-w-full h-auto rounded-md" />
-                        )}
+                        {msg.imageUrls && msg.imageUrls.map((url, imgIndex) => (
+                          <img key={imgIndex} src={url} alt={`User uploaded ${imgIndex + 1}`} className="mt-2 max-w-full h-auto rounded-md" />
+                        ))}
                         <p className="text-xs mt-2 text-muted-foreground">
                           {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
@@ -364,29 +322,34 @@ const AICoach = () => {
                   </Button>
                 </div>
               )}
-              {selectedImage && (
-                <div className="relative mb-2 p-2 border rounded-md flex items-center justify-between bg-muted">
-                  <img src={selectedImage.previewUrl} alt="Preview" className="max-h-24 rounded-md" />
-                  <span className="ml-2 text-sm text-muted-foreground">{selectedImage.file.name}</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={removeSelectedImage}
-                    className="absolute top-1 right-1 p-1 h-auto text-muted-foreground hover:bg-muted-foreground/20"
-                  >
-                    X
-                  </Button>
+              {selectedImages.length > 0 && (
+                <div className="mb-2 p-2 border rounded-md bg-muted flex flex-wrap gap-2">
+                  {selectedImages.map((image, index) => (
+                    <div key={index} className="relative flex items-center p-1 border rounded-md bg-background">
+                      <img src={image.previewUrl} alt={`Preview ${index}`} className="max-h-16 rounded-md" />
+                      <span className="ml-2 text-xs text-muted-foreground truncate max-w-[100px]">{image.file.name}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeSelectedImage(index)}
+                        className="absolute -top-2 -right-2 p-0.5 h-5 w-5 rounded-full bg-red-500 text-white hover:bg-red-600 flex items-center justify-center"
+                      >
+                        X
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               )}
-              <div className="flex space-x-2">
-                <Input
+              <div className="flex space-x-2 items-end">
+                <Textarea
                   value={currentMessage}
                   onChange={(e) => setCurrentMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  onPaste={handlePaste} // Add paste event listener
+                  onPaste={handlePaste}
                   placeholder="Ask Dan Go AI anything about fitness, nutrition, or motivation..."
-                  className="bg-input placeholder:text-muted-foreground text-foreground"
+                  className="bg-input placeholder:text-muted-foreground text-foreground min-h-[40px] pr-10 resize-none"
                   disabled={isLoading}
+                  rows={1}
                 />
                 <Button
                   asChild
@@ -399,7 +362,8 @@ const AICoach = () => {
                     <input
                       id="image-upload"
                       type="file"
-                      accept="image/jpeg, image/png, image/gif"
+                      multiple
+                      accept="image/*"
                       className="hidden"
                       onChange={handleImageChange}
                     />
@@ -407,8 +371,8 @@ const AICoach = () => {
                 </Button>
                 <Button
                   onClick={sendMessage}
-                  disabled={isLoading || (!currentMessage.trim() && !selectedImage)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  disabled={isLoading || (!currentMessage.trim() && selectedImages.length === 0)}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 h-10"
                 >
                   Send
                 </Button>
