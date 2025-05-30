@@ -219,7 +219,7 @@ const WeightTracking = () => {
                 </p>
               ) : (
                 <ScrollArea className="h-[400px]">
-                  {weightEntries.map((entry) => (
+                  {[...weightEntries].reverse().map((entry) => (
                     <div key={entry.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-3">
                       <div className="flex items-center justify-between mb-2">
                         <div>
