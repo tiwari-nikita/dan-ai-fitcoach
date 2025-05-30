@@ -85,34 +85,64 @@ export type Database = {
       }
       profiles: {
         Row: {
+          activity_level: string | null
+          age: number | null
           created_at: string | null
           email: string | null
+          experience: string | null
+          fitness_goals: Json | null
+          gender: string | null
+          goals: string | null
+          height: string | null
           id: string
+          injuries: string | null
           name: string | null
+          preferences: string | null
           start_weight: number | null
           support_level: string | null
           target_weight: number | null
           updated_at: string | null
+          weight: number | null
         }
         Insert: {
+          activity_level?: string | null
+          age?: number | null
           created_at?: string | null
           email?: string | null
+          experience?: string | null
+          fitness_goals?: Json | null
+          gender?: string | null
+          goals?: string | null
+          height?: string | null
           id: string
+          injuries?: string | null
           name?: string | null
+          preferences?: string | null
           start_weight?: number | null
           support_level?: string | null
           target_weight?: number | null
           updated_at?: string | null
+          weight?: number | null
         }
         Update: {
+          activity_level?: string | null
+          age?: number | null
           created_at?: string | null
           email?: string | null
+          experience?: string | null
+          fitness_goals?: Json | null
+          gender?: string | null
+          goals?: string | null
+          height?: string | null
           id?: string
+          injuries?: string | null
           name?: string | null
+          preferences?: string | null
           start_weight?: number | null
           support_level?: string | null
           target_weight?: number | null
           updated_at?: string | null
+          weight?: number | null
         }
         Relationships: []
       }

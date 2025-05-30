@@ -16,6 +16,16 @@ interface FoodEntry {
   logged_at: string;
 }
 
+interface AddFoodEntryParams {
+  food_description: string;
+  calories: number;
+  protein_g: number | null;
+  carbs_g: number | null;
+  fats_g: number | null;
+  meal_type: string;
+  date: string;
+}
+
 export const useFoodEntries = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -46,24 +56,23 @@ export const useFoodEntries = () => {
     setLoading(false);
   };
 
-  const addFoodEntry = async ({ userId, food_item, calories, protein, carbs, fat }: { userId: string; food_item: string; calories: number; protein: number; carbs: number; fat: number; }) => {
-    if (!userId) {
+  const addFoodEntry = async (params: AddFoodEntryParams) => {
+    if (!user) {
       throw new Error("User not authenticated. Cannot add food entry.");
     }
 
     try {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
       const { data, error } = await supabase
         .from('food_entries')
         .insert([{
-          user_id: userId,
-          food_description: food_item,
-          calories: calories,
-          protein_g: protein,
-          carbs_g: carbs,
-          fats_g: fat,
-          meal_type: 'AI Logged', // Default meal type for AI added entries
-          date: today,
+          user_id: user.id,
+          food_description: params.food_description,
+          calories: params.calories,
+          protein_g: params.protein_g,
+          carbs_g: params.carbs_g,
+          fats_g: params.fats_g,
+          meal_type: params.meal_type,
+          date: params.date,
         }])
         .select()
         .single();
@@ -73,7 +82,7 @@ export const useFoodEntries = () => {
       setFoodEntries(prev => [data, ...prev]);
       toast({
         title: "Food Added",
-        description: `${food_item} has been logged successfully!`,
+        description: `${params.food_description} has been logged successfully!`,
       });
       
       return data;
