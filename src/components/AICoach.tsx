@@ -5,14 +5,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dumbbell, Activity, Heart, Weight, Image } from 'lucide-react';
+import { Dumbbell, Activity, Heart, Weight, Image, Lightbulb } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { z } from 'zod';
 import ReactMarkdown from 'react-markdown';
 import { useFoodEntries } from '@/hooks/useFoodEntries';
 import { useAuth } from '@/contexts/AuthContext';
+import MoodLogger from './MoodLogger';
 
 const googleAI = createGoogleGenerativeAI({
   apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
@@ -465,20 +467,79 @@ const AICoach = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-xs text-muted-foreground">
-              <div className="p-3 bg-muted rounded-lg">
-                <Badge variant="secondary" className="mb-2 text-xs">Mindset</Badge>
-                <p className="break-words">Success is 80% mindset, 20% strategy. Master your thoughts.</p>
-              </div>
-              <div className="p-3 bg-muted rounded-lg">
-                <Badge variant="secondary" className="mb-2 text-xs text-secondary-foreground">Consistency</Badge>
-                <p className="break-words">Small actions done consistently beat perfect plans done occasionally.</p>
-              </div>
-              <div className="p-3 bg-muted rounded-lg">
-                <Badge variant="secondary" className="mb-2 text-xs">Transformation</Badge>
-                <p className="break-words">You're not just changing your body, you're becoming a new person.</p>
-              </div>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="mindset" className="border-b border-border">
+                  <AccordionTrigger className="hover:no-underline">
+                    <div className="flex items-center">
+                      <Badge variant="secondary" className="mr-2 text-xs">Mindset</Badge>
+                      <span className="text-sm font-semibold text-foreground">Mindset</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
+                    <p className="break-words mb-2"><strong>Mindset Shifts:</strong> Your thoughts dictate your reality. Cultivate a growth mindset, embrace challenges, and reframe setbacks as opportunities.</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => {
+                        setCurrentMessage("Let's discuss 'Mindset Shifts'. How can I cultivate a growth mindset?");
+                        sendMessage();
+                      }}
+                    >
+                      Discuss 'Mindset Shifts'
+                    </Button>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="consistency" className="border-b border-border">
+                  <AccordionTrigger className="hover:no-underline">
+                    <div className="flex items-center">
+                      <Badge variant="secondary" className="mr-2 text-xs">Consistency</Badge>
+                      <span className="text-sm font-semibold text-foreground">Consistency</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
+                    <p className="break-words mb-2"><strong>Sustainable Habits:</strong> Focus on small, consistent actions rather than drastic, unsustainable changes. Progress over perfection.</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => {
+                        setCurrentMessage("Let's discuss 'Sustainable Habits'. What small, consistent actions can I start with?");
+                        sendMessage();
+                      }}
+                    >
+                      Discuss 'Sustainable Habits'
+                    </Button>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="transformation" className="border-b border-border">
+                  <AccordionTrigger className="hover:no-underline">
+                    <div className="flex items-center">
+                      <Badge variant="secondary" className="mr-2 text-xs">Transformation</Badge>
+                      <span className="text-sm font-semibold text-foreground">Transformation</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-2 pb-4 px-4 bg-muted rounded-b-lg">
+                    <p className="break-words mb-2"><strong>The 5-Minute Rule:</strong> If a task takes less than 5 minutes, do it immediately. This prevents procrastination and builds momentum.</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => {
+                        setCurrentMessage("Let's discuss 'The 5-Minute Rule'. How can I apply this to my fitness routine?");
+                        sendMessage();
+                      }}
+                    >
+                      Discuss 'The 5-Minute Rule'
+                    </Button>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </CardContent>
           </Card>
+          <MoodLogger />
         </div>
       </div>
     </div>
