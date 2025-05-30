@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dumbbell, Heart, Calendar, Activity, Weight, Target } from 'lucide-react';
+import { Dumbbell, Heart, Calendar, Activity, Weight, Target, Goal } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const GoalSetting = () => {
@@ -69,7 +69,7 @@ const GoalSetting = () => {
       <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-3xl text-white">
-            <Target className="h-8 w-8 mr-3 text-green-500" />
+            <Goal className="h-8 w-8 mr-3 text-green-500" />
             Set Your Fitness Goals
           </CardTitle>
           <p className="text-gray-300 text-lg">Choose your primary goals so Dan Go AI can create the perfect plan for you</p>
@@ -137,7 +137,7 @@ const GoalSetting = () => {
               })}
             </div>
             <div className="flex justify-center">
-              <Button 
+              <Button
                 onClick={saveGoals}
                 className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 text-lg font-semibold shadow-lg"
                 size="lg"
