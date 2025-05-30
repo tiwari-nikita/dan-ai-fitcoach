@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -55,30 +56,29 @@ const WeightTracking = () => {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="text-center">Loading your weight tracking...</div>
+        <div className="text-center text-white">Loading your weight tracking...</div>
       </div>
     );
   }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      
-      <Card className="fitness-gradient text-white border-0 shadow-xl transition-all duration-300 ease-in-out">
+      <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-2xl">
-            <Weight className="h-6 w-6 mr-2" />
+          <CardTitle className="flex items-center justify-center text-3xl text-white">
+            <Weight className="h-8 w-8 mr-3 text-green-500" />
             Weight Tracking
           </CardTitle>
-          <p className="text-white/90">Monitor your progress and body composition changes</p>
+          <p className="text-gray-300 text-lg">Monitor your progress and body composition changes</p>
         </CardHeader>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
+          <Card className="bg-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Activity className="h-5 w-5 mr-2 text-fitness-primary" />
+              <CardTitle className="flex items-center text-black">
+                <Activity className="h-6 w-6 mr-2 text-green-500" />
                 Weight Progress Chart
               </CardTitle>
             </CardHeader>
@@ -94,47 +94,48 @@ const WeightTracking = () => {
                         contentStyle={{
                           backgroundColor: 'white',
                           border: '1px solid #e0e0e0',
-                          borderRadius: '8px'
+                          borderRadius: '8px',
+                          color: 'black'
                         }}
                       />
                       <Line 
                         type="monotone" 
                         dataKey="weight" 
-                        stroke="hsl(var(--fitness-primary))" 
+                        stroke="#10b981" 
                         strokeWidth={3}
-                        dot={{ fill: "hsl(var(--fitness-primary))", strokeWidth: 2, r: 4 }}
+                        dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
                         name="Weight (lbs)"
                       />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="h-80 flex items-center justify-center text-muted-foreground">
+                <div className="h-80 flex items-center justify-center text-gray-600">
                   No weight data available. Start by logging your first weight entry!
                 </div>
               )}
             </CardContent>
           </Card>
 
-          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
+          <Card className="bg-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Calendar className="h-5 w-5 mr-2 text-fitness-secondary" />
+              <CardTitle className="flex items-center text-black">
+                <Calendar className="h-6 w-6 mr-2 text-green-500" />
                 Weight History
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {weightEntries.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
+                <p className="text-center text-gray-600 py-8">
                   No weight entries yet. Start tracking your progress!
                 </p>
               ) : (
                 weightEntries.slice(0, 5).map((entry) => (
-                  <div key={entry.id} className="p-3 sm:p-4 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
+                  <div key={entry.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <div className="flex items-center justify-between mb-2">
                       <div>
-                        <h4 className="font-semibold text-base sm:text-lg">{entry.weight} lbs</h4>
-                        <p className="text-xs sm:text-sm text-muted-foreground">
+                        <h4 className="font-semibold text-lg text-black">{entry.weight} lbs</h4>
+                        <p className="text-sm text-gray-600">
                           {new Date(entry.date).toLocaleDateString('en-US', {
                             weekday: 'long',
                             year: 'numeric',
@@ -145,7 +146,7 @@ const WeightTracking = () => {
                       </div>
                     </div>
                     {entry.notes && (
-                      <p className="text-xs sm:text-sm text-muted-foreground italic">"{entry.notes}"</p>
+                      <p className="text-sm text-gray-600 italic">"{entry.notes}"</p>
                     )}
                   </div>
                 ))
@@ -155,16 +156,16 @@ const WeightTracking = () => {
         </div>
 
         <div className="space-y-6">
-          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
+          <Card className="bg-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Plus className="h-5 w-5 mr-2 text-fitness-primary" />
+              <CardTitle className="flex items-center text-black">
+                <Plus className="h-6 w-6 mr-2 text-green-500" />
                 Log New Weight
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="weight">Weight (lbs)</Label>
+                <Label htmlFor="weight" className="text-black font-semibold">Weight (lbs)</Label>
                 <Input
                   id="weight"
                   type="number"
@@ -172,57 +173,57 @@ const WeightTracking = () => {
                   value={newEntry.weight}
                   onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})}
                   placeholder="175.0"
-                  className="bg-white/70 transition-all duration-200"
+                  className="bg-white border-gray-300 text-black"
                 />
               </div>
               <div>
-                <Label htmlFor="notes">Notes (optional)</Label>
+                <Label htmlFor="notes" className="text-black font-semibold">Notes (optional)</Label>
                 <Input
                   id="notes"
                   value={newEntry.notes}
                   onChange={(e) => setNewEntry({...newEntry, notes: e.target.value})}
                   placeholder="How are you feeling today?"
-                  className="bg-white/70 transition-all duration-200"
+                  className="bg-white border-gray-300 text-black"
                 />
               </div>
               <Button 
                 onClick={handleAddWeightEntry}
-                className="w-full fitness-gradient text-white transition-colors duration-200 hover:opacity-90"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
               >
                 Log Weight
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="fitness-card-gradient border-0 shadow-lg transition-all duration-300 ease-in-out">
+          <Card className="bg-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Dumbbell className="h-5 w-5 mr-2 text-fitness-secondary" />
+              <CardTitle className="flex items-center text-black">
+                <Dumbbell className="h-6 w-6 mr-2 text-green-500" />
                 Progress Summary
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {weightEntries.length > 0 ? (
                 <>
-                  <div className="text-center p-3 sm:p-4 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
-                    <div className="text-2xl sm:text-3xl font-bold text-fitness-primary">
+                  <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="text-3xl font-bold text-green-500">
                       {weightChange > 0 ? '+' : ''}{weightChange.toFixed(1)} lbs
                     </div>
-                    <p className="text-xs sm:text-sm text-muted-foreground">Total Change</p>
+                    <p className="text-sm text-gray-600">Total Change</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                    <div className="text-center p-3 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
-                      <div className="text-lg sm:text-xl font-bold">{startWeight}</div>
-                      <p className="text-xs text-muted-foreground">Starting</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="text-xl font-bold text-black">{startWeight}</div>
+                      <p className="text-xs text-gray-600">Starting</p>
                     </div>
-                    <div className="text-center p-3 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
-                      <div className="text-lg sm:text-xl font-bold">{currentWeight}</div>
-                      <p className="text-xs text-muted-foreground">Current</p>
+                    <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="text-xl font-bold text-black">{currentWeight}</div>
+                      <p className="text-xs text-gray-600">Current</p>
                     </div>
                   </div>
-                  <div className="p-3 bg-fitness-primary/10 rounded-lg transition-all duration-200 hover:bg-fitness-primary/20">
-                    <Badge variant="secondary" className="mb-2 transition-all duration-200">AI Insight</Badge>
-                    <p className="text-xs sm:text-sm">
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <Badge className="mb-2 bg-green-500 text-white">AI Insight</Badge>
+                    <p className="text-sm text-black">
                       {weightChange < 0
                         ? "Excellent progress! Your consistent effort is paying off."
                         : weightChange > 0
@@ -232,8 +233,8 @@ const WeightTracking = () => {
                   </div>
                 </>
               ) : (
-                <div className="text-center p-3 sm:p-4 bg-white/50 rounded-lg transition-all duration-200 hover:bg-white/70">
-                  <p className="text-muted-foreground text-sm sm:text-base">Start logging your weight to see progress insights!</p>
+                <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-gray-600">Start logging your weight to see progress insights!</p>
                 </div>
               )}
             </CardContent>
