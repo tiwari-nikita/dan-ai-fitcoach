@@ -9,6 +9,8 @@ interface WeightEntry {
   weight: number;
   date: string;
   notes: string | null;
+  muscle_mass: number | null;
+  body_fat: number | null;
   created_at: string;
 }
 
@@ -78,6 +80,65 @@ export const useWeightEntries = () => {
     }
   };
 
+  const updateWeightEntry = async (id: string, updates: Partial<Omit<WeightEntry, 'id' | 'created_at' | 'user_id'>>) => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('weight_entries')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setWeightEntries(prev => prev.map(entry => (entry.id === id ? data : entry)));
+      toast({
+        title: "Weight Entry Updated",
+        description: "Your weight entry has been updated successfully!",
+      });
+      return data;
+    } catch (error) {
+      console.error('Error updating weight entry:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update weight entry.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
+  const deleteWeightEntry = async (id: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('weight_entries')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setWeightEntries(prev => prev.filter(entry => entry.id !== id));
+      toast({
+        title: "Weight Entry Deleted",
+        description: "Your weight entry has been deleted successfully!",
+      });
+    } catch (error) {
+      console.error('Error deleting weight entry:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete weight entry.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchWeightEntries();
   }, [user]);
@@ -86,6 +147,8 @@ export const useWeightEntries = () => {
     weightEntries,
     loading,
     addWeightEntry,
+    updateWeightEntry,
+    deleteWeightEntry,
     refetch: fetchWeightEntries
   };
 };

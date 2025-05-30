@@ -6,20 +6,26 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Weight, Calendar, Activity, Plus, Dumbbell } from 'lucide-react';
+import { Weight, Activity, Plus, Dumbbell, Pencil, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useWeightEntries } from '@/hooks/useWeightEntries';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 const WeightTracking = () => {
   const { toast } = useToast();
-  const { weightEntries, loading, addWeightEntry, updateWeightEntry } = useWeightEntries();
+  const { weightEntries, loading, addWeightEntry, updateWeightEntry, deleteWeightEntry } = useWeightEntries();
   const [newEntry, setNewEntry] = useState({
     weight: '',
     notes: ''
   });
   const [muscleMass, setMuscleMass] = useState<string>('');
   const [bodyFat, setBodyFat] = useState<string>('');
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [currentEditingEntry, setCurrentEditingEntry] = useState<any | null>(null);
+  const [editedWeight, setEditedWeight] = useState('');
+  const [editedNotes, setEditedNotes] = useState('');
 
   const handleAddWeightEntry = async () => {
     if (!newEntry.weight) {
@@ -66,10 +72,58 @@ const WeightTracking = () => {
         muscle_mass: muscleMass ? parseFloat(muscleMass) : 0,
         body_fat: bodyFat ? parseFloat(bodyFat) : 0
       });
+      toast({
+        title: "Progress Saved",
+        description: "Your body composition data has been updated.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error Saving Progress",
+        description: "Failed to update body composition data. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleEditClick = (entry: any) => {
+    setCurrentEditingEntry(entry);
+    setEditedWeight(entry.weight.toString());
+    setEditedNotes(entry.notes || '');
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!currentEditingEntry) return;
+
+    if (!editedWeight) {
+      toast({
+        title: "Missing Weight",
+        description: "Please enter the updated weight.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await updateWeightEntry(currentEditingEntry.id, {
+        weight: parseFloat(editedWeight),
+        notes: editedNotes || null,
+      });
+      setIsEditDialogOpen(false);
+      setCurrentEditingEntry(null);
     } catch (error) {
       // Error handled in hook
     }
   };
+
+  const handleDeleteClick = async (id: string) => {
+    try {
+      await deleteWeightEntry(id);
+    } catch (error) {
+      // Error handled in hook
+    }
+  };
+
 
   useEffect(() => {
     if (weightEntries.length > 0) {
@@ -96,7 +150,8 @@ const WeightTracking = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <>
+      <div className="max-w-6xl mx-auto space-y-6">
       <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-3xl text-white">
@@ -154,7 +209,6 @@ const WeightTracking = () => {
           <Card className="bg-white border-gray-300 shadow-lg flex-grow">
             <CardHeader>
               <CardTitle className="flex items-center text-black">
-                <Calendar className="h-6 w-6 mr-2 text-green-500" />
                 Weight History
               </CardTitle>
             </CardHeader>
@@ -178,6 +232,30 @@ const WeightTracking = () => {
                               day: 'numeric'
                             })}
                           </p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button variant="ghost" size="icon" className="text-gray-500 hover:text-green-500" onClick={() => handleEditClick(entry)}>
+                            <Pencil className="h-5 w-5" />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="text-gray-500 hover:text-red-500">
+                                <Trash2 className="h-5 w-5" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-white text-black">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete your weight entry.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="text-black border-gray-300">Cancel</AlertDialogCancel>
+                                <AlertDialogAction className="bg-red-500 hover:bg-red-600 text-white" onClick={() => handleDeleteClick(entry.id)}>Delete</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </div>
                       {entry.notes && (
@@ -310,7 +388,50 @@ const WeightTracking = () => {
         </div>
       </div>
     </div>
+      {/* Edit Weight Entry Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-white text-black">
+          <DialogHeader>
+            <DialogTitle>Edit Weight Entry</DialogTitle>
+            <DialogDescription>
+              Make changes to your weight entry here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="editedWeight" className="text-right">
+                Weight (lbs)
+              </Label>
+              <Input
+                id="editedWeight"
+                type="number"
+                step="0.1"
+                value={editedWeight}
+                onChange={(e) => setEditedWeight(e.target.value)}
+                className="col-span-3 bg-white text-black"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="editedNotes" className="text-right">
+                Notes
+              </Label>
+              <Input
+                id="editedNotes"
+                value={editedNotes}
+                onChange={(e) => setEditedNotes(e.target.value)}
+                className="col-span-3 bg-white text-black"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} className="text-black border-gray-300">Cancel</Button>
+            <Button type="submit" onClick={handleSaveEdit} className="bg-green-500 hover:bg-green-600 text-white">Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
+
 
 export default WeightTracking;
