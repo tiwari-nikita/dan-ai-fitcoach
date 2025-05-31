@@ -62,7 +62,7 @@ export const useWeightEntries = () => {
 
       if (error) throw error;
       
-      setWeightEntries(prev => [data, ...prev]);
+      setWeightEntries(prev => [...prev, data]);
       toast({
         title: "Weight Logged",
         description: "Your weight entry has been recorded successfully!",
