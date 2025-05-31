@@ -33,7 +33,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
         <div className="bg-primary p-4 rounded-full">
           <Dumbbell className="h-8 w-8 text-primary-foreground" />
         </div>
@@ -65,13 +65,13 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white dark:bg-black text-foreground">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <Header />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-lg px-4 py-2 transition-colors duration-200">
+              <Button variant="ghost" className="text-black dark:text-white hover:bg-accent hover:text-accent-foreground rounded-lg px-4 py-2 transition-colors duration-200">
                 Settings
               </Button>
             </DropdownMenuTrigger>
