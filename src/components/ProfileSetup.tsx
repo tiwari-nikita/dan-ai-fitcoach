@@ -153,20 +153,20 @@ const ProfileSetup = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
+      <Card className="bg-white dark:bg-black text-black dark:text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-3xl text-white">
-            <User className="h-8 w-8 mr-3 text-green-500" />
+          <CardTitle className="flex items-center justify-center text-3xl text-black dark:text-white">
+            <User className="h-8 w-8 mr-3 mt-1 text-green-500" />
             Create Your Fitness Profile
           </CardTitle>
-          <p className="text-gray-300 text-lg">Help Dan Go AI understand you better for personalized coaching</p>
+          <p className="text-gray-800 dark:text-gray-300 text-lg">Help Dan Go AI understand you better for personalized coaching</p>
         </CardHeader>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white border-gray-300 shadow-lg">
+        <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center text-black">
+            <CardTitle className="flex items-center text-black dark:text-white">
               <Heart className="h-6 w-6 mr-2 text-green-500" />
               Basic Information
             </CardTitle>
@@ -245,9 +245,9 @@ const ProfileSetup = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border-gray-300 shadow-lg">
+        <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center text-black">
+            <CardTitle className="flex items-center text-black dark:text-white">
               <Activity className="h-6 w-6 mr-2 text-green-500" />
               Fitness Background
             </CardTitle>
@@ -305,9 +305,9 @@ const ProfileSetup = () => {
         </Card>
       </div>
 
-      <Card className="bg-white border-gray-300 shadow-lg">
+      <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center text-black">
+          <CardTitle className="flex items-center text-black dark:text-white">
             <Dumbbell className="h-6 w-6 mr-2 text-green-500" />
             Additional Information
           </CardTitle>

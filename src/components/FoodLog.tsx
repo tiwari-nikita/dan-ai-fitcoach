@@ -229,21 +229,21 @@ const FoodLog = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
+      <Card className="bg-white dark:bg-black text-black dark:text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-3xl text-white">
-            <UtensilsCrossed className="h-8 w-8 mr-3 text-green-500" />
+          <CardTitle className="flex items-center justify-center text-3xl text-black dark:text-white">
+            <UtensilsCrossed className="h-8 w-8 mr-3 mt-1 text-green-500" />
             Daily Food Log
           </CardTitle>
-          <p className="text-gray-300 text-lg">Monitor your progress and body composition changes</p>
+          <p className="text-gray-800 dark:text-gray-300 text-lg">Monitor your progress and body composition changes</p>
         </CardHeader>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6 flex flex-col h-full">
-          <Card className="bg-white border-gray-300 shadow-lg">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 <Plus className="h-6 w-6 mr-2 text-green-500" />
                 Add Food Entry
               </CardTitle>
@@ -328,9 +328,9 @@ const FoodLog = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-300 shadow-lg flex-grow">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg flex-grow">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 <Calendar className="h-6 w-6 mr-2 text-green-500" />
                 Today's Food Entries
               </CardTitle>
@@ -348,8 +348,8 @@ const FoodLog = () => {
                         <div className="flex items-center">
                           <span className="text-xl sm:text-2xl mr-2">{getMealIcon(food.meal_type)}</span>
                           <div>
-                            <h4 className="font-semibold text-sm sm:text-base text-black">{food.food_description}</h4>
-                            <p className="text-xs sm:text-sm text-gray-600">
+                            <h4 className="font-semibold text-sm sm:text-base text-black dark:text-white">{food.food_description}</h4>
+                            <p className="text-xs sm:text-sm text-gray-800 dark:text-gray-300">
                               {food.meal_type} • {new Date(food.logged_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
                           </div>
@@ -359,7 +359,7 @@ const FoodLog = () => {
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between mt-2">
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-800 dark:text-gray-300">
                           <div>Calories: {food.calories || 0} kcal</div>
                           <div>Protein: {food.protein_g || 0} g</div>
                           <div>Carbs: {food.carbs_g || 0} g</div>
@@ -515,37 +515,37 @@ const FoodLog = () => {
         </div>
 
         <div className="space-y-6 flex flex-col h-full">
-          <Card className="bg-white border-gray-300 shadow-lg">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 <Activity className="h-6 w-6 mr-2 text-green-500" />
                 Daily Nutrition Summary
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <div className="flex justify-between mb-2 text-black">
+                <div className="flex justify-between mb-2 text-black dark:text-white">
                   <span className="text-sm font-medium">Calories</span>
                   <span className="text-sm">{currentTotals.calories} / {dailyTargets.calories}</span>
                 </div>
                 <Progress value={(currentTotals.calories / dailyTargets.calories) * 100} className="h-2" />
               </div>
               <div>
-                <div className="flex justify-between mb-2 text-black">
+                <div className="flex justify-between mb-2 text-black dark:text-white">
                   <span className="text-sm font-medium">Protein</span>
                   <span className="text-sm">{currentTotals.protein}g / {dailyTargets.protein}g</span>
                 </div>
                 <Progress value={(currentTotals.protein / dailyTargets.protein) * 100} className="h-2" />
               </div>
               <div>
-                <div className="flex justify-between mb-2 text-black">
+                <div className="flex justify-between mb-2 text-black dark:text-white">
                   <span className="text-sm font-medium">Carbs</span>
                   <span className="text-sm">{currentTotals.carbs}g / {dailyTargets.carbs}g</span>
                 </div>
                 <Progress value={(currentTotals.carbs / dailyTargets.carbs) * 100} className="h-2" />
               </div>
               <div>
-                <div className="flex justify-between mb-2 text-black">
+                <div className="flex justify-between mb-2 text-black dark:text-white">
                   <span className="text-sm font-medium">Fat</span>
                   <span className="text-sm">{currentTotals.fat}g / {dailyTargets.fat}g</span>
                 </div>
@@ -554,9 +554,9 @@ const FoodLog = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-300 shadow-lg flex-grow">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg flex-grow">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 <Dumbbell className="h-6 w-6 mr-2 text-green-500" />
                 AI Nutrition Insights
               </CardTitle>
@@ -564,11 +564,11 @@ const FoodLog = () => {
             <CardContent className="space-y-3">
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                 <Badge className="mb-2 bg-green-500 text-white">Protein Focus</Badge>
-                <p className="text-sm text-black">Great protein intake! You're on track to support muscle recovery and growth.</p>
+                <p className="text-sm text-black dark:text-white">Great protein intake! You're on track to support muscle recovery and growth.</p>
               </div>
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                 <Badge className="mb-2 bg-green-500 text-white">Suggestion</Badge>
-                <p className="text-sm text-black">Consider adding more complex carbs for sustained energy during workouts.</p>
+                <p className="text-sm text-black dark:text-white">Consider adding more complex carbs for sustained energy during workouts.</p>
               </div>
             </CardContent>
           </Card>

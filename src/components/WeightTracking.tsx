@@ -152,21 +152,21 @@ const WeightTracking = () => {
   return (
     <>
       <div className="max-w-6xl mx-auto space-y-6">
-      <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
+      <Card className="bg-white dark:bg-black text-black dark:text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-3xl text-white">
-            <Weight className="h-8 w-8 mr-3 text-green-500" />
+          <CardTitle className="flex items-center justify-center text-3xl text-black dark:text-white">
+            <Weight className="h-8 w-8 mr-3 mt-1 text-green-500" />
             Weight Tracking
           </CardTitle>
-          <p className="text-gray-300 text-lg">Monitor your progress and body composition changes</p>
+          <p className="text-gray-800 dark:text-gray-300 text-lg">Monitor your progress and body composition changes</p>
         </CardHeader>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-2 space-y-6 flex flex-col h-full">
-          <Card className="bg-white border-gray-300 shadow-lg">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 <Activity className="h-6 w-6 mr-2 text-green-500" />
                 Weight Progress Chart
               </CardTitle>
@@ -206,9 +206,9 @@ const WeightTracking = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-300 shadow-lg flex-grow">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg flex-grow">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 Weight History
               </CardTitle>
             </CardHeader>
@@ -223,8 +223,8 @@ const WeightTracking = () => {
                     <div key={entry.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-3">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <h4 className="font-semibold text-lg text-black">{entry.weight} lbs</h4>
-                          <p className="text-sm text-gray-600">
+                          <h4 className="font-semibold text-lg text-black dark:text-white">{entry.weight} lbs</h4>
+                          <p className="text-sm text-gray-800 dark:text-gray-300">
                             {new Date(entry.date).toLocaleDateString('en-US', {
                               weekday: 'long',
                               year: 'numeric',
@@ -259,7 +259,7 @@ const WeightTracking = () => {
                         </div>
                       </div>
                       {entry.notes && (
-                        <p className="text-sm text-gray-600 italic">"{entry.notes}"</p>
+                        <p className="text-sm text-gray-800 dark:text-gray-300 italic">"{entry.notes}"</p>
                       )}
                     </div>
                   ))}
@@ -270,9 +270,9 @@ const WeightTracking = () => {
         </div>
 
         <div className="space-y-6 flex flex-col h-full">
-          <Card className="bg-white border-gray-300 shadow-lg">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 <Plus className="h-6 w-6 mr-2 text-green-500" />
                 Log New Weight
               </CardTitle>
@@ -309,9 +309,9 @@ const WeightTracking = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-300 shadow-lg flex-grow">
+          <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg flex-grow">
             <CardHeader>
-              <CardTitle className="flex items-center text-black">
+              <CardTitle className="flex items-center text-black dark:text-white">
                 <Dumbbell className="h-6 w-6 mr-2 text-green-500" />
                 Progress Summary
               </CardTitle>
@@ -327,12 +327,12 @@ const WeightTracking = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="text-xl font-bold text-black">{startWeight}</div>
-                      <p className="text-xs text-gray-600">Current</p>
+                      <div className="text-xl font-bold text-black dark:text-white">{startWeight}</div>
+                      <p className="text-xs text-gray-800 dark:text-gray-300">Current</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="text-xl font-bold text-black">{currentWeight}</div>
-                      <p className="text-xs text-gray-600">Starting</p>
+                      <div className="text-xl font-bold text-black dark:text-white">{currentWeight}</div>
+                      <p className="text-xs text-gray-800 dark:text-gray-300">Starting</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -369,7 +369,7 @@ const WeightTracking = () => {
                   </Button>
                   <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                     <Badge className="mb-2 bg-green-500 text-white">AI Insight</Badge>
-                    <p className="text-sm text-black">
+                    <p className="text-sm text-black dark:text-white">
                       {weightChange < 0
                         ? "Excellent progress! Your consistent effort is paying off."
                         : weightChange > 0

@@ -174,8 +174,11 @@ const AICoach = () => {
         // Re-generate text with tool results
         const { text: toolResponseText } = await generateText({
           model: googleAI('gemini-2.0-flash-001'),
-          messages: formattedMessages as any,
-          toolResults: toolResults as any,
+          messages: [
+            ...formattedMessages,
+            { role: 'assistant', content: [], tool_calls: toolCalls },
+            { role: 'tool', content: toolResults },
+          ] as any,
         });
         const aiResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),
@@ -287,7 +290,7 @@ const AICoach = () => {
       <Card className="bg-white dark:bg-black text-black dark:text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center text-3xl text-black dark:text-white">
-            <MessageSquare className="h-8 w-8 mr-3 mt-2 text-green-500" />
+            <MessageSquare className="h-8 w-8 mr-3 mt-1 text-green-500" />
             Chat with Dan Go AI Coach
           </CardTitle>
           <p className="text-gray-800 dark:text-gray-300 text-lg">Get personalized fitness advice and motivation 24/7</p>
@@ -550,3 +553,4 @@ const AICoach = () => {
 };
 
 export default AICoach;
+

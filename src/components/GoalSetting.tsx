@@ -66,13 +66,13 @@ const GoalSetting = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
+      <Card className="bg-white dark:bg-black text-black dark:text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-3xl text-white">
-            <Goal className="h-8 w-8 mr-3 text-green-500" />
+          <CardTitle className="flex items-center justify-center text-3xl text-black dark:text-white">
+            <Goal className="h-8 w-8 mr-3 mt-1 text-green-500" />
             Set Your Fitness Goals
           </CardTitle>
-          <p className="text-gray-300 text-lg">Choose your primary goals so Dan Go AI can create the perfect plan for you</p>
+          <p className="text-gray-800 dark:text-gray-300 text-lg">Choose your primary goals so Dan Go AI can create the perfect plan for you</p>
         </CardHeader>
       </Card>
 
@@ -80,9 +80,9 @@ const GoalSetting = () => {
         {goalCategories.map((category) => {
           const Icon = category.icon;
           return (
-            <Card key={category.title} className="bg-white border-gray-300 shadow-lg">
+            <Card key={category.title} className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
               <CardHeader>
-                <CardTitle className="flex items-center text-black">
+                <CardTitle className="flex items-center text-black dark:text-white">
                   <Icon className="h-6 w-6 mr-2 text-green-500" />
                   {category.title}
                 </CardTitle>
@@ -100,8 +100,8 @@ const GoalSetting = () => {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-lg text-black">{goal.title}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{goal.description}</p>
+                        <h4 className="font-semibold text-lg text-black dark:text-white">{goal.title}</h4>
+                        <p className="text-sm text-gray-800 dark:text-gray-300 mt-1">{goal.description}</p>
                       </div>
                       {selectedGoals.includes(goal.id) && (
                         <Badge className="bg-green-500 text-white">Selected</Badge>
@@ -116,9 +116,9 @@ const GoalSetting = () => {
       </div>
 
       {selectedGoals.length > 0 && (
-        <Card className="bg-white border-gray-300 shadow-lg">
+        <Card className="bg-white dark:bg-black text-black dark:text-white border-gray-300 shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center text-black">
+            <CardTitle className="flex items-center text-black dark:text-white">
               <Calendar className="h-6 w-6 mr-2 text-green-500" />
               Your Selected Goals ({selectedGoals.length})
             </CardTitle>
