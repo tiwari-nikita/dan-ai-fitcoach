@@ -18,13 +18,13 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
+      <Card className="bg-white dark:bg-black text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-3xl text-white">
-            <Target className="h-8 w-8 mr-3 text-green-500" />
+          <CardTitle className="flex items-center justify-center text-3xl text-black dark:text-white">
+            <Target className="h-8 w-8 mr-3 mt-1 text-green-500" />
             Your Fitness Dashboard
           </CardTitle>
-          <p className="text-gray-300 text-lg">Track your progress and stay motivated</p>
+          <p className="text-gray-700 dark:text-gray-300 text-lg">Track your progress and stay motivated</p>
         </CardHeader>
       </Card>
 
