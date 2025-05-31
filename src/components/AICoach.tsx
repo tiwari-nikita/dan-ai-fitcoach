@@ -284,13 +284,13 @@ const AICoach = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <Card className="bg-white dark:bg-black text-black dark:text-white border-green-500 border-2 shadow-xl">
+      <Card className="bg-black text-white border-green-500 border-2 shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center text-3xl text-black dark:text-white">
-            <MessageSquare className="h-8 w-8 mr-3 mt-2 text-green-500" />
+          <CardTitle className="flex items-center justify-center text-3xl text-white">
+            <MessageSquare className="h-8 w-8 mr-3 text-green-500" />
             Chat with Dan Go AI Coach
           </CardTitle>
-          <p className="text-gray-800 dark:text-gray-300 text-lg">Get personalized fitness advice and motivation 24/7</p>
+          <p className="text-gray-300 text-lg">Get personalized fitness advice and motivation 24/7</p>
         </CardHeader>
       </Card>
 
