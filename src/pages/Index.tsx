@@ -92,7 +92,7 @@ const Index = () => {
         
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
         
-        <Card className="mt-8 bg-card border-border rounded-xl shadow-lg">
+        <Card className="mt-8 bg-white dark:bg-black border-0 rounded-xl">
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
             <Button
               onClick={() => setActiveTab('coach')}
