@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Dumbbell, Heart, Calendar, Activity, Weight } from 'lucide-react';
+import { Dumbbell, Heart, Calendar, Activity, Weight, MessageSquare } from 'lucide-react';
 
 interface NavigationProps {
   activeTab: string;
@@ -15,6 +15,7 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
     { id: 'goals', label: 'Goals', icon: Dumbbell },
     { id: 'food', label: 'Food Log', icon: Calendar },
     { id: 'weight', label: 'Weight', icon: Weight },
+    { id: 'coach', label: 'Coach', icon: MessageSquare },
   ];
 
   return (
@@ -35,7 +36,7 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
                     : 'text-black dark:text-white hover:bg-white hover:text-green-600'
                 }`}
               >
-                <Icon className="h-4 w-4 mr-2" />
+                <Icon className="h-4 w-4 mr-2 text-white dark:text-black" />
                 <span className="hidden sm:inline text-white dark:text-black">{item.label}</span>
               </Button>
             );
