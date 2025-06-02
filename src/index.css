@@ -58,7 +58,7 @@
 
   .dark {
     --background: 0 0% 5%; /* Deep black */
-    --foreground: 222.2 84% 4.9%; /* Black */
+    --foreground: 0 0% 100%; /* White */
 
     --card: 210 10% 20%; /* Dark grey */
     --card-foreground: 0 0% 0%; /* Black */
