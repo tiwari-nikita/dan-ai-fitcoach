@@ -12,6 +12,7 @@ import { useWeightEntries } from '@/hooks/useWeightEntries';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { formatDateWithTime } from '@/lib/utils';
 
 const WeightTracking = () => {
   const { toast } = useToast();
@@ -132,14 +133,14 @@ const WeightTracking = () => {
     }
   }, [weightEntries]);
 
-  const chartData = [...weightEntries].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(entry => ({
-    date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+  const chartData = [...weightEntries].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()).map(entry => ({
+    date: formatDateWithTime(entry.created_at),
     weight: entry.weight
   }));
 
   const currentWeight = weightEntries[0]?.weight || 0;
   const startWeight = weightEntries[weightEntries.length - 1]?.weight || 0;
-  const weightChange = startWeight - currentWeight;
+  const weightChange = currentWeight - startWeight;
 
   if (loading) {
     return (
@@ -219,18 +220,13 @@ const WeightTracking = () => {
                 </p>
               ) : (
                 <ScrollArea className="h-[400px]">
-                  {[...weightEntries].reverse().map((entry) => (
+                  {weightEntries.map((entry) => (
                     <div key={entry.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-3">
                       <div className="flex items-center justify-between mb-2">
                         <div>
                           <h4 className="font-semibold text-lg text-black">{entry.weight} lbs</h4>
                           <p className="text-sm text-gray-600">
-                            {new Date(entry.date).toLocaleDateString('en-US', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
+                            {formatDateWithTime(entry.created_at)}
                           </p>
                         </div>
                         <div className="flex space-x-2">
@@ -328,11 +324,11 @@ const WeightTracking = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                       <div className="text-xl font-bold text-black">{startWeight}</div>
-                      <p className="text-xs text-gray-600">Current</p>
+                      <p className="text-xs text-gray-600">Starting</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                       <div className="text-xl font-bold text-black">{currentWeight}</div>
-                      <p className="text-xs text-gray-600">Starting</p>
+                      <p className="text-xs text-gray-600">Current</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">

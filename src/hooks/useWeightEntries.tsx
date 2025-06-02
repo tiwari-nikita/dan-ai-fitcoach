@@ -29,7 +29,7 @@ export const useWeightEntries = () => {
         .from('weight_entries')
         .select('*')
         .eq('user_id', user.id)
-        .order('date', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       // Ensure newest entries are first for display, as per user feedback.
