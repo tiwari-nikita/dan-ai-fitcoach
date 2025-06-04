@@ -168,6 +168,7 @@ export const useFoodEntries = () => {
     addFoodEntry,
     deleteFoodEntry,
     updateFoodEntry,
-    refetch: fetchFoodEntries
+    refetch: fetchFoodEntries,
+    getFoodEntries: fetchFoodEntries
   };
 };

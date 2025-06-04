@@ -34,7 +34,7 @@ const AICoach = () => {
   const modelForToolResults = 'gemini-2.5-flash-preview-04-17';
 
   const { toast } = useToast();
-  const { addFoodEntry } = useFoodEntries();
+  const { addFoodEntry, getFoodEntries } = useFoodEntries();
   const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -110,7 +110,7 @@ const AICoach = () => {
       console.log({systemPrompt,formattedMessages})
       
       const { text, toolCalls } = await callGeminiWithFailover(
-        modelForToolCall
+        modelForToolCall,
         {
           messages: formattedMessages as any,
           tools: {
@@ -124,6 +124,10 @@ const AICoach = () => {
                 fats_g: z.number().describe('The fat amount in grams.'),
                 meal_type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']).describe('The meal type (breakfast, lunch, dinner, snack).'),
               }),
+            },
+            get_food_entries: {
+              description: "Retrieves a list of food entries for a given date.",
+              parameters: z.object({}),
             },
           },
         }
@@ -170,6 +174,25 @@ const AICoach = () => {
                 result: { success: false, error: toolError.message || "Failed to add food entry." },
               });
             }
+          } else if (toolCall.toolName === 'get_food_entries') {
+            try {
+              const foodEntries = await getFoodEntries(); // Placeholder function call
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: true, foodEntries },
+              });
+            } catch (toolError: any) {
+              console.error('Error getting food entries:', toolError);
+              toast({
+                title: "Failed to Retrieve Food Entries",
+                description: toolError.message || "An unexpected error occurred while retrieving food entries.",
+                variant: "destructive",
+              });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: false, error: toolError.message || "Failed to retrieve food entries." },
+              });
+            }
           }
         }
         // Re-generate text with tool results
@@ -208,6 +231,7 @@ const AICoach = () => {
       setIsLoading(false);
     }
   };
+
 
   const processImageFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
