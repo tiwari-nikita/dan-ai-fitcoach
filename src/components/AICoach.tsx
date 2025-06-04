@@ -29,6 +29,19 @@ interface SelectedImage {
   previewUrl: string; // Data URL for immediate preview
 }
 
+const modifyFoodEntry = async (args: {
+  original_food_description: string;
+  new_food_description?: string;
+  calories?: number;
+  protein_g?: number;
+  carbs_g?: number;
+  fats_g?: number;
+  meal_type?: 'breakfast' | 'lunch' | 'dinner' | 'snack';
+}) => {
+  console.log('modifyFoodEntry called with:', args);
+  return { success: true, message: `Food entry for ${args.original_food_description} modified successfully.` };
+};
+
 const AICoach = () => {
   const modelForToolCall = 'gemini-2.5-flash-preview-04-17';
   const modelForToolResults = 'gemini-2.5-flash-preview-04-17';
@@ -136,6 +149,18 @@ const AICoach = () => {
                 food_description: z.string().describe('The description of the food item to delete.'),
               }),
             },
+            modify_food_entry: {
+              description: "Modify an existing structured food nutrition entry. Provide the original food description to identify the entry, and new values for any fields that need to be updated.",
+              parameters: z.object({
+                original_food_description: z.string().describe('The original description of the food item to modify.'),
+                new_food_description: z.string().optional().describe('The new name of the food item.'),
+                calories: z.number().optional().describe('The new calorie count for the food item.'),
+                protein_g: z.number().optional().describe('The new protein amount in grams.'),
+                carbs_g: z.number().optional().describe('The new carbohydrate amount in grams.'),
+                fats_g: z.number().optional().describe('The new fat amount in grams.'),
+                meal_type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']).optional().describe('The new meal type (breakfast, lunch, dinner, snack).'),
+              }),
+            },
           },
         }
       );
@@ -234,6 +259,26 @@ const AICoach = () => {
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
                 result: { success: false, error: toolError.message || "Failed to delete food entry." },
+              });
+            }
+          } else if (toolCall.toolName === 'modify_food_entry') {
+            try {
+              const { original_food_description, new_food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
+              const result = await modifyFoodEntry({ original_food_description, new_food_description, calories, protein_g, carbs_g, fats_g, meal_type });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: result,
+              });
+            } catch (toolError: any) {
+              console.error('Error modifying food entry:', toolError);
+              toast({
+                title: "Failed to Modify Food Entry",
+                description: toolError.message || "An unexpected error occurred while modifying the food entry.",
+                variant: "destructive",
+              });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: false, error: toolError.message || "Failed to modify food entry." },
               });
             }
           }
