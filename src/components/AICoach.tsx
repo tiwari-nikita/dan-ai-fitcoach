@@ -13,6 +13,7 @@ import { z } from 'zod';
 import ReactMarkdown from 'react-markdown';
 import { useFoodEntries } from '@/hooks/useFoodEntries';
 import { useWeightEntries } from '@/hooks/useWeightEntries';
+import { useUserProfile } from '@/hooks/useUserProfile'; // Import useUserProfile
 import { useAuth } from '@/contexts/AuthContext';
 import MoodLogger from './MoodLogger';
 import { callGeminiWithFailover } from '@/utils/apiFailover';
@@ -38,6 +39,7 @@ const AICoach = () => {
   const { toast } = useToast();
   const { addFoodEntry, getFoodEntries, deleteFoodEntry, modifyFoodEntry, foodEntries } = useFoodEntries();
   const { addWeightEntry, getWeightEntries, deleteWeightEntry, modifyWeightEntry } = useWeightEntries();
+  const { setUserInfo, getUserInfo } = useUserProfile(); // Destructure setUserInfo and getUserInfo
   const { user } = useAuth();
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -177,6 +179,19 @@ const modifyWeightEntryParams = z.object({
             modify_weight_entry: {
               description: "Modifies an existing weight entry for a specific date. Requires the original entry date to identify the entry, and the new weight and new date for the update.",
               parameters: modifyWeightEntryParams,
+            },
+            set_user_info: {
+              description: "Stores or updates generic user-specific information as key-value pairs in the user's profile. This can be used to store preferences, goals, or any other miscellaneous data.",
+              parameters: z.object({
+                key: z.string().describe('The key for the user information to store (e.g., "fitness_goal", "dietary_preference").'),
+                value: z.any().describe('The value associated with the key. This can be any JSON-serializable data type (string, number, boolean, object, array).'),
+              }),
+            },
+            get_user_info: {
+              description: "Retrieves generic user-specific information from the user's profile. Can retrieve all stored information or a specific value by key.",
+              parameters: z.object({
+                key: z.string().optional().describe('The optional key for the specific user information to retrieve. If not provided, all user information will be returned.'),
+              }),
             },
           },
         }
@@ -557,6 +572,92 @@ const modifyWeightEntryParams = z.object({
                 toolResults.push({
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to modify weight entry." },
+                });
+              }
+              break;
+            case 'set_user_info':
+              try {
+                const { key, value } = toolCall.args;
+                const result = await setUserInfo(key, value);
+                if (result.success) {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.97).toString(),
+                    type: 'ai',
+                    message: `Successfully set user information for key: ${key}.`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "User Info Set",
+                    description: `Successfully set user information for key: ${key}.`,
+                  });
+                } else {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.97).toString(),
+                    type: 'ai',
+                    message: `Failed to set user information for key: ${key}. Reason: ${result.error || "Unknown error."}`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Failed to Set User Info",
+                    description: result.error || "An unexpected error occurred while setting user information.",
+                    variant: "destructive",
+                  });
+                }
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: result,
+                });
+              } catch (toolError: any) {
+                console.error('Error setting user info:', toolError);
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.97).toString(),
+                  type: 'ai',
+                  message: `Failed to set user info. Reason: ${toolError.message || "An unexpected error occurred."}`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Failed to Set User Info",
+                  description: toolError.message || "An unexpected error occurred while setting user information.",
+                  variant: "destructive",
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to set user info." },
+                });
+              }
+              break;
+            case 'get_user_info':
+              try {
+                const { key } = toolCall.args;
+                const userInfo = getUserInfo(key);
+                let message = "";
+                if (key) {
+                  message = userInfo !== null ? `User information for '${key}': ${JSON.stringify(userInfo)}` : `No user information found for key: '${key}'.`;
+                } else {
+                  message = userInfo && Object.keys(userInfo).length > 0 ? `All user information: ${JSON.stringify(userInfo, null, 2)}` : "No user information found.";
+                }
+
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.98).toString(),
+                  type: 'ai',
+                  message: message,
+                  timestamp: new Date()
+                }]);
+
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: true, message: "User information retrieved and displayed." },
+                });
+              } catch (toolError: any) {
+                console.error('Error getting user info:', toolError);
+                toast({
+                  title: "Failed to Retrieve User Info",
+                  description: toolError.message || "An unexpected error occurred while retrieving user information.",
+                  variant: "destructive",
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to retrieve user information." },
                 });
               }
               break;
