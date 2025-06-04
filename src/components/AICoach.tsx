@@ -176,10 +176,26 @@ const AICoach = () => {
             }
           } else if (toolCall.toolName === 'get_food_entries') {
             try {
-              const foodEntries = await getFoodEntries(); // Placeholder function call
+              const foodEntries = await getFoodEntries();
+              let formattedFoodEntries = "Your food entries for today:\n";
+              if (foodEntries && foodEntries.length > 0) {
+                foodEntries.forEach((entry: any) => {
+                  formattedFoodEntries += `- ${entry.meal_type}: ${entry.food_description} (${entry.calories} kcal, P:${entry.protein_g || 0}g, C:${entry.carbs_g || 0}g, F:${entry.fats_g || 0}g)\n`;
+                });
+              } else {
+                formattedFoodEntries = "You have no food entries for today.";
+              }
+
+              setMessages(prev => [...prev, {
+                id: (Date.now() + 0.5).toString(),
+                type: 'ai',
+                message: formattedFoodEntries,
+                timestamp: new Date()
+              }]);
+
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
-                result: { success: true, foodEntries },
+                result: { success: true, message: "Food entries retrieved and displayed." },
               });
             } catch (toolError: any) {
               console.error('Error getting food entries:', toolError);
