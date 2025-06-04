@@ -31,7 +31,7 @@ interface SelectedImage {
 
 const AICoach = () => {
   const modelForToolCall = 'gemini-2.5-flash-preview-04-17';
-  const modelForToolResults = 'gemini-2.0-flash-001';
+  const modelForToolResults = 'gemini-2.5-flash-preview-04-17';
 
   const { toast } = useToast();
   const { addFoodEntry } = useFoodEntries();
