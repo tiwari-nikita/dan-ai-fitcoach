@@ -37,7 +37,7 @@ const AICoach = () => {
 
   const { toast } = useToast();
   const { addFoodEntry, getFoodEntries, deleteFoodEntry, modifyFoodEntry, foodEntries } = useFoodEntries();
-  const { addWeightEntry, getWeightEntries } = useWeightEntries();
+  const { addWeightEntry, getWeightEntries, deleteWeightEntry } = useWeightEntries();
   const { user } = useAuth();
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -160,6 +160,12 @@ const AICoach = () => {
               parameters: z.object({
                 weight_kg: z.number().describe('The weight in kilograms.'),
                 entry_date: z.string().describe('The date of the weight entry in YYYY-MM-DD format.'),
+              }),
+            },
+            delete_weight_entry: {
+              description: "Delete a previously recorded weight entry by its entry date.",
+              parameters: z.object({
+                entry_date: z.string().describe('The date of the weight entry to delete in YYYY-MM-DD format.'),
               }),
             },
           },
@@ -439,6 +445,57 @@ const AICoach = () => {
                 toolResults.push({
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to retrieve weight entries." },
+                });
+              }
+              break;
+            case 'delete_weight_entry':
+              try {
+                const { entry_date } = toolCall.args;
+                const result = await deleteWeightEntry(entry_date);
+                if (result.success) {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.95).toString(),
+                    type: 'ai',
+                    message: `Successfully deleted weight entry for date: ${entry_date}.`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Weight Entry Deleted",
+                    description: `Successfully deleted weight entry for ${entry_date} from your log.`,
+                  });
+                } else {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.95).toString(),
+                    type: 'ai',
+                    message: `Failed to delete weight entry for date: ${entry_date}. Reason: ${result.error || "Unknown error."}`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Failed to Delete Weight Entry",
+                    description: result.error || "An unexpected error occurred while deleting the weight entry.",
+                    variant: "destructive",
+                  });
+                }
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: result,
+                });
+              } catch (toolError: any) {
+                console.error('Error deleting weight entry:', toolError);
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.95).toString(),
+                  type: 'ai',
+                  message: `Failed to delete weight entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Failed to Delete Weight Entry",
+                  description: toolError.message || "An unexpected error occurred while deleting the weight entry.",
+                  variant: "destructive",
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to delete weight entry." },
                 });
               }
               break;

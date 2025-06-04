@@ -129,31 +129,40 @@ export const useWeightEntries = () => {
     }
   };
 
-  const deleteWeightEntry = async (id: string) => {
-    if (!user) return;
+  const deleteWeightEntry = async (entryDate: string) => {
+    if (!user) {
+      return { success: false, error: "User not authenticated. Cannot delete weight entry." };
+    }
 
     try {
-      const { error } = await supabase
+      const { error, count } = await supabase
         .from('weight_entries')
         .delete()
-        .eq('id', id)
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .eq('date', entryDate);
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
-      setWeightEntries(prev => prev.filter(entry => entry.id !== id));
+      if (count === 0) {
+        return { success: false, error: `No weight entry found for date: ${entryDate}.` };
+      }
+
+      setWeightEntries(prev => prev.filter(entry => entry.date !== entryDate));
       toast({
         title: "Weight Entry Deleted",
-        description: "Your weight entry has been deleted successfully!",
+        description: `Weight entry for ${entryDate} has been deleted successfully!`,
       });
-    } catch (error) {
+      return { success: true, message: `Weight entry for ${entryDate} deleted.` };
+    } catch (error: any) {
       console.error('Error deleting weight entry:', error);
       toast({
         title: "Error",
         description: "Failed to delete weight entry.",
         variant: "destructive"
       });
-      throw error;
+      return { success: false, error: error.message || "Unknown error" };
     }
   };
 
