@@ -8,17 +8,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dumbbell, Activity, Heart, Weight, Image, Lightbulb, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { z } from 'zod';
 import ReactMarkdown from 'react-markdown';
 import { useFoodEntries } from '@/hooks/useFoodEntries';
 import { useAuth } from '@/contexts/AuthContext';
 import MoodLogger from './MoodLogger';
-
-const googleAI = createGoogleGenerativeAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
-});
+import { callGeminiWithFailover } from '@/utils/apiFailover';
 
 interface ChatMessage {
   id: string;
@@ -110,23 +106,25 @@ const AICoach = () => {
       }));
       console.log({systemPrompt,formattedMessages})
       
-      const { text, toolCalls } = await generateText({
-        model: googleAI('gemini-2.5-flash-preview-04-17'),
-        messages: formattedMessages as any,
-        tools: {
-          add_food_entry: {
-            description: "Adds a new food entry to the daily food log.",
-            parameters: z.object({
-              food_description: z.string().describe('The name of the food item.'),
-              calories: z.number().describe('The calorie count for the food item.'),
-              protein_g: z.number().describe('The protein amount in grams.'),
-              carbs_g: z.number().describe('The carbohydrate amount in grams.'),
-              fats_g: z.number().describe('The fat amount in grams.'),
-              meal_type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']).describe('The meal type (breakfast, lunch, dinner, snack).'),
-            }),
+      const { text, toolCalls } = await callGeminiWithFailover(
+        'gemini-2.5-flash-preview-04-17',
+        {
+          messages: formattedMessages as any,
+          tools: {
+            add_food_entry: {
+              description: "Adds a new food entry to the daily food log.",
+              parameters: z.object({
+                food_description: z.string().describe('The name of the food item.'),
+                calories: z.number().describe('The calorie count for the food item.'),
+                protein_g: z.number().describe('The protein amount in grams.'),
+                carbs_g: z.number().describe('The carbohydrate amount in grams.'),
+                fats_g: z.number().describe('The fat amount in grams.'),
+                meal_type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']).describe('The meal type (breakfast, lunch, dinner, snack).'),
+              }),
+            },
           },
-        },
-      });
+        }
+      );
 
       let toolResults: any[] = [];
       if (toolCalls && toolCalls.length > 0) {
@@ -172,11 +170,13 @@ const AICoach = () => {
           }
         }
         // Re-generate text with tool results
-        const { text: toolResponseText } = await generateText({
-          model: googleAI('gemini-2.0-flash-001'),
-          messages: formattedMessages as any,
-          toolResults: toolResults as any,
-        });
+        const { text: toolResponseText } = await callGeminiWithFailover(
+          'gemini-2.0-flash-001',
+          {
+            messages: formattedMessages as any,
+            toolResults: toolResults as any,
+          }
+        );
         const aiResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),
           type: 'ai',
