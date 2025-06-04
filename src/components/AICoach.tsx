@@ -38,6 +38,13 @@ const AICoach = () => {
   const { addFoodEntry, getFoodEntries, deleteFoodEntry, modifyFoodEntry, foodEntries } = useFoodEntries();
   const { user } = useAuth();
 
+  // Placeholder for addWeightEntry - to be implemented in a subsequent step
+  const addWeightEntry = async ({ weight_kg, entry_date }: { weight_kg: number; entry_date: string }) => {
+    console.log(`Adding weight entry: ${weight_kg} kg on ${entry_date}`);
+    // In a real scenario, this would interact with a backend or local storage
+    return { success: true, message: `Weight entry for ${weight_kg} kg on ${entry_date} added successfully.` };
+  };
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -147,6 +154,13 @@ const AICoach = () => {
                 carbs_g: z.number().optional().describe('The new carbohydrate amount in grams.'),
                 fats_g: z.number().optional().describe('The new fat amount in grams.'),
                 meal_type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']).optional().describe('The new meal type (breakfast, lunch, dinner, snack).'),
+              }),
+            },
+            add_weight_entry: {
+              description: "Add a new weight entry with the specified weight and date.",
+              parameters: z.object({
+                weight_kg: z.number().describe('The weight in kilograms.'),
+                entry_date: z.string().describe('The date of the weight entry in YYYY-MM-DD format.'),
               }),
             },
           },
@@ -335,6 +349,56 @@ const AICoach = () => {
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
                 result: { success: false, error: toolError.message || "Failed to modify food entry." },
+              });
+            }
+          } else if (toolCall.toolName === 'add_weight_entry') {
+            try {
+              const { weight_kg, entry_date } = toolCall.args;
+              const result = await addWeightEntry({ weight_kg, entry_date });
+              if (result.success) {
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.8).toString(),
+                  type: 'ai',
+                  message: `Successfully added weight entry: ${weight_kg} kg on ${entry_date}.`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Weight Entry Added",
+                  description: `Successfully added ${weight_kg} kg on ${entry_date} to your log.`,
+                });
+              } else {
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.8).toString(),
+                  type: 'ai',
+                  message: `Failed to add weight entry: ${weight_kg} kg on ${entry_date}. Reason: ${result.error || "Unknown error."}`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Failed to Add Weight Entry",
+                  description: result.error || "An unexpected error occurred while adding the weight entry.",
+                  variant: "destructive",
+                });
+              }
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: result,
+              });
+            } catch (toolError: any) {
+              console.error('Error adding weight entry:', toolError);
+              setMessages(prev => [...prev, {
+                id: (Date.now() + 0.8).toString(),
+                type: 'ai',
+                message: `Failed to add weight entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
+                timestamp: new Date()
+              }]);
+              toast({
+                title: "Failed to Add Weight Entry",
+                description: toolError.message || "An unexpected error occurred while adding the weight entry.",
+                variant: "destructive",
+              });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: false, error: toolError.message || "Failed to add weight entry." },
               });
             }
           }
