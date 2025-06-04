@@ -291,12 +291,42 @@ const AICoach = () => {
                 fats_g: fats_g !== null ? Math.round(fats_g) : undefined,
                 meal_type: meal_type || undefined,
               });
+              if (result.success) {
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.7).toString(),
+                  type: 'ai',
+                  message: `Successfully modified food entry: ${original_food_description}.`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Food Entry Modified",
+                  description: `Successfully modified ${original_food_description} in your log.`,
+                });
+              } else {
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.7).toString(),
+                  type: 'ai',
+                  message: `Failed to modify food entry: ${original_food_description}. Reason: ${result.error || "Unknown error."}`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Failed to Modify Food Entry",
+                  description: result.error || "An unexpected error occurred while modifying the food entry.",
+                  variant: "destructive",
+                });
+              }
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
                 result: result,
               });
             } catch (toolError: any) {
               console.error('Error modifying food entry:', toolError);
+              setMessages(prev => [...prev, {
+                id: (Date.now() + 0.7).toString(),
+                type: 'ai',
+                message: `Failed to modify food entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
+                timestamp: new Date()
+              }]);
               toast({
                 title: "Failed to Modify Food Entry",
                 description: toolError.message || "An unexpected error occurred while modifying the food entry.",
