@@ -28,8 +28,11 @@ export const useWeightEntries = () => {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchWeightEntries = async () => {
-    if (!user) return;
+  const getWeightEntries = async () => {
+    if (!user) {
+      console.warn("User not authenticated. Cannot fetch weight entries.");
+      return [];
+    }
     
     setLoading(true);
     try {
@@ -40,10 +43,9 @@ export const useWeightEntries = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      // Ensure newest entries are first for display, as per user feedback.
-      // Supabase's `ascending: false` should put newest first, but if not,
-      // explicitly reverse here.
+      
       setWeightEntries(data || []);
+      return data || [];
     } catch (error) {
       console.error('Error fetching weight entries:', error);
       toast({
@@ -51,8 +53,10 @@ export const useWeightEntries = () => {
         description: "Failed to load weight entries.",
         variant: "destructive"
       });
+      return [];
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const addWeightEntry = async (params: AddWeightEntryParams) => {
@@ -154,7 +158,7 @@ export const useWeightEntries = () => {
   };
 
   useEffect(() => {
-    fetchWeightEntries();
+    getWeightEntries();
   }, [user]);
 
   return {
@@ -163,6 +167,7 @@ export const useWeightEntries = () => {
     addWeightEntry,
     updateWeightEntry,
     deleteWeightEntry,
-    refetch: fetchWeightEntries
+    getWeightEntries,
+    refetch: getWeightEntries
   };
 };
