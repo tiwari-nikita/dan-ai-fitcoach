@@ -169,272 +169,286 @@ const AICoach = () => {
       let toolResults: any[] = [];
       if (toolCalls && toolCalls.length > 0) {
         for (const toolCall of toolCalls) {
-          if (toolCall.toolName === 'add_food_entry') {
-            try {
-              if (!user?.id) {
-                throw new Error("User not authenticated. Cannot add food entry.");
-              }
-              const { food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
-              const today = new Date().toISOString().split('T')[0];
-              
-              await addFoodEntry({
-                food_description,
-                calories: Math.round(calories),
-                protein_g: protein_g !== null ? Math.round(protein_g) : null,
-                carbs_g: carbs_g !== null ? Math.round(carbs_g) : null,
-                fats_g: fats_g !== null ? Math.round(fats_g) : null,
-                meal_type: meal_type || 'AI Logged',
-                date: today
-              });
-              
-              toast({
-                title: "Food Entry Added",
-                description: `Successfully added ${food_description} to your log.`,
-              });
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: true, message: `Food entry for ${food_description} added.` },
-              });
-            } catch (toolError: any) {
-              console.error('Error adding food entry:', toolError);
-              toast({
-                title: "Failed to Add Food Entry",
-                description: toolError.message || "An unexpected error occurred while adding the food entry.",
-                variant: "destructive",
-              });
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: false, error: toolError.message || "Failed to add food entry." },
-              });
-            }
-          } else if (toolCall.toolName === 'get_food_entries') {
-            try {
-              await getFoodEntries(); // This fetches and updates the foodEntries state in the hook
-              let formattedFoodEntries = "Your food entries for today:\n";
-              if (foodEntries && foodEntries.length > 0) {
-                foodEntries.forEach((entry: any) => {
-                  formattedFoodEntries += `- ${entry.meal_type}: ${entry.food_description} (${entry.calories} kcal, P:${entry.protein_g || 0}g, C:${entry.carbs_g || 0}g, F:${entry.fats_g || 0}g)\n`;
+          switch (toolCall.toolName) { // Using toolName as function.name is not available
+            case 'add_food_entry':
+              try {
+                if (!user?.id) {
+                  throw new Error("User not authenticated. Cannot add food entry.");
+                }
+                const { food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
+                const today = new Date().toISOString().split('T')[0];
+                
+                await addFoodEntry({
+                  food_description,
+                  calories: Math.round(calories),
+                  protein_g: protein_g !== null ? Math.round(protein_g) : null,
+                  carbs_g: carbs_g !== null ? Math.round(carbs_g) : null,
+                  fats_g: fats_g !== null ? Math.round(fats_g) : null,
+                  meal_type: meal_type || 'AI Logged',
+                  date: today
                 });
-              } else {
-                formattedFoodEntries = "You have no food entries for today.";
+                
+                toast({
+                  title: "Food Entry Added",
+                  description: `Successfully added ${food_description} to your log.`,
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: true, message: `Food entry for ${food_description} added.` },
+                });
+              } catch (toolError: any) {
+                console.error('Error adding food entry:', toolError);
+                toast({
+                  title: "Failed to Add Food Entry",
+                  description: toolError.message || "An unexpected error occurred while adding the food entry.",
+                  variant: "destructive",
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to add food entry." },
+                });
               }
+              break;
+            case 'get_food_entries':
+              try {
+                await getFoodEntries(); // This fetches and updates the foodEntries state in the hook
+                let formattedFoodEntries = "Your food entries for today:\n";
+                if (foodEntries && foodEntries.length > 0) {
+                  foodEntries.forEach((entry: any) => {
+                    formattedFoodEntries += `- ${entry.meal_type}: ${entry.food_description} (${entry.calories} kcal, P:${entry.protein_g || 0}g, C:${entry.carbs_g || 0}g, F:${entry.fats_g || 0}g)\n`;
+                  });
+                } else {
+                  formattedFoodEntries = "You have no food entries for today.";
+                }
 
-              setMessages(prev => [...prev, {
-                id: (Date.now() + 0.5).toString(),
-                type: 'ai',
-                message: formattedFoodEntries,
-                timestamp: new Date()
-              }]);
-
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: true, message: "Food entries retrieved and displayed." },
-              });
-            } catch (toolError: any) {
-              console.error('Error getting food entries:', toolError);
-              toast({
-                title: "Failed to Retrieve Food Entries",
-                description: toolError.message || "An unexpected error occurred while retrieving food entries.",
-                variant: "destructive",
-              });
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: false, error: toolError.message || "Failed to retrieve food entries." },
-              });
-            }
-          } else if (toolCall.toolName === 'delete_food_entry') {
-            try {
-              const { food_description } = toolCall.args;
-              const result = await deleteFoodEntry(food_description);
-              if (result.success) {
                 setMessages(prev => [...prev, {
-                  id: (Date.now() + 0.6).toString(),
+                  id: (Date.now() + 0.5).toString(),
                   type: 'ai',
-                  message: `Successfully deleted food entry: ${food_description}.`,
+                  message: formattedFoodEntries,
                   timestamp: new Date()
                 }]);
-                toast({
-                  title: "Food Entry Deleted",
-                  description: `Successfully deleted ${food_description} from your log.`,
+
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: true, message: "Food entries retrieved and displayed." },
                 });
-              } else {
+              } catch (toolError: any) {
+                console.error('Error getting food entries:', toolError);
+                toast({
+                  title: "Failed to Retrieve Food Entries",
+                  description: toolError.message || "An unexpected error occurred while retrieving food entries.",
+                  variant: "destructive",
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to retrieve food entries." },
+                });
+              }
+              break;
+            case 'delete_food_entry':
+              try {
+                const { food_description } = toolCall.args;
+                const result = await deleteFoodEntry(food_description);
+                if (result.success) {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.6).toString(),
+                    type: 'ai',
+                    message: `Successfully deleted food entry: ${food_description}.`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Food Entry Deleted",
+                    description: `Successfully deleted ${food_description} from your log.`,
+                  });
+                } else {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.6).toString(),
+                    type: 'ai',
+                    message: `Failed to delete food entry: ${food_description}. Reason: ${result.error || "Unknown error."}`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Failed to Delete Food Entry",
+                    description: result.error || "An unexpected error occurred while deleting the food entry.",
+                    variant: "destructive",
+                  });
+                }
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: result,
+                });
+              } catch (toolError: any) {
+                console.error('Error deleting food entry:', toolError);
                 setMessages(prev => [...prev, {
                   id: (Date.now() + 0.6).toString(),
                   type: 'ai',
-                  message: `Failed to delete food entry: ${food_description}. Reason: ${result.error || "Unknown error."}`,
+                  message: `Failed to delete food entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
                   timestamp: new Date()
                 }]);
                 toast({
                   title: "Failed to Delete Food Entry",
-                  description: result.error || "An unexpected error occurred while deleting the food entry.",
+                  description: toolError.message || "An unexpected error occurred while deleting the food entry.",
                   variant: "destructive",
                 });
-              }
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: result,
-              });
-            } catch (toolError: any) {
-              console.error('Error deleting food entry:', toolError);
-              setMessages(prev => [...prev, {
-                id: (Date.now() + 0.6).toString(),
-                type: 'ai',
-                message: `Failed to delete food entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
-                timestamp: new Date()
-              }]);
-              toast({
-                title: "Failed to Delete Food Entry",
-                description: toolError.message || "An unexpected error occurred while deleting the food entry.",
-                variant: "destructive",
-              });
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: false, error: toolError.message || "Failed to delete food entry." },
-              });
-            }
-          } else if (toolCall.toolName === 'modify_food_entry') {
-            try {
-              const { original_food_description, new_food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
-              const result = await modifyFoodEntry({
-                original_food_description,
-                new_food_description,
-                calories: calories !== null ? Math.round(calories) : undefined,
-                protein_g: protein_g !== null ? Math.round(protein_g) : undefined,
-                carbs_g: carbs_g !== null ? Math.round(carbs_g) : undefined,
-                fats_g: fats_g !== null ? Math.round(fats_g) : undefined,
-                meal_type: meal_type || undefined,
-              });
-              if (result.success) {
-                setMessages(prev => [...prev, {
-                  id: (Date.now() + 0.7).toString(),
-                  type: 'ai',
-                  message: `Successfully modified food entry: ${original_food_description}.`,
-                  timestamp: new Date()
-                }]);
-                toast({
-                  title: "Food Entry Modified",
-                  description: `Successfully modified ${original_food_description} in your log.`,
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to delete food entry." },
                 });
-              } else {
+              }
+              break;
+            case 'modify_food_entry':
+              try {
+                const { original_food_description, new_food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
+                const result = await modifyFoodEntry({
+                  original_food_description,
+                  new_food_description,
+                  calories: calories !== null ? Math.round(calories) : undefined,
+                  protein_g: protein_g !== null ? Math.round(protein_g) : undefined,
+                  carbs_g: carbs_g !== null ? Math.round(carbs_g) : undefined,
+                  fats_g: fats_g !== null ? Math.round(fats_g) : undefined,
+                  meal_type: meal_type || undefined,
+                });
+                if (result.success) {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.7).toString(),
+                    type: 'ai',
+                    message: `Successfully modified food entry: ${original_food_description}.`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Food Entry Modified",
+                    description: `Successfully modified ${original_food_description} in your log.`,
+                  });
+                } else {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.7).toString(),
+                    type: 'ai',
+                    message: `Failed to modify food entry: ${original_food_description}. Reason: ${result.error || "Unknown error."}`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Failed to Modify Food Entry",
+                    description: result.error || "An unexpected error occurred while modifying the food entry.",
+                    variant: "destructive",
+                  });
+                }
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: result,
+                });
+              } catch (toolError: any) {
+                console.error('Error modifying food entry:', toolError);
                 setMessages(prev => [...prev, {
                   id: (Date.now() + 0.7).toString(),
                   type: 'ai',
-                  message: `Failed to modify food entry: ${original_food_description}. Reason: ${result.error || "Unknown error."}`,
+                  message: `Failed to modify food entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
                   timestamp: new Date()
                 }]);
                 toast({
                   title: "Failed to Modify Food Entry",
-                  description: result.error || "An unexpected error occurred while modifying the food entry.",
+                  description: toolError.message || "An unexpected error occurred while modifying the food entry.",
                   variant: "destructive",
                 });
-              }
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: result,
-              });
-            } catch (toolError: any) {
-              console.error('Error modifying food entry:', toolError);
-              setMessages(prev => [...prev, {
-                id: (Date.now() + 0.7).toString(),
-                type: 'ai',
-                message: `Failed to modify food entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
-                timestamp: new Date()
-              }]);
-              toast({
-                title: "Failed to Modify Food Entry",
-                description: toolError.message || "An unexpected error occurred while modifying the food entry.",
-                variant: "destructive",
-              });
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: false, error: toolError.message || "Failed to modify food entry." },
-              });
-            }
-          } else if (toolCall.toolName === 'add_weight_entry') {
-            try {
-              const { weight_kg, entry_date } = toolCall.args;
-              const result = await addWeightEntry({ weight_kg, entry_date });
-              if (result.success) {
-                setMessages(prev => [...prev, {
-                  id: (Date.now() + 0.8).toString(),
-                  type: 'ai',
-                  message: `Successfully added weight entry: ${weight_kg} kg on ${entry_date}.`,
-                  timestamp: new Date()
-                }]);
-                toast({
-                  title: "Weight Entry Added",
-                  description: `Successfully added ${weight_kg} kg on ${entry_date} to your log.`,
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to modify food entry." },
                 });
-              } else {
+              }
+              break;
+            case 'add_weight_entry':
+              try {
+                const { weight_kg, entry_date } = toolCall.args;
+                const result = await addWeightEntry({ weight_kg, entry_date });
+                if (result.success) {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.8).toString(),
+                    type: 'ai',
+                    message: `Successfully added weight entry: ${weight_kg} kg on ${entry_date}.`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Weight Entry Added",
+                    description: `Successfully added ${weight_kg} kg on ${entry_date} to your log.`,
+                  });
+                } else {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.8).toString(),
+                    type: 'ai',
+                    message: `Failed to add weight entry: ${weight_kg} kg on ${entry_date}. Reason: ${result.error || "Unknown error."}`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Failed to Add Weight Entry",
+                    description: result.error || "An unexpected error occurred while adding the weight entry.",
+                    variant: "destructive",
+                  });
+                }
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: result,
+                });
+              } catch (toolError: any) {
+                console.error('Error adding weight entry:', toolError);
                 setMessages(prev => [...prev, {
                   id: (Date.now() + 0.8).toString(),
                   type: 'ai',
-                  message: `Failed to add weight entry: ${weight_kg} kg on ${entry_date}. Reason: ${result.error || "Unknown error."}`,
+                  message: `Failed to add weight entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
                   timestamp: new Date()
                 }]);
                 toast({
                   title: "Failed to Add Weight Entry",
-                  description: result.error || "An unexpected error occurred while adding the weight entry.",
+                  description: toolError.message || "An unexpected error occurred while adding the weight entry.",
                   variant: "destructive",
                 });
-              }
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: result,
-              });
-            } catch (toolError: any) {
-              console.error('Error adding weight entry:', toolError);
-              setMessages(prev => [...prev, {
-                id: (Date.now() + 0.8).toString(),
-                type: 'ai',
-                message: `Failed to add weight entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
-                timestamp: new Date()
-              }]);
-              toast({
-                title: "Failed to Add Weight Entry",
-                description: toolError.message || "An unexpected error occurred while adding the weight entry.",
-                variant: "destructive",
-              });
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: false, error: toolError.message || "Failed to add weight entry." },
-              });
-            }
-          } else if (toolCall.toolName === 'get_weight_entries') {
-            try {
-              const weightEntries = await getWeightEntries();
-              let formattedWeightEntries = "Your weight entries:\n";
-              if (weightEntries && weightEntries.length > 0) {
-                weightEntries.forEach((entry: any) => {
-                  formattedWeightEntries += `- ${entry.weight} kg on ${entry.date}\n`;
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to add weight entry." },
                 });
-              } else {
-                formattedWeightEntries = "You have no weight entries.";
               }
+              break;
+            case 'get_weight_entries':
+              try {
+                const weightEntries = await getWeightEntries();
+                let formattedWeightEntries = "Your weight entries:\n";
+                if (weightEntries && weightEntries.length > 0) {
+                  weightEntries.forEach((entry: any) => {
+                    formattedWeightEntries += `- ${entry.weight} kg on ${entry.date}\n`;
+                  });
+                } else {
+                  formattedWeightEntries = "You have no weight entries.";
+                }
 
-              setMessages(prev => [...prev, {
-                id: (Date.now() + 0.9).toString(),
-                type: 'ai',
-                message: formattedWeightEntries,
-                timestamp: new Date()
-              }]);
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.9).toString(),
+                  type: 'ai',
+                  message: formattedWeightEntries,
+                  timestamp: new Date()
+                }]);
 
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: true, message: "Weight entries retrieved and displayed." },
+                });
+              } catch (toolError: any) {
+                console.error('Error getting weight entries:', toolError);
+                toast({
+                  title: "Failed to Retrieve Weight Entries",
+                  description: toolError.message || "An unexpected error occurred while retrieving weight entries.",
+                  variant: "destructive",
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to retrieve weight entries." },
+                });
+              }
+              break;
+            default:
+              console.warn(`Unknown tool call: ${toolCall.toolName}`);
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
-                result: { success: true, message: "Weight entries retrieved and displayed." },
+                result: { success: false, error: `Unknown tool: ${toolCall.toolName}` },
               });
-            } catch (toolError: any) {
-              console.error('Error getting weight entries:', toolError);
-              toast({
-                title: "Failed to Retrieve Weight Entries",
-                description: toolError.message || "An unexpected error occurred while retrieving weight entries.",
-                variant: "destructive",
-              });
-              toolResults.push({
-                toolCallId: toolCall.toolCallId,
-                result: { success: false, error: toolError.message || "Failed to retrieve weight entries." },
-              });
-            }
+              break;
           }
         }
         // Re-generate text with tool results
