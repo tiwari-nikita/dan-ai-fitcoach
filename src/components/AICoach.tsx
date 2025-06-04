@@ -233,12 +233,42 @@ const AICoach = () => {
             try {
               const { food_description } = toolCall.args;
               const result = await deleteFoodEntry(food_description);
+              if (result.success) {
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.6).toString(),
+                  type: 'ai',
+                  message: `Successfully deleted food entry: ${food_description}.`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Food Entry Deleted",
+                  description: `Successfully deleted ${food_description} from your log.`,
+                });
+              } else {
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.6).toString(),
+                  type: 'ai',
+                  message: `Failed to delete food entry: ${food_description}. Reason: ${result.error || "Unknown error."}`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Failed to Delete Food Entry",
+                  description: result.error || "An unexpected error occurred while deleting the food entry.",
+                  variant: "destructive",
+                });
+              }
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
                 result: result,
               });
             } catch (toolError: any) {
               console.error('Error deleting food entry:', toolError);
+              setMessages(prev => [...prev, {
+                id: (Date.now() + 0.6).toString(),
+                type: 'ai',
+                message: `Failed to delete food entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
+                timestamp: new Date()
+              }]);
               toast({
                 title: "Failed to Delete Food Entry",
                 description: toolError.message || "An unexpected error occurred while deleting the food entry.",
