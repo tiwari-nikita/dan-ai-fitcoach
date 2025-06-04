@@ -29,25 +29,13 @@ interface SelectedImage {
   previewUrl: string; // Data URL for immediate preview
 }
 
-const modifyFoodEntry = async (args: {
-  original_food_description: string;
-  new_food_description?: string;
-  calories?: number;
-  protein_g?: number;
-  carbs_g?: number;
-  fats_g?: number;
-  meal_type?: 'breakfast' | 'lunch' | 'dinner' | 'snack';
-}) => {
-  console.log('modifyFoodEntry called with:', args);
-  return { success: true, message: `Food entry for ${args.original_food_description} modified successfully.` };
-};
 
 const AICoach = () => {
   const modelForToolCall = 'gemini-2.5-flash-preview-04-17';
   const modelForToolResults = 'gemini-2.5-flash-preview-04-17';
 
   const { toast } = useToast();
-  const { addFoodEntry, getFoodEntries, deleteFoodEntry, foodEntries } = useFoodEntries();
+  const { addFoodEntry, getFoodEntries, deleteFoodEntry, modifyFoodEntry, foodEntries } = useFoodEntries();
   const { user } = useAuth();
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -264,7 +252,15 @@ const AICoach = () => {
           } else if (toolCall.toolName === 'modify_food_entry') {
             try {
               const { original_food_description, new_food_description, calories, protein_g, carbs_g, fats_g, meal_type } = toolCall.args;
-              const result = await modifyFoodEntry({ original_food_description, new_food_description, calories, protein_g, carbs_g, fats_g, meal_type });
+              const result = await modifyFoodEntry({
+                original_food_description,
+                new_food_description,
+                calories: calories !== null ? Math.round(calories) : undefined,
+                protein_g: protein_g !== null ? Math.round(protein_g) : undefined,
+                carbs_g: carbs_g !== null ? Math.round(carbs_g) : undefined,
+                fats_g: fats_g !== null ? Math.round(fats_g) : undefined,
+                meal_type: meal_type || undefined,
+              });
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
                 result: result,

@@ -22,8 +22,18 @@ interface AddFoodEntryParams {
   protein_g: number | null;
   carbs_g: number | null;
   fats_g: number | null;
-  meal_type: string;
-  date: string;
+meal_type: string;
+date: string;
+}
+
+interface ModifyFoodEntryParams {
+  original_food_description: string;
+  new_food_description?: string;
+  calories?: number;
+  protein_g?: number | null;
+  carbs_g?: number | null;
+  fats_g?: number | null;
+  meal_type?: string;
 }
 
 export const useFoodEntries = () => {
@@ -167,9 +177,87 @@ export const useFoodEntries = () => {
     }
   };
 
-  useEffect(() => {
-    fetchFoodEntries();
-  }, [user]);
+  const modifyFoodEntry = async ({ original_food_description, ...updates }: ModifyFoodEntryParams) => {
+    if (!user) {
+      toast({
+        title: "Authentication Error",
+        description: "User not authenticated. Cannot modify food entry.",
+        variant: "destructive"
+      });
+      return { success: false, error: "User not authenticated." };
+    }
+
+    try {
+      // First, find the entry by original_food_description
+      const { data: existingEntries, error: fetchError } = await supabase
+        .from('food_entries')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('food_description', original_food_description);
+
+      if (fetchError) throw fetchError;
+
+      if (!existingEntries || existingEntries.length === 0) {
+        toast({
+          title: "Error",
+          description: `Food entry "${original_food_description}" not found.`,
+          variant: "destructive"
+        });
+        return { success: false, error: "Food entry not found." };
+      }
+
+      const entryIdToUpdate = existingEntries[0].id;
+
+      // Prepare updates object, ensuring food_description is updated if new_food_description is provided
+      const updatePayload: Partial<FoodEntry> = {};
+      if (updates.new_food_description !== undefined) {
+        updatePayload.food_description = updates.new_food_description;
+      }
+      if (updates.calories !== undefined) {
+        updatePayload.calories = updates.calories;
+      }
+      if (updates.protein_g !== undefined) {
+        updatePayload.protein_g = updates.protein_g;
+      }
+      if (updates.carbs_g !== undefined) {
+        updatePayload.carbs_g = updates.carbs_g;
+      }
+      if (updates.fats_g !== undefined) {
+        updatePayload.fats_g = updates.fats_g;
+      }
+      if (updates.meal_type !== undefined) {
+        updatePayload.meal_type = updates.meal_type;
+      }
+
+      const { data, error } = await supabase
+        .from('food_entries')
+        .update(updatePayload)
+        .eq('id', entryIdToUpdate)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setFoodEntries(prev => prev.map(entry => entry.id === entryIdToUpdate ? data : entry));
+      toast({
+        title: "Food Entry Modified",
+        description: `"${original_food_description}" has been updated successfully.`,
+      });
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error modifying food entry:', error);
+      toast({
+        title: "Error",
+        description: `Failed to modify food entry: ${error.message || "Unknown error"}`,
+        variant: "destructive"
+      });
+      return { success: false, error: error.message || "Unknown error" };
+    }
+  };
+ 
+   useEffect(() => {
+     fetchFoodEntries();
+   }, [user]);
 
   return {
     foodEntries,
@@ -177,6 +265,7 @@ export const useFoodEntries = () => {
     addFoodEntry,
     deleteFoodEntry,
     updateFoodEntry,
+    modifyFoodEntry, // Expose the new function
     refetch: fetchFoodEntries,
     getFoodEntries: fetchFoodEntries
   };
