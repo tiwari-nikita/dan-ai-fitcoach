@@ -37,7 +37,7 @@ const AICoach = () => {
 
   const { toast } = useToast();
   const { addFoodEntry, getFoodEntries, deleteFoodEntry, modifyFoodEntry, foodEntries } = useFoodEntries();
-  const { addWeightEntry, getWeightEntries, deleteWeightEntry } = useWeightEntries();
+  const { addWeightEntry, getWeightEntries, deleteWeightEntry, modifyWeightEntry } = useWeightEntries();
   const { user } = useAuth();
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -112,6 +112,12 @@ const AICoach = () => {
         };
       }));
       console.log({systemPrompt,formattedMessages})
+const modifyWeightEntryParams = z.object({
+  original_entry_date: z.string().describe("The original date of the weight entry to be modified, in 'YYYY-MM-DD' format."),
+  new_weight_kg: z.number().describe("The new weight in kilograms."),
+  new_entry_date: z.string().optional().describe("The new date for the weight entry, in 'YYYY-MM-DD' format. If not provided, the original date will be used."),
+});
+      
       
       const { text, toolCalls } = await callGeminiWithFailover(
         modelForToolCall,
@@ -167,6 +173,10 @@ const AICoach = () => {
               parameters: z.object({
                 entry_date: z.string().describe('The date of the weight entry to delete in YYYY-MM-DD format.'),
               }),
+            },
+            modify_weight_entry: {
+              description: "Modifies an existing weight entry for a specific date. Requires the original entry date to identify the entry, and the new weight and new date for the update.",
+              parameters: modifyWeightEntryParams,
             },
           },
         }
@@ -496,6 +506,57 @@ const AICoach = () => {
                 toolResults.push({
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to delete weight entry." },
+                });
+              }
+              break;
+            case 'modify_weight_entry':
+              try {
+                const { original_entry_date, new_weight_kg, new_entry_date } = toolCall.args;
+                const result = await modifyWeightEntry({ original_entry_date, new_weight_kg, new_entry_date });
+                if (result.success) {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.96).toString(),
+                    type: 'ai',
+                    message: `Successfully modified weight entry for date: ${original_entry_date}. New weight: ${new_weight_kg} kg. New date: ${new_entry_date || original_entry_date}.`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Weight Entry Modified",
+                    description: `Successfully modified weight entry for ${original_entry_date}.`,
+                  });
+                } else {
+                  setMessages(prev => [...prev, {
+                    id: (Date.now() + 0.96).toString(),
+                    type: 'ai',
+                    message: `Failed to modify weight entry for date: ${original_entry_date}. Reason: ${result.error || "Unknown error."}`,
+                    timestamp: new Date()
+                  }]);
+                  toast({
+                    title: "Failed to Modify Weight Entry",
+                    description: result.error || "An unexpected error occurred while modifying the weight entry.",
+                    variant: "destructive",
+                  });
+                }
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: result,
+                });
+              } catch (toolError: any) {
+                console.error('Error modifying weight entry:', toolError);
+                setMessages(prev => [...prev, {
+                  id: (Date.now() + 0.96).toString(),
+                  type: 'ai',
+                  message: `Failed to modify weight entry. Reason: ${toolError.message || "An unexpected error occurred."}`,
+                  timestamp: new Date()
+                }]);
+                toast({
+                  title: "Failed to Modify Weight Entry",
+                  description: toolError.message || "An unexpected error occurred while modifying the weight entry.",
+                  variant: "destructive",
+                });
+                toolResults.push({
+                  toolCallId: toolCall.toolCallId,
+                  result: { success: false, error: toolError.message || "Failed to modify weight entry." },
                 });
               }
               break;
