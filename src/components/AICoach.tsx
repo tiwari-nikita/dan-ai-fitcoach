@@ -30,6 +30,9 @@ interface SelectedImage {
 }
 
 const AICoach = () => {
+  const modelForToolCall = 'gemini-2.5-flash-preview-04-17';
+  const modelForToolResults = 'gemini-2.0-flash-001';
+
   const { toast } = useToast();
   const { addFoodEntry } = useFoodEntries();
   const { user } = useAuth();
@@ -107,7 +110,7 @@ const AICoach = () => {
       console.log({systemPrompt,formattedMessages})
       
       const { text, toolCalls } = await callGeminiWithFailover(
-        'gemini-2.5-flash-preview-04-17',
+        modelForToolCall
         {
           messages: formattedMessages as any,
           tools: {
@@ -171,7 +174,7 @@ const AICoach = () => {
         }
         // Re-generate text with tool results
         const { text: toolResponseText } = await callGeminiWithFailover(
-          'gemini-2.0-flash-001',
+          modelForToolResults,
           {
             messages: formattedMessages as any,
             toolResults: toolResults as any,
