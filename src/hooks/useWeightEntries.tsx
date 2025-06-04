@@ -129,6 +129,49 @@ export const useWeightEntries = () => {
     }
   };
 
+  const modifyWeightEntry = async ({ original_entry_date, new_weight_kg, new_entry_date }: { original_entry_date: string, new_weight_kg: number, new_entry_date?: string | null }) => {
+    if (!user) {
+      return { success: false, error: "User not authenticated. Cannot modify weight entry." };
+    }
+
+    try {
+      const updatePayload: Partial<Omit<WeightEntry, 'id' | 'created_at' | 'user_id'>> = {
+        weight: new_weight_kg,
+      };
+
+      if (new_entry_date) {
+        updatePayload.date = new_entry_date;
+      }
+
+      const { data, error } = await supabase
+        .from('weight_entries')
+        .update(updatePayload)
+        .eq('user_id', user.id)
+        .eq('date', original_entry_date)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Refetch entries to ensure local state consistency after modification,
+      // especially if the entry date was changed.
+      await getWeightEntries();
+      toast({
+        title: "Weight Entry Modified",
+        description: `Weight entry for ${original_entry_date} has been modified successfully!`,
+      });
+      return { success: true, data };
+    } catch (error: any) {
+      console.error('Error modifying weight entry:', error);
+      toast({
+        title: "Error",
+        description: "Failed to modify weight entry.",
+        variant: "destructive"
+      });
+      return { success: false, error: error.message || "Unknown error" };
+    }
+  };
+
   const deleteWeightEntry = async (entryDate: string) => {
     if (!user) {
       return { success: false, error: "User not authenticated. Cannot delete weight entry." };
@@ -176,6 +219,7 @@ export const useWeightEntries = () => {
     addWeightEntry,
     updateWeightEntry,
     deleteWeightEntry,
+    modifyWeightEntry,
     getWeightEntries,
     refetch: getWeightEntries
   };
