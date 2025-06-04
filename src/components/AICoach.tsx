@@ -34,8 +34,9 @@ const AICoach = () => {
   const modelForToolResults = 'gemini-2.5-flash-preview-04-17';
 
   const { toast } = useToast();
-  const { addFoodEntry, getFoodEntries } = useFoodEntries();
+  const { addFoodEntry, getFoodEntries, deleteFoodEntry, foodEntries } = useFoodEntries();
   const { user } = useAuth();
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -129,6 +130,12 @@ const AICoach = () => {
               description: "Retrieves a list of food entries for a given date.",
               parameters: z.object({}),
             },
+            delete_food_entry: {
+              description: "Delete a previously recorded structured food nutrition entry by its description.",
+              parameters: z.object({
+                food_description: z.string().describe('The description of the food item to delete.'),
+              }),
+            },
           },
         }
       );
@@ -176,7 +183,7 @@ const AICoach = () => {
             }
           } else if (toolCall.toolName === 'get_food_entries') {
             try {
-              const foodEntries = await getFoodEntries();
+              await getFoodEntries(); // This fetches and updates the foodEntries state in the hook
               let formattedFoodEntries = "Your food entries for today:\n";
               if (foodEntries && foodEntries.length > 0) {
                 foodEntries.forEach((entry: any) => {
@@ -207,6 +214,27 @@ const AICoach = () => {
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
                 result: { success: false, error: toolError.message || "Failed to retrieve food entries." },
+              });
+            }
+          } else if (toolCall.toolName === 'delete_food_entry') {
+            try {
+              const { food_description } = toolCall.args;
+              // Call the actual deleteFoodEntry function from the hook
+              await deleteFoodEntry(food_description); // deleteFoodEntry handles its own toast
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: true, message: "Food entry deleted successfully." },
+              });
+            } catch (toolError: any) {
+              console.error('Error deleting food entry:', toolError);
+              toast({
+                title: "Failed to Delete Food Entry",
+                description: toolError.message || "An unexpected error occurred while deleting the food entry.",
+                variant: "destructive",
+              });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: false, error: toolError.message || "Failed to delete food entry." },
               });
             }
           }
