@@ -224,6 +224,7 @@ const modifyWeightEntryParams = z.object({
                   description: `Successfully added ${food_description} to your log.`,
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: true, message: `Food entry for ${food_description} added.` },
                 });
@@ -235,6 +236,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to add food entry." },
                 });
@@ -260,8 +262,9 @@ const modifyWeightEntryParams = z.object({
                 }]);
 
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
-                  result: { success: true, message: "Food entries retrieved and displayed." },
+                  result: { success: true, message: formattedFoodEntries },
                 });
               } catch (toolError: any) {
                 console.error('Error getting food entries:', toolError);
@@ -271,6 +274,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to retrieve food entries." },
                 });
@@ -305,6 +309,7 @@ const modifyWeightEntryParams = z.object({
                   });
                 }
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: result,
                 });
@@ -322,6 +327,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to delete food entry." },
                 });
@@ -364,6 +370,7 @@ const modifyWeightEntryParams = z.object({
                   });
                 }
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: result,
                 });
@@ -381,6 +388,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to modify food entry." },
                 });
@@ -415,6 +423,7 @@ const modifyWeightEntryParams = z.object({
                   });
                 }
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: result,
                 });
@@ -432,6 +441,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to add weight entry." },
                 });
@@ -457,8 +467,9 @@ const modifyWeightEntryParams = z.object({
                 }]);
 
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
-                  result: { success: true, message: "Weight entries retrieved and displayed." },
+                  result: { success: true, message: formattedWeightEntries },
                 });
               } catch (toolError: any) {
                 console.error('Error getting weight entries:', toolError);
@@ -468,6 +479,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to retrieve weight entries." },
                 });
@@ -502,6 +514,7 @@ const modifyWeightEntryParams = z.object({
                   });
                 }
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: result,
                 });
@@ -519,6 +532,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to delete weight entry." },
                 });
@@ -553,6 +567,7 @@ const modifyWeightEntryParams = z.object({
                   });
                 }
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: result,
                 });
@@ -570,6 +585,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to modify weight entry." },
                 });
@@ -604,6 +620,7 @@ const modifyWeightEntryParams = z.object({
                   });
                 }
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: result,
                 });
@@ -621,6 +638,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to set user info." },
                 });
@@ -645,8 +663,9 @@ const modifyWeightEntryParams = z.object({
                 }]);
 
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
-                  result: { success: true, message: "User information retrieved and displayed." },
+                  result: { success: true, message: message },
                 });
               } catch (toolError: any) {
                 console.error('Error getting user info:', toolError);
@@ -656,6 +675,7 @@ const modifyWeightEntryParams = z.object({
                   variant: "destructive",
                 });
                 toolResults.push({
+                  role: 'tool',
                   toolCallId: toolCall.toolCallId,
                   result: { success: false, error: toolError.message || "Failed to retrieve user information." },
                 });
@@ -664,6 +684,7 @@ const modifyWeightEntryParams = z.object({
             default:
               console.warn(`Unknown tool call: ${toolCall.toolName}`);
               toolResults.push({
+                role: 'tool',
                 toolCallId: toolCall.toolCallId,
                 result: { success: false, error: `Unknown tool: ${toolCall.toolName}` },
               });
@@ -675,7 +696,7 @@ const modifyWeightEntryParams = z.object({
           modelForToolResults,
           {
             messages: formattedMessages as any,
-            toolResults: toolResults as any,
+            toolResults: toolResults,
           }
         );
         const aiResponse: ChatMessage = {
