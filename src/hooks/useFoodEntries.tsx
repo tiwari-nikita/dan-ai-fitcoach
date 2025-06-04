@@ -97,32 +97,41 @@ export const useFoodEntries = () => {
     }
   };
 
-  const deleteFoodEntry = async (id: string) => {
+  const deleteFoodEntry = async (food_description: string) => {
     if (!user) {
-      throw new Error("User not authenticated. Cannot delete food entry.");
+      toast({
+        title: "Authentication Error",
+        description: "User not authenticated. Cannot delete food entry.",
+        variant: "destructive"
+      });
+      return { success: false, error: "User not authenticated." };
     }
 
     try {
       const { error } = await supabase
         .from('food_entries')
         .delete()
-        .eq('id', id);
+        .eq('user_id', user.id)
+        .eq('food_description', food_description);
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
-      setFoodEntries(prev => prev.filter(entry => entry.id !== id));
+      setFoodEntries(prev => prev.filter(entry => entry.food_description !== food_description));
       toast({
         title: "Food Entry Deleted",
-        description: "The food entry has been removed successfully.",
+        description: `"${food_description}" has been removed successfully.`,
       });
+      return { success: true };
     } catch (error) {
       console.error('Error deleting food entry:', error);
       toast({
         title: "Error",
-        description: "Failed to delete food entry.",
+        description: `Failed to delete food entry: ${error.message || "Unknown error"}`,
         variant: "destructive"
       });
-      throw error;
+      return { success: false, error: error.message || "Unknown error" };
     }
   };
 

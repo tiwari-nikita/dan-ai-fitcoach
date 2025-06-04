@@ -219,11 +219,10 @@ const AICoach = () => {
           } else if (toolCall.toolName === 'delete_food_entry') {
             try {
               const { food_description } = toolCall.args;
-              // Call the actual deleteFoodEntry function from the hook
-              await deleteFoodEntry(food_description); // deleteFoodEntry handles its own toast
+              const result = await deleteFoodEntry(food_description);
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
-                result: { success: true, message: "Food entry deleted successfully." },
+                result: result,
               });
             } catch (toolError: any) {
               console.error('Error deleting food entry:', toolError);
