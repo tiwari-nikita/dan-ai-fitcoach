@@ -14,6 +14,14 @@ interface WeightEntry {
   created_at: string;
 }
 
+interface AddWeightEntryParams {
+  weight_kg: number;
+  entry_date: string;
+  notes?: string | null;
+  muscle_mass?: number | null;
+  body_fat?: number | null;
+}
+
 export const useWeightEntries = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -47,15 +55,21 @@ export const useWeightEntries = () => {
     setLoading(false);
   };
 
-  const addWeightEntry = async (entry: Omit<WeightEntry, 'id' | 'created_at'>) => {
-    if (!user) return;
+  const addWeightEntry = async (params: AddWeightEntryParams) => {
+    if (!user) {
+      throw new Error("User not authenticated. Cannot add weight entry.");
+    }
 
     try {
       const { data, error } = await supabase
         .from('weight_entries')
         .insert([{
-          ...entry,
-          user_id: user.id
+          user_id: user.id,
+          weight: params.weight_kg,
+          date: params.entry_date,
+          notes: params.notes || null,
+          muscle_mass: params.muscle_mass || null,
+          body_fat: params.body_fat || null,
         }])
         .select()
         .single();
@@ -65,10 +79,10 @@ export const useWeightEntries = () => {
       setWeightEntries(prev => [data, ...prev]);
       toast({
         title: "Weight Logged",
-        description: "Your weight entry has been recorded successfully!",
+        description: `Weight of ${params.weight_kg} kg on ${params.entry_date} has been recorded successfully!`,
       });
       
-      return data;
+      return { success: true, data };
     } catch (error) {
       console.error('Error adding weight entry:', error);
       toast({
@@ -76,7 +90,7 @@ export const useWeightEntries = () => {
         description: "Failed to add weight entry.",
         variant: "destructive"
       });
-      throw error;
+      return { success: false, error: error.message || "Unknown error" };
     }
   };
 

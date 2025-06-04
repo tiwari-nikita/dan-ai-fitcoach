@@ -12,6 +12,7 @@ import { generateText } from 'ai';
 import { z } from 'zod';
 import ReactMarkdown from 'react-markdown';
 import { useFoodEntries } from '@/hooks/useFoodEntries';
+import { useWeightEntries } from '@/hooks/useWeightEntries';
 import { useAuth } from '@/contexts/AuthContext';
 import MoodLogger from './MoodLogger';
 import { callGeminiWithFailover } from '@/utils/apiFailover';
@@ -36,14 +37,8 @@ const AICoach = () => {
 
   const { toast } = useToast();
   const { addFoodEntry, getFoodEntries, deleteFoodEntry, modifyFoodEntry, foodEntries } = useFoodEntries();
+  const { addWeightEntry } = useWeightEntries();
   const { user } = useAuth();
-
-  // Placeholder for addWeightEntry - to be implemented in a subsequent step
-  const addWeightEntry = async ({ weight_kg, entry_date }: { weight_kg: number; entry_date: string }) => {
-    console.log(`Adding weight entry: ${weight_kg} kg on ${entry_date}`);
-    // In a real scenario, this would interact with a backend or local storage
-    return { success: true, message: `Weight entry for ${weight_kg} kg on ${entry_date} added successfully.` };
-  };
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
