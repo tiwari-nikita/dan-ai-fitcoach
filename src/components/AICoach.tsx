@@ -133,6 +133,10 @@ const AICoach = () => {
               description: "Retrieves a list of food entries for a given date.",
               parameters: z.object({}),
             },
+            get_weight_entries: {
+              description: "Retrieve previously recorded weight entries.",
+              parameters: z.object({}),
+            },
             delete_food_entry: {
               description: "Delete a previously recorded structured food nutrition entry by its description.",
               parameters: z.object({
@@ -394,6 +398,49 @@ const AICoach = () => {
               toolResults.push({
                 toolCallId: toolCall.toolCallId,
                 result: { success: false, error: toolError.message || "Failed to add weight entry." },
+              });
+            }
+          } else if (toolCall.toolName === 'get_weight_entries') {
+            try {
+              // Placeholder for getWeightEntries function
+              const getWeightEntries = async () => {
+                return [
+                  { id: 'w1', weight_kg: 70.5, entry_date: '2024-01-01' },
+                  { id: 'w2', weight_kg: 71.2, entry_date: '2024-01-08' },
+                  { id: 'w3', weight_kg: 70.8, entry_date: '2024-01-15' },
+                ];
+              };
+              const weightEntries = await getWeightEntries();
+              let formattedWeightEntries = "Your weight entries:\n";
+              if (weightEntries && weightEntries.length > 0) {
+                weightEntries.forEach((entry: any) => {
+                  formattedWeightEntries += `- ${entry.weight_kg} kg on ${entry.entry_date}\n`;
+                });
+              } else {
+                formattedWeightEntries = "You have no weight entries.";
+              }
+
+              setMessages(prev => [...prev, {
+                id: (Date.now() + 0.9).toString(),
+                type: 'ai',
+                message: formattedWeightEntries,
+                timestamp: new Date()
+              }]);
+
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: true, message: "Weight entries retrieved and displayed." },
+              });
+            } catch (toolError: any) {
+              console.error('Error getting weight entries:', toolError);
+              toast({
+                title: "Failed to Retrieve Weight Entries",
+                description: toolError.message || "An unexpected error occurred while retrieving weight entries.",
+                variant: "destructive",
+              });
+              toolResults.push({
+                toolCallId: toolCall.toolCallId,
+                result: { success: false, error: toolError.message || "Failed to retrieve weight entries." },
               });
             }
           }
