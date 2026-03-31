@@ -40,8 +40,8 @@ const WeightTracking = () => {
 
     try {
       await addWeightEntry({
-        weight: parseFloat(newEntry.weight),
-        date: new Date().toISOString().split('T')[0],
+        weight_kg: parseFloat(newEntry.weight),
+        entry_date: new Date().toISOString().split('T')[0],
         notes: newEntry.notes || null,
         muscle_mass: muscleMass ? parseFloat(muscleMass) : 0,
         body_fat: bodyFat ? parseFloat(bodyFat) : 0

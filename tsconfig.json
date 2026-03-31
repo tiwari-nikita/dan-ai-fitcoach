@@ -1,31 +1,19 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "lib": [
-      "deno.window",
-      "deno.unstable"
-    ],
-    "noImplicitAny": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "types": [
-      "https://deno.land/std@0.177.0/http/server.ts"
-    ]
-  },
   "files": [],
   "references": [
-    {
-      "path": "./tsconfig.app.json"
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
     },
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+    "noImplicitAny": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": false
+  }
 }
