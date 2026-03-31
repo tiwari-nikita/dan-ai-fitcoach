@@ -7,181 +7,14 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.4"
+  }
   public: {
     Tables: {
-      food_entries: {
-        Row: {
-          calories: number | null
-          carbs_g: number | null
-          date: string | null
-          fats_g: number | null
-          food_description: string
-          id: string
-          logged_at: string | null
-          meal_type: string | null
-          protein_g: number | null
-          user_id: string
-        }
-        Insert: {
-          calories?: number | null
-          carbs_g?: number | null
-          date?: string | null
-          fats_g?: number | null
-          food_description: string
-          id?: string
-          logged_at?: string | null
-          meal_type?: string | null
-          protein_g?: number | null
-          user_id: string
-        }
-        Update: {
-          calories?: number | null
-          carbs_g?: number | null
-          date?: string | null
-          fats_g?: number | null
-          food_description?: string
-          id?: string
-          logged_at?: string | null
-          meal_type?: string | null
-          protein_g?: number | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      meal_photos: {
-        Row: {
-          created_at: string | null
-          food_entry_id: string | null
-          id: string
-          ocr_extracted_data: Json | null
-          photo_url: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          food_entry_id?: string | null
-          id?: string
-          ocr_extracted_data?: Json | null
-          photo_url: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          food_entry_id?: string | null
-          id?: string
-          ocr_extracted_data?: Json | null
-          photo_url?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "meal_photos_food_entry_id_fkey"
-            columns: ["food_entry_id"]
-            isOneToOne: false
-            referencedRelation: "food_entries"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          activity_level: string | null
-          age: number | null
-          created_at: string | null
-          email: string | null
-          experience: string | null
-          fitness_goals: Json | null
-          gender: string | null
-          goals: string | null
-          height: string | null
-          id: string
-          injuries: string | null
-          name: string | null
-          preferences: string | null
-          start_weight: number | null
-          support_level: string | null
-          target_weight: number | null
-          updated_at: string | null
-          weight: number | null
-          user_metadata: Json | null
-        }
-        Insert: {
-          activity_level?: string | null
-          age?: number | null
-          created_at?: string | null
-          email?: string | null
-          experience?: string | null
-          fitness_goals?: Json | null
-          gender?: string | null
-          goals?: string | null
-          height?: string | null
-          id: string
-          injuries?: string | null
-          name?: string | null
-          preferences?: string | null
-          start_weight?: number | null
-          support_level?: string | null
-          target_weight?: number | null
-          updated_at?: string | null
-          weight?: number | null
-          user_metadata?: Json | null
-        }
-        Update: {
-          activity_level?: string | null
-          age?: number | null
-          created_at?: string | null
-          email?: string | null
-          experience?: string | null
-          fitness_goals?: Json | null
-          gender?: string | null
-          goals?: string | null
-          height?: string | null
-          id?: string
-          injuries?: string | null
-          name?: string | null
-          preferences?: string | null
-          start_weight?: number | null
-          support_level?: string | null
-          target_weight?: number | null
-          updated_at?: string | null
-          weight?: number | null
-          user_metadata?: Json | null
-        }
-        Relationships: []
-      }
-      weight_entries: {
-        Row: {
-          created_at: string | null
-          date: string | null
-          id: string
-          notes: string | null
-          muscle_mass: number | null
-          body_fat: number | null
-          user_id: string
-          weight: number
-        }
-        Insert: {
-          created_at?: string | null
-          date?: string | null
-          id?: string
-          notes?: string | null
-          muscle_mass?: number | null
-          body_fat?: number | null
-          user_id: string
-          weight: number
-        }
-        Update: {
-          created_at?: string | null
-          date?: string | null
-          id?: string
-          notes?: string | null
-          muscle_mass?: number | null
-          body_fat?: number | null
-          user_id?: string
-          weight?: number
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
@@ -198,21 +31,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
@@ -230,14 +67,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
@@ -253,14 +92,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
@@ -276,14 +117,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
@@ -291,14 +134,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
